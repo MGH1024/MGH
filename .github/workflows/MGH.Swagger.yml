@@ -20,7 +20,7 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       - run: dotnet build ${{ env.PROJECT_PATH }}
-      - run: dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./nuget
+      - run: dotnet pack ${{ env.NUGET_PATH }} -c Release -o ./nuget
       - name: deploy package To nuget     
         run: dotnet nuget push /home/runner/work/Mgh.Swagger/Mgh.Swagger/nuget/Mgh.Swagger*.nupkg  -k ${{secrets.MGH_SWAGGER}} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
