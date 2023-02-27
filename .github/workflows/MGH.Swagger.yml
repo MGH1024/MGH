@@ -19,10 +19,10 @@ jobs:
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0.x'
-      - run: dotnet build ${{ env.PROJECT_PATH }}
-      - run: dotnet pack ${{ env.NUGET_PATH }} -c Release -o ./nuget
+      - run: dotnet build Mgh.Swagger/Mgh.Swagger.csproj
+      - run: dotnet pack Mgh.Swagger/Mgh.Swagger.csproj -c Release -o ./nuget
       - name: deploy package To nuget     
-        run: dotnet nuget push /home/runner/work/Mgh.Swagger/Mgh.Swagger/nuget/Mgh.Swagger*.nupkg  -k ${{secrets.MGH_SWAGGER}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push /home/runner/work/Mgh/Mgh/nuget/Mgh.Swagger*.nupkg  -k ${{secrets.MGH_SWAGGER}} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
 
