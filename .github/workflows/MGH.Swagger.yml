@@ -9,6 +9,7 @@ env:
   PROJECT_PATH: Mgh.Swagger/Mgh.Swagger.csproj
   ZIP_PATH:  Mgh.Swagger/Mgh.Swagger/bin/Release/net6.0-windows/win-x86/publish/Mgh.Swagger-x86.zip
   EXE_PATH:  Mgh.Swagger/Mgh.Swagger/bin/Release/net6.0-windows/win-x86/publish/Mgh.Swagger.exe
+  Nuget_Token: ${{secrets.API_KEY}}
 
 jobs:
   deploy:
@@ -20,8 +21,8 @@ jobs:
           dotnet-version: '6.0.x'
       - run: dotnet build ${{ env.PROJECT_PATH }}
       - run: dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./nuget
-      - name: Deploy Mgh     
-        run: dotnet nuget push /home/runner/work/Mgh.Swagger/nuget/*.nupkg  -k ${{secrets.API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: deploy package To nuget     
+        run: dotnet nuget push /home/runner/work/Mgh.Swagger/nuget/*.nupkg  -k ${env.Nuget_Token} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
 
