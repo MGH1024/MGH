@@ -21,11 +21,11 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       - name: Build
-        run: dotnet build Mgh.Swagger/Mgh.Swagger.csproj
+        run: dotnet build ./Mgh.Swagger/Mgh.Swagger.csproj
       - name: Pack
-        run: dotnet pack Mgh.Swagger/Mgh.Swagger.csproj -c Release -o ./nuget
+        run: dotnet pack ./Mgh.Swagger/Mgh.Swagger.csproj -c Release -o ./nuget
       - name: Publish 
-        run: dotnet nuget push./nuget/Mgh.Swagger*.nupkg  -k ${{secrets.Mgh_Swagger}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget ./push./nuget/Mgh.Swagger*.nupkg  -k ${{secrets.Mgh_Swagger}} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
 
