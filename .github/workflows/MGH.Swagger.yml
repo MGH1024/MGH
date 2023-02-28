@@ -24,6 +24,8 @@ jobs:
         run: dotnet build MGH.Swagger/MGH.Swagger.csproj
       - name: Pack
         run: dotnet pack MGH.Swagger/MGH.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
+      - name: ls 
+        run: ls -lah ./nugetPackages/
       - name: Publish 
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
