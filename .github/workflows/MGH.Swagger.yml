@@ -25,7 +25,7 @@ jobs:
       - name: Pack
         run: dotnet pack MGH.Swagger/MGH.Swagger.csproj -c Release -o ./nuget
       - name: Publish 
-        run: dotnet nuget ./nuget/Mgh.Swagger*.nupkg  -k ${{secrets.Mgh_Swagger}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget nuget/Mgh.Swagger*.nupkg  -k ${{secrets.Mgh_Swagger}} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
 
