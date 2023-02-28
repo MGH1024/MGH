@@ -25,7 +25,7 @@ jobs:
       - name: ls
         run: ls  ./nuget 
       - name: deploy package To nuget
-        run: dotnet nuget push /home/runner/work/MGH/MGH/nuget/Mgh.Swagger*.nupkg  -k ${{secrets.Mgh_Swagger}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push ./nuget/Mgh.Swagger*.nupkg  -k ${{secrets.Mgh_Swagger}} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
 
