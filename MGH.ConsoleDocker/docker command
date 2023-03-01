@@ -1,0 +1,6 @@
+﻿docker build --tag console-image .
+docker create --name ConsoleContainer  console-image
+docker ps -a
+docker start ConsoleContainer
+docker attach --sig-proxy=false ConsoleContainer
+docker image push console-image:latest
