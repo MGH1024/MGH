@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Swagger", "MGH.Swagger\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.ConsoleDocker", "MGH.ConsoleDocker\MGH.ConsoleDocker.csproj", "{ED63E7F6-841D-4C99-A311-4ED06A9CBB79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.ApiDocker", "MGH.ApiDocker\MGH.ApiDocker.csproj", "{482E84B3-3C75-4327-817C-C169FCDF6697}"
+EndProject
 
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,10 @@ Global
 		{ED63E7F6-841D-4C99-A311-4ED06A9CBB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED63E7F6-841D-4C99-A311-4ED06A9CBB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED63E7F6-841D-4C99-A311-4ED06A9CBB79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{482E84B3-3C75-4327-817C-C169FCDF6697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{482E84B3-3C75-4327-817C-C169FCDF6697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{482E84B3-3C75-4327-817C-C169FCDF6697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{482E84B3-3C75-4327-817C-C169FCDF6697}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
