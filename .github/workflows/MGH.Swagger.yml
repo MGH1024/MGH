@@ -22,49 +22,16 @@ jobs:
         run: dotnet pack MGH.Swagger/MGH.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish 
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+        
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      - name: Build
+        run: dotnet build MGH.DevExtreme/MGH.DevExtreme.csproj
+      - name: Pack
+        run: dotnet pack MGH.DevExtreme/MGH.DevExtreme.csproj --configuration Release --no-restore --output ./nugetPackages
+      - name: Publish 
+        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
-
-#jobs:
-#  deploy:
-#    runs-on: windows-latest
-#    steps:
-#
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-dotnet@v3
-#        with:
-#          node-version: 16.0.2
-#      - run: npm ci
-#      - run: npm test
-#      - name: Initialize .Net
-#        uses: actions/setup-dotnet@v1
-#        with:
-#          dotnet-version: 6.0.x
-#
-#      - name: Restore Project
-#        run: dotnet restore ${{ env.PROJECT_PATH }}
-#
-#      - name: Publish Project
-#        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x86 --no-restore
-#
-#      - name: Create Zip File
-#        uses: papeloto/action-zip@v1
-#        with:
-#          files: ${{ env.EXE_PATH }}
-#          dest: ${{ env.ZIP_PATH }}
-#
-#      - name: Initialize Release
-#        uses: actions/create-release@v1
-#        id: create_release
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: ${{ github.ref }}
-#
-#      - name: Create Release    
-#        uses: csexton/release-asset-action@v2
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          file: ${{ env.ZIP_PATH }}
-#          release-url: ${{ steps.create_release.outputs.upload_url }}
