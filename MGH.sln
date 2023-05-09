@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.ApiDocker", "MGH.ApiDoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.DevExtreme", "MGH.DevExtreme\MGH.DevExtreme.csproj", "{DCB722D2-3A90-415A-A5C0-AC2B71806AF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Identity", "MGH.Identity\MGH.Identity.csproj", "{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}"
+EndProject
 
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{DCB722D2-3A90-415A-A5C0-AC2B71806AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCB722D2-3A90-415A-A5C0-AC2B71806AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCB722D2-3A90-415A-A5C0-AC2B71806AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
