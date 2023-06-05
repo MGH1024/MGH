@@ -5,11 +5,11 @@ using MGH.Exceptions.Models;
 
 namespace MGH.Exceptions;
 
-public class ValidationException : GeneralException
+public class CustomValidationException : GeneralException
 {
     public const int ExceptionCode = 1;
     
-    public ValidationException(string message, IList<ValidationResult> validationErrors) : base(message, "",
+    public CustomValidationException(string message, IList<ValidationResult> validationErrors) : base(message, "",
         HttpStatusCode.BadRequest)
     {
         Level = LogLevel.Warning;
@@ -18,7 +18,7 @@ public class ValidationException : GeneralException
     }
 
    
-    public ValidationException(string message, Exception innerException = null) : base(message, "",
+    public CustomValidationException(string message, Exception innerException = null) : base(message, "",
         innerException, HttpStatusCode.BadRequest)
     {
         ValidationErrors =  new List<ValidationResult>(){new(message)};
@@ -26,7 +26,7 @@ public class ValidationException : GeneralException
         Level = LogLevel.Warning;
     }
 
-    public ValidationException(string message,IEnumerable<ValidationError> validationErrors,
+    public CustomValidationException(string message,IEnumerable<ValidationError> validationErrors,
         Exception innerException=null):base(message,"",innerException,HttpStatusCode.BadRequest)
     {
         ValidationErrors =  new List<ValidationResult>(){new(message)};
