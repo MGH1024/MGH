@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Copyright>MGH</Copyright>
+        <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/MGH.Extension</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
+        <PackageTags>microservice, netcore</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    </ItemGroup>
+
+</Project>
