@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MGH.Extension;
+namespace MGH.Exceptions;
 
 /// <summary>
 ///     Indicates the situation in which a request is rejected because the callee believes that the request is already

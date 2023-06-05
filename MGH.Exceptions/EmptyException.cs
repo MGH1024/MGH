@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace MGH.Extension;
+namespace MGH.Exceptions;
 
 public class EmptyException : Exception
 {

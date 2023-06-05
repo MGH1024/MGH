@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Microsoft.Extensions.Logging;
 
-namespace MGH.Extension;
+namespace MGH.Exceptions;
 
 public class GeneralException : Exception
 {

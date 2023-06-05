@@ -1,10 +1,10 @@
 ﻿using System.Net;
 
-namespace MGH.Extension;
+namespace MGH.Exceptions;
 
 /// <summary>
 ///     Authorization Exception
-///     TODO: Describe 401 and 403 usages (exception is used for both situations)
+///     TODO: Describe 401 and 403 usages (exception is used for both situatations)
 /// </summary>
 public class AuthorizationException : GeneralException
 {

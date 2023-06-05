@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MGH.Extension;
+namespace MGH.Exceptions;
 
 public class InvalidOperationException : GeneralException
 {

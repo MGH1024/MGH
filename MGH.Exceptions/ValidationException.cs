@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.Extensions.Logging;
 
-namespace MGH.Extension;
+namespace MGH.Exceptions;
 
 /// <summary>
 ///     Represents a exception that occurs during validation of input data of methods.

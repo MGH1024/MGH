@@ -1,4 +1,4 @@
-﻿namespace MGH.Extension;
+﻿namespace MGH.Exceptions;
 
 public class EntityNotFoundException : GeneralException
 {
