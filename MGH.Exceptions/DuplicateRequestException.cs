@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using MGH.Exceptions.Base;
 
 namespace MGH.Exceptions;
 
@@ -9,21 +10,13 @@ namespace MGH.Exceptions;
 /// </summary>
 public class DuplicateRequestException : GeneralException
 {
-    public const int ExceptionCode = 3;
-
-    public DuplicateRequestException(object requestData, string message) : base(
-        message, HttpStatusCode.Conflict)
-    {
-        RequestData = requestData;
-        ErrorCode = ExceptionCode;
-    }
-
+    private const int ExceptionCode = 104;
+    public object RequestData { get; protected set; }
+    
     public DuplicateRequestException(object requestData, string message, string technicalMessage,
         Exception innerException) : base(message, technicalMessage, innerException, HttpStatusCode.Conflict,
         ExceptionCode)
     {
         RequestData = requestData;
     }
-
-    public object RequestData { get; protected set; }
 }

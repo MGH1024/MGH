@@ -1,30 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net;
+﻿using System.Net;
+using MGH.Exceptions.Base;
 using Microsoft.Extensions.Logging;
 
 namespace MGH.Exceptions;
 
-
 public class BadRequestException : GeneralException
 {
-    public const int ExceptionCode = 120;
-
+    private const int ExceptionCode = 101;
     
-    public BadRequestException(string message) : base(message, HttpStatusCode.BadRequest)
+    public BadRequestException(string message) : base(message,ExceptionCode, HttpStatusCode.BadRequest)
     {
-        ErrorCode = ExceptionCode;
         Level = LogLevel.Warning;
     }
 
-   
-    public BadRequestException(string message, Exception innerException = null) : base(message, "",
-        innerException, HttpStatusCode.BadRequest)
+    public BadRequestException(string message,string technicalMessage, Exception innerException = null) :
+        base(message, technicalMessage, innerException, HttpStatusCode.BadRequest,ExceptionCode)
     {
-        ValidationErrors =  new List<ValidationResult>(){new(message)};
-        ErrorCode = ExceptionCode;
         Level = LogLevel.Warning;
     }
-
-   
-    public IList<ValidationResult> ValidationErrors { get; protected set; }
 }

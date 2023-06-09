@@ -1,13 +1,15 @@
 ﻿using System.Net;
+using MGH.Exceptions.Base;
 
 namespace MGH.Exceptions;
 
 public class InvalidOperationException : GeneralException
 {
-    public const int ExceptionCode = 5;
+    private const int ExceptionCode = 107;
+    public string Operation { get; }
 
     public InvalidOperationException(string message, string operation = "") :
-        base(message,HttpStatusCode.BadRequest)
+        base(message,ExceptionCode,HttpStatusCode.BadRequest)
     {
         Operation = operation;
         ErrorCode = ExceptionCode;
@@ -18,6 +20,4 @@ public class InvalidOperationException : GeneralException
     {
         Operation = operation;
     }
-
-    public string Operation { get; }
 }

@@ -1,8 +1,10 @@
-﻿namespace MGH.Exceptions;
+﻿using MGH.Exceptions.Base;
+
+namespace MGH.Exceptions;
 
 public class EntityNotFoundException : GeneralException
 {
-    public const int ExceptionCode = 2;
+    private const int ExceptionCode = 106;
 
     public EntityNotFoundException(Type entityType, object id) : this(entityType, id, null, null)
     {

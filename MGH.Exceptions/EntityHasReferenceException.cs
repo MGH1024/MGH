@@ -1,9 +1,12 @@
-﻿namespace MGH.Exceptions;
+﻿using MGH.Exceptions.Base;
+
+namespace MGH.Exceptions;
 
 public class EntityHasReferenceException : GeneralException
 {
-    public const int ExceptionCode = 101;
-
+    private const int ExceptionCode = 105;
+    public Type EntityType { get; set; }
+    
     public EntityHasReferenceException() : this(entityType: null, innerException: null)
     {
         ErrorCode = ExceptionCode;
@@ -22,6 +25,4 @@ public class EntityHasReferenceException : GeneralException
         EntityType = entityType;
         ErrorCode = ExceptionCode;
     }
-
-    public Type EntityType { get; set; }
 }

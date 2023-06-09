@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using MGH.Exceptions.Base;
 
 namespace MGH.Exceptions;
 
@@ -8,16 +9,14 @@ namespace MGH.Exceptions;
 /// </summary>
 public class AuthorizationException : GeneralException
 {
-    public const int ExceptionCode = 6;
+    private const int ExceptionCode = 100;
 
-    public AuthorizationException(string message) : base(message,
-        HttpStatusCode.Unauthorized, ExceptionCode)
+    public AuthorizationException(string message) : base(message,ExceptionCode, HttpStatusCode.Unauthorized)
     {
-        
     }
 
-    public AuthorizationException(string message, string technicalMessage, Exception innerException) : base(
-        message, technicalMessage, innerException,HttpStatusCode.Unauthorized, ExceptionCode)
+    public AuthorizationException(string message, string technicalMessage, Exception innerException) : 
+        base(message, technicalMessage, innerException,HttpStatusCode.Unauthorized, ExceptionCode)
     {
     }
 }

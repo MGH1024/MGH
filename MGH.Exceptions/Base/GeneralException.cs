@@ -1,8 +1,7 @@
 ﻿using System.Net;
-using MGH.Exceptions.Models;
 using Microsoft.Extensions.Logging;
 
-namespace MGH.Exceptions;
+namespace MGH.Exceptions.Base;
 
 public class GeneralException : Exception
 {
@@ -28,12 +27,8 @@ public class GeneralException : Exception
     /// </summary>
     public LogLevel Level { get; protected set; }
 
-    public IEnumerable<ValidationError> Errors { get; }
-    //public string CustomMessage { get; }
 
-    public GeneralException(string message,
-        HttpStatusCode statusCode = HttpStatusCode.InternalServerError,
-        int? errorCode = null)
+    protected GeneralException(string message,int errorCode,HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         : base(message)
     {
         ErrorCode = errorCode;
@@ -42,7 +37,7 @@ public class GeneralException : Exception
         StatusCode = statusCode;
     }
 
-    public GeneralException(string message, string technicalMessage, Exception innerException,
+    protected GeneralException(string message, string technicalMessage, Exception innerException,
         HttpStatusCode statusCode = HttpStatusCode.InternalServerError,
         int? errorCode = null)
         : base(message, innerException)
@@ -51,19 +46,6 @@ public class GeneralException : Exception
         StatusCode = statusCode;
         TechnicalMessage = technicalMessage;
         Level = LogLevel.Error;
-    }
-    
-    
-    public GeneralException(string message,IEnumerable<ValidationError> validationErrors, string technicalMessage, Exception innerException,
-        HttpStatusCode statusCode = HttpStatusCode.InternalServerError,
-        int? errorCode = null)
-        : base(message, innerException)
-    {
-        ErrorCode = errorCode;
-        StatusCode = statusCode;
-        TechnicalMessage = technicalMessage;
-        Level = LogLevel.Error;
-        Errors = validationErrors;
     }
 
 
@@ -78,7 +60,7 @@ public class GeneralException : Exception
         {
             if (InnerException != null)
             {
-                var index = baseMessage.IndexOf("--->");
+                var index = baseMessage.IndexOf("--->", StringComparison.Ordinal);
                 if (index >= 0)
                     baseMessage = baseMessage.Insert(index, $"TechnicalMessage: {TechnicalMessage}");
             }
