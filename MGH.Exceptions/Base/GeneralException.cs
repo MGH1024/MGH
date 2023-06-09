@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using MGH.Exceptions.Models;
 using Microsoft.Extensions.Logging;
 
 namespace MGH.Exceptions.Base;
@@ -26,7 +27,7 @@ public class GeneralException : Exception
     ///     Default: Error.
     /// </summary>
     public LogLevel Level { get; protected set; }
-
+    public IEnumerable<ValidationError> ValidationErrors { get; }
 
     protected GeneralException(string message,int errorCode,HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         : base(message)
@@ -46,6 +47,18 @@ public class GeneralException : Exception
         StatusCode = statusCode;
         TechnicalMessage = technicalMessage;
         Level = LogLevel.Error;
+    }
+    
+    protected GeneralException(string message,IEnumerable<ValidationError> validationErrors, string technicalMessage, Exception innerException,
+        HttpStatusCode statusCode = HttpStatusCode.InternalServerError,
+        int? errorCode = null)
+        : base(message, innerException)
+    {
+        ErrorCode = errorCode;
+        StatusCode = statusCode;
+        TechnicalMessage = technicalMessage;
+        Level = LogLevel.Error;
+        ValidationErrors = validationErrors;
     }
 
 
