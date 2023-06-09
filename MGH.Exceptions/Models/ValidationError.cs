@@ -1,6 +1,6 @@
 ﻿namespace MGH.Exceptions.Models;
 
-public abstract class ValidationError
+public class ValidationError
 {
     public ValidationError(string propName, string message)
     {
