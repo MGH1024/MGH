@@ -11,10 +11,11 @@ public class DuplicateRequestException : GeneralException
 {
     public const int ExceptionCode = 3;
 
-    public DuplicateRequestException(object requestData, string message, string technicalMessage = "") : base(
-        message, technicalMessage, HttpStatusCode.Conflict, ExceptionCode)
+    public DuplicateRequestException(object requestData, string message) : base(
+        message, HttpStatusCode.Conflict)
     {
         RequestData = requestData;
+        ErrorCode = ExceptionCode;
     }
 
     public DuplicateRequestException(object requestData, string message, string technicalMessage,

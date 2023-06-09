@@ -6,10 +6,11 @@ public class InvalidOperationException : GeneralException
 {
     public const int ExceptionCode = 5;
 
-    public InvalidOperationException(string message, string technicalMessage = "", string operation = "") :
-        base(message, technicalMessage,HttpStatusCode.BadRequest, ExceptionCode)
+    public InvalidOperationException(string message, string operation = "") :
+        base(message,HttpStatusCode.BadRequest)
     {
         Operation = operation;
+        ErrorCode = ExceptionCode;
     }
 
     public InvalidOperationException(string message, string technicalMessage, string operation,

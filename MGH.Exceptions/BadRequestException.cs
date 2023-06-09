@@ -10,8 +10,7 @@ public class BadRequestException : GeneralException
     public const int ExceptionCode = 120;
 
     
-    public BadRequestException(string message) : base(message, "",
-        HttpStatusCode.BadRequest)
+    public BadRequestException(string message) : base(message, HttpStatusCode.BadRequest)
     {
         ErrorCode = ExceptionCode;
         Level = LogLevel.Warning;
