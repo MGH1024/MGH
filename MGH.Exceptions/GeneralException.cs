@@ -5,27 +5,6 @@ namespace MGH.Exceptions;
 
 public class GeneralException : Exception
 {
-    public GeneralException(string message, string technicalMessage = "",
-        HttpStatusCode statusCode = HttpStatusCode.InternalServerError, int? errorCode = null)
-        : base(message)
-    {
-        ErrorCode = errorCode;
-        TechnicalMessage = technicalMessage;
-        StatusCode = statusCode;
-        Level = LogLevel.Error;
-    }
-
-    public GeneralException(string message, string technicalMessage, Exception innerException,
-        HttpStatusCode statusCode = HttpStatusCode.InternalServerError,
-        int? errorCode = null)
-        : base(message, innerException)
-    {
-        ErrorCode = errorCode;
-        StatusCode = statusCode;
-        TechnicalMessage = technicalMessage;
-        Level = LogLevel.Error;
-    }
-
     /// <summary>
     ///     An arbitrary error code.
     /// </summary>
@@ -47,6 +26,29 @@ public class GeneralException : Exception
     ///     Default: Error.
     /// </summary>
     public LogLevel Level { get; protected set; }
+    
+    public GeneralException(string message, string technicalMessage = "",
+        HttpStatusCode statusCode = HttpStatusCode.InternalServerError, int? errorCode = null)
+        : base(message)
+    {
+        ErrorCode = errorCode;
+        TechnicalMessage = technicalMessage;
+        StatusCode = statusCode;
+        Level = LogLevel.Error;
+    }
+
+    public GeneralException(string message, string technicalMessage, Exception innerException,
+        HttpStatusCode statusCode = HttpStatusCode.InternalServerError,
+        int? errorCode = null)
+        : base(message, innerException)
+    {
+        ErrorCode = errorCode;
+        StatusCode = statusCode;
+        TechnicalMessage = technicalMessage;
+        Level = LogLevel.Error;
+    }
+
+    
 
     public override string ToString()
     {
