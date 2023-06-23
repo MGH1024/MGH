@@ -9,12 +9,21 @@ public class DuplicateException : GeneralException
     private const int ExceptionCode = 103;
     public Type EntityType { get; set; }
 
-    public DuplicateException(string message) : base(message,ExceptionCode, HttpStatusCode.BadRequest)
+    public DuplicateException(string message) : base(message, ExceptionCode, HttpStatusCode.BadRequest)
     {
         Level = LogLevel.Warning;
     }
 
-    public DuplicateException(string field,Type entityType, Exception innerException) : base(
+    public DuplicateException(string field, Type entityType) : base(
+        $"{field} is duplicate in Entity type: {entityType.FullName} ",
+        ExceptionCode,
+        HttpStatusCode.BadRequest)
+    {
+        EntityType = entityType;
+        ErrorCode = ExceptionCode;
+    }
+
+    public DuplicateException(string field, Type entityType, Exception innerException) : base(
         $"{field} is duplicate!",
         $"Entity type: {entityType.FullName}",
         innerException,
@@ -24,6 +33,4 @@ public class DuplicateException : GeneralException
         EntityType = entityType;
         ErrorCode = ExceptionCode;
     }
-
-    
 }
