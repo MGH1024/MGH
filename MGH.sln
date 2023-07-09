@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Identity", "MGH.Identit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Exceptions", "MGH.Exceptions\MGH.Exceptions.csproj", "{1C4B4E66-ACC5-4ED0-B5D7-DFDD2D78FC22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.EntityFramework", "MGH.EntityFramework\MGH.EntityFramework.csproj", "{87912E33-179F-472E-877D-E837F79C791C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Domain", "MGH.Domain\MGH.Domain.csproj", "{69BD5D73-240C-434B-ADA4-4B13874682C2}"
+EndProject
 
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +50,14 @@ Global
 		{1C4B4E66-ACC5-4ED0-B5D7-DFDD2D78FC22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C4B4E66-ACC5-4ED0-B5D7-DFDD2D78FC22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C4B4E66-ACC5-4ED0-B5D7-DFDD2D78FC22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87912E33-179F-472E-877D-E837F79C791C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87912E33-179F-472E-877D-E837F79C791C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87912E33-179F-472E-877D-E837F79C791C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87912E33-179F-472E-877D-E837F79C791C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69BD5D73-240C-434B-ADA4-4B13874682C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69BD5D73-240C-434B-ADA4-4B13874682C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69BD5D73-240C-434B-ADA4-4B13874682C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69BD5D73-240C-434B-ADA4-4B13874682C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
