@@ -16,8 +16,10 @@ var sqlConnection = builder
 
 builder.Services
     .AddDbContext<AppDbContext>(options => options
-        .UseSqlServer(sqlConnection,
-            a => a.MigrationsAssembly("MGH.EF.API")));
+        .UseSqlServer(sqlConnection
+          ,
+            a => a.MigrationsAssembly("MGH.EF.API")
+            ));
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
