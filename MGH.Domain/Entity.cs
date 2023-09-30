@@ -1,18 +1,17 @@
 ﻿namespace MGH.Domain;
 
-public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey>, IOrderAble
+public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey>
 {
     protected Entity()
     {
         CreatedDate = DateTime.Now;
     }
 
-    public TPrimaryKey Id { get; protected set; } = default;
-    public DateTime CreatedDate { get; protected set; }
-    public string CreatedBy { get; protected set; }
-    public DateTime? UpdatedDate { get; protected set; }
-    public string UpdatedBy { get; protected set; }
-    public DateTime? DeletedDate { get; protected set; }
-    public string DeletedBy { get; protected set; }
-    public int Order { get; private set; }
+    public TPrimaryKey Id { get; } = default;
+    public DateTime CreatedDate { get;  }
+    public string CreatedBy { get;  }
+    public DateTime? UpdatedDate { get;  }
+    public string UpdatedBy { get; }
+    public DateTime? DeletedDate { get;  }
+    public string DeletedBy { get;  }
 }

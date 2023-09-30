@@ -1,4 +1,4 @@
-﻿namespace MGH.Domain.DatabaseConfig;
+﻿namespace MGH.EF.Persistence.Configurations.Base;
 
 public static class DatabaseSchema
 {
