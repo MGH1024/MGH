@@ -29,21 +29,22 @@ public class CommentConfig : IEntityTypeConfiguration<Comment>
         
         //public
         builder.Property(t => t.CreatedBy)
+            .IsRequired()
             .HasMaxLength(maxLength: 64);
         
-        builder.Property(t => t.CreatedDate)
+        builder.Property(t => t.CreatedAt)
             .IsRequired();
         
         builder.Property(t => t.UpdatedBy)
             .HasMaxLength(maxLength: 64);
         
-        builder.Property(t => t.UpdatedDate)
+        builder.Property(t => t.UpdatedAt)
             .IsRequired(false);
         
         builder.Property(t => t.DeletedBy)
             .HasMaxLength(maxLength: 64);
         
-        builder.Property(t => t.DeletedDate)
+        builder.Property(t => t.DeletedAt)
             .IsRequired(false);
     }
 }

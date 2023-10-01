@@ -7,15 +7,15 @@ public interface IEntity<out TPrimaryKey> : IEntity
 
 public interface IEntity
 {
-    DateTime CreatedDate { get; }
+    DateTime CreatedAt { get; }
 
     string CreatedBy { get; }
 
-    DateTime? UpdatedDate { get; }
+    DateTime? UpdatedAt { get; }
 
     string UpdatedBy { get; }
 
-    DateTime? DeletedDate { get; }
+    DateTime? DeletedAt { get; }
 
     string DeletedBy { get; }
 }

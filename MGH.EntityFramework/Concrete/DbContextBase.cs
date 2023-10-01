@@ -45,7 +45,7 @@ public abstract class DbContextBase : DbContext
 
         foreach (var entity in entities)
         {
-            var modifiedProperty = entity.Entity.GetType().GetProperty(nameof(IEntity<object>.UpdatedDate));
+            var modifiedProperty = entity.Entity.GetType().GetProperty(nameof(IEntity<object>.UpdatedAt));
             modifiedProperty?.SetValue(entity.Entity, DateTime.Now);
         }
     }

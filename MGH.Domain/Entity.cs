@@ -4,14 +4,14 @@ public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey>
 {
     protected Entity()
     {
-        CreatedDate = DateTime.Now;
+        CreatedAt = DateTime.Now;
     }
 
     public TPrimaryKey Id { get; } = default;
-    public DateTime CreatedDate { get;  }
+    public DateTime CreatedAt { get;  }
     public string CreatedBy { get;  }
-    public DateTime? UpdatedDate { get;  }
+    public DateTime? UpdatedAt { get;  }
     public string UpdatedBy { get; }
-    public DateTime? DeletedDate { get;  }
+    public DateTime? DeletedAt { get;  }
     public string DeletedBy { get;  }
 }
