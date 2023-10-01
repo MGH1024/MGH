@@ -4,6 +4,7 @@ using MGH.EF.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MGH.EF.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231001174109_ownOne")]
+    partial class ownOne
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,12 +197,10 @@ namespace MGH.EF.API.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<string>("CityTitle")
-                                .HasMaxLength(128)
-                                .HasColumnType("nvarchar(128)");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("StateTitle")
-                                .HasMaxLength(128)
-                                .HasColumnType("nvarchar(128)");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("PostId");
 

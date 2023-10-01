@@ -3,6 +3,6 @@
 public static class DatabaseTableName
 {
     public const string Post = "Posts";
-    public const string Order = "Orders";
+    public const string Tag = "Tags";
     public const string Comment = "Comments";
 }

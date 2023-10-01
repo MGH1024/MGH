@@ -18,5 +18,10 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostConfig).Assembly);
         base.OnModelCreating(modelBuilder);
     }
-    
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<string>().HaveMaxLength(128);
+        base.ConfigureConventions(configurationBuilder);
+    }
 }

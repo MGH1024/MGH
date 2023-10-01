@@ -30,6 +30,18 @@ public class PostConfig : IEntityTypeConfiguration<Post>
             .WithOne(a => a.Post)
             .HasForeignKey(a => a.PostId)
             .HasPrincipalKey(a => a.Id);
+        
+        builder
+            .HasMany(e => e.Tags)
+            .WithMany(e => e.Posts)
+            .UsingEntity(
+                "PostTag",
+                l => l.HasOne(typeof(Tag)).WithMany().HasForeignKey("TagsId").HasPrincipalKey(nameof(Tag.Id)),
+                r => r.HasOne(typeof(Post)).WithMany().HasForeignKey("PostsId").HasPrincipalKey(nameof(Post.Id)),
+                j => j.HasKey("PostsId", "TagsId"));
+
+        builder.OwnsOne(a => a.Address);
+        
 
         //public
         builder.Ignore(a => a.Row);

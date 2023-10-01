@@ -4,6 +4,7 @@ using MGH.EF.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MGH.EF.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231001172747_manytomany")]
+    partial class manytomany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,32 +187,6 @@ namespace MGH.EF.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("MGH.Domain.Entities.Post", b =>
-                {
-                    b.OwnsOne("MGH.Domain.Entities.Address", "Address", b1 =>
-                        {
-                            b1.Property<int>("PostId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("CityTitle")
-                                .HasMaxLength(128)
-                                .HasColumnType("nvarchar(128)");
-
-                            b1.Property<string>("StateTitle")
-                                .HasMaxLength(128)
-                                .HasColumnType("nvarchar(128)");
-
-                            b1.HasKey("PostId");
-
-                            b1.ToTable("Posts", "dbo");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PostId");
-                        });
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("PostTag", b =>
