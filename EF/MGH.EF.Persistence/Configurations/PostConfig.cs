@@ -1,4 +1,5 @@
 ﻿using MGH.Domain.Entities;
+using MGH.Domain.Entities.EF;
 using MGH.EF.Persistence.Configurations.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -39,9 +40,6 @@ public class PostConfig : IEntityTypeConfiguration<Post>
                 l => l.HasOne(typeof(Tag)).WithMany().HasForeignKey("TagsId").HasPrincipalKey(nameof(Tag.Id)),
                 r => r.HasOne(typeof(Post)).WithMany().HasForeignKey("PostsId").HasPrincipalKey(nameof(Post.Id)),
                 j => j.HasKey("PostsId", "TagsId"));
-
-        builder.OwnsOne(a => a.Address);
-        
 
         //public
         builder.Ignore(a => a.Row);

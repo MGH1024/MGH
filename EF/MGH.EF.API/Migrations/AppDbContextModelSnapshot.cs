@@ -25,7 +25,7 @@ namespace MGH.EF.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MGH.Domain.Entities.Comment", b =>
+            modelBuilder.Entity("MGH.Domain.Entities.EF.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,19 +33,20 @@ namespace MGH.EF.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -60,12 +61,12 @@ namespace MGH.EF.API.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -74,7 +75,7 @@ namespace MGH.EF.API.Migrations
                     b.ToTable("Comments", "dbo");
                 });
 
-            modelBuilder.Entity("MGH.Domain.Entities.Post", b =>
+            modelBuilder.Entity("MGH.Domain.Entities.EF.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,23 +83,24 @@ namespace MGH.EF.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)")
                         .HasDefaultValue("user");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Text")
                         .HasMaxLength(512)
@@ -109,19 +111,19 @@ namespace MGH.EF.API.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Posts", "dbo");
                 });
 
-            modelBuilder.Entity("MGH.Domain.Entities.Tag", b =>
+            modelBuilder.Entity("MGH.Domain.Entities.EF.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,31 +131,32 @@ namespace MGH.EF.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -175,9 +178,9 @@ namespace MGH.EF.API.Migrations
                     b.ToTable("PostTag", "dbo");
                 });
 
-            modelBuilder.Entity("MGH.Domain.Entities.Comment", b =>
+            modelBuilder.Entity("MGH.Domain.Entities.EF.Comment", b =>
                 {
-                    b.HasOne("MGH.Domain.Entities.Post", "Post")
+                    b.HasOne("MGH.Domain.Entities.EF.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -186,48 +189,22 @@ namespace MGH.EF.API.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("MGH.Domain.Entities.Post", b =>
-                {
-                    b.OwnsOne("MGH.Domain.Entities.Address", "Address", b1 =>
-                        {
-                            b1.Property<int>("PostId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("CityTitle")
-                                .HasMaxLength(128)
-                                .HasColumnType("nvarchar(128)");
-
-                            b1.Property<string>("StateTitle")
-                                .HasMaxLength(128)
-                                .HasColumnType("nvarchar(128)");
-
-                            b1.HasKey("PostId");
-
-                            b1.ToTable("Posts", "dbo");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PostId");
-                        });
-
-                    b.Navigation("Address");
-                });
-
             modelBuilder.Entity("PostTag", b =>
                 {
-                    b.HasOne("MGH.Domain.Entities.Post", null)
+                    b.HasOne("MGH.Domain.Entities.EF.Post", null)
                         .WithMany()
                         .HasForeignKey("PostsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MGH.Domain.Entities.Tag", null)
+                    b.HasOne("MGH.Domain.Entities.EF.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MGH.Domain.Entities.Post", b =>
+            modelBuilder.Entity("MGH.Domain.Entities.EF.Post", b =>
                 {
                     b.Navigation("Comments");
                 });

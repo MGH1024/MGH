@@ -1,4 +1,4 @@
-﻿namespace MGH.Domain.Entities;
+﻿namespace MGH.Domain.Entities.EF;
 
 public class Comment : Entity<int>
 {
