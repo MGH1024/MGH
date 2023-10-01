@@ -15,11 +15,11 @@ var sqlConnection = builder
     .SqlConnection;
 
 builder.Services
-    .AddDbContext<AppDbContext>(options => options
-        .UseSqlServer(sqlConnection
-          ,
-            a => a.MigrationsAssembly("MGH.EF.API")
-            ));
+    .AddDbContextPool<AppDbContext>(options => options
+        .UseSqlServer(sqlConnection, a
+            => a.MigrationsAssembly("MGH.EF.API"))
+        .UseLazyLoadingProxies()
+        .LogTo(Console.WriteLine, LogLevel.Information));
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

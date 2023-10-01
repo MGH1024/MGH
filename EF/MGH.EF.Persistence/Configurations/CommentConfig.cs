@@ -5,24 +5,26 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MGH.EF.Persistence.Configurations;
 
-public class CarConfig : IEntityTypeConfiguration<Car>
+public class CommentConfig : IEntityTypeConfiguration<Comment>
 {
-    public void Configure(EntityTypeBuilder<Car> builder)
+    public void Configure(EntityTypeBuilder<Comment> builder)
     {
         //table
-        builder.ToTable(DatabaseTableName.Car, DatabaseSchema.GeneralSchema);
+        builder.ToTable(DatabaseTableName.Comment, DatabaseSchema.GeneralSchema);
 
 
         //fields
-        builder.HasKey(a => new { a.Id, a.Name });
+        builder.Property(a => a.Id)
+            .IsRequired()
+            .ValueGeneratedOnAdd();
 
         builder.Property(t => t.Name)
             .HasMaxLength(maxLength: 64)
             .IsRequired();
 
-        builder.Property(t => t.ModelYear)
-            .IsRequired()
-            .HasMaxLength(maxLength: 4);
+        builder.Property(t => t.Text)
+            .HasMaxLength(maxLength: 512)
+            .IsRequired();
         
         
         //public

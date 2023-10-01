@@ -2,7 +2,7 @@
 
 public static class DatabaseTableName
 {
-    public const string Customer = "Customers";
+    public const string Post = "Posts";
     public const string Order = "Orders";
-    public const string Car = "Cars";
+    public const string Comment = "Comments";
 }
