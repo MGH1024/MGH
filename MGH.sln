@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EF", "EF", "{9D0197BC-A138-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.EF.API", "EF\MGH.EF.API\MGH.EF.API.csproj", "{496AD370-B08E-4B46-9ECE-38BEFC178638}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B779ED57-197D-44E7-9ECB-1334A7818BFD}"
+EndProject
 
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
