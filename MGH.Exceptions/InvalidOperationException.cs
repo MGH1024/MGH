@@ -5,7 +5,7 @@ namespace MGH.Exceptions;
 
 public class InvalidOperationException : GeneralException
 {
-    private const int ExceptionCode = 107;
+    private const int ExceptionCode = 106;
     public string Operation { get; }
 
     public InvalidOperationException(string message, string operation = "") :

@@ -23,6 +23,7 @@ public class TagConfig : IEntityTypeConfiguration<Tag>
             .HasMaxLength(maxLength: 64)
             .IsRequired();
 
+        
         //public
         builder.Property(t => t.CreatedBy)
             .IsRequired()

@@ -9,7 +9,7 @@ public class DuplicateException : GeneralException
     private const int ExceptionCode = 103;
     public Type EntityType { get; set; }
 
-    public DuplicateException(string message) : base(message, ExceptionCode, HttpStatusCode.BadRequest)
+    public DuplicateException(string message) : base(message, ExceptionCode, HttpStatusCode.Conflict)
     {
         Level = LogLevel.Warning;
     }
@@ -17,7 +17,7 @@ public class DuplicateException : GeneralException
     public DuplicateException(string field, Type entityType) : base(
         $"{field} is duplicate in Entity type: {entityType.FullName} ",
         ExceptionCode,
-        HttpStatusCode.BadRequest)
+        HttpStatusCode.Conflict)
     {
         EntityType = entityType;
         ErrorCode = ExceptionCode;
@@ -27,7 +27,7 @@ public class DuplicateException : GeneralException
         $"{field} is duplicate!",
         $"Entity type: {entityType.FullName}",
         innerException,
-        HttpStatusCode.BadRequest,
+        HttpStatusCode.Conflict,
         ExceptionCode)
     {
         EntityType = entityType;

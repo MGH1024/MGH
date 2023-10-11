@@ -26,6 +26,11 @@ public class PostConfig : IEntityTypeConfiguration<Post>
         builder.Property(t => t.Text)
             .HasMaxLength(maxLength: 512);
 
+        
+        //constraint
+        builder.HasIndex(t => t.Title)
+            .IsUnique();
+        
         //navigations
         builder.HasMany(a => a.Comments)
             .WithOne(a => a.Post)

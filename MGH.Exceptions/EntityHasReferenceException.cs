@@ -4,7 +4,7 @@ namespace MGH.Exceptions;
 
 public class EntityHasReferenceException : GeneralException
 {
-    private const int ExceptionCode = 105;
+    private const int ExceptionCode = 104;
     public Type EntityType { get; set; }
     
     public EntityHasReferenceException() : this(entityType: null, innerException: null)
