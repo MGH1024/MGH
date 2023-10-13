@@ -1,11 +1,6 @@
-﻿namespace MGH.Domain;
+﻿namespace MGH.Domain.Abstracts;
 
-public interface IEntity<out TPrimaryKey> : IEntity
-{
-    TPrimaryKey Id { get; }
-}
-
-public interface IEntity
+public interface IAuditable
 {
     DateTime CreatedAt { get; }
 

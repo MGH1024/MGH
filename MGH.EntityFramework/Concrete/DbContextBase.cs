@@ -1,5 +1,6 @@
 ﻿using MGH.Domain;
 using System.Reflection;
+using MGH.Domain.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -41,11 +42,11 @@ public abstract class DbContextBase : DbContext
     private void AddTimestamps()
     {
         var entities = ChangeTracker.Entries()
-            .Where(x => x is { Entity: IEntity, State: EntityState.Modified });
+            .Where(x => x is { Entity: IAuditable, State: EntityState.Modified });
 
         foreach (var entity in entities)
         {
-            var modifiedProperty = entity.Entity.GetType().GetProperty(nameof(IEntity<object>.UpdatedAt));
+            var modifiedProperty = entity.Entity.GetType().GetProperty(nameof(IAuditable.UpdatedAt));
             modifiedProperty?.SetValue(entity.Entity, DateTime.Now);
         }
     }

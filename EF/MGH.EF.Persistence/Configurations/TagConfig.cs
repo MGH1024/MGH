@@ -1,6 +1,5 @@
-﻿using MGH.Domain.Entities;
-using MGH.Domain.Entities.EF;
-using MGH.EF.Persistence.Configurations.Base;
+﻿using MGH.EF.Persistence.Configurations.Base;
+using MGH.EF.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

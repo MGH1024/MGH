@@ -1,6 +1,8 @@
-﻿namespace MGH.Domain.Entities.EF;
+﻿using MGH.Domain.Concretes;
 
-public class Tag :Entity<int>
+namespace MGH.EF.Persistence.Entities;
+
+public class Tag :AuditableEntity<int>
 {
     public string Title { get; set; }
     

@@ -1,6 +1,5 @@
-﻿using MGH.Domain.Entities;
-using MGH.Domain.Entities.EF;
-using MGH.EF.Persistence.Configurations;
+﻿using MGH.EF.Persistence.Configurations;
+using MGH.EF.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace MGH.EF.Persistence.Contexts;

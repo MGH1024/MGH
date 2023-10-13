@@ -1,4 +1,4 @@
-﻿namespace MGH.Domain;
+﻿namespace MGH.Domain.Abstracts;
 
 public interface IDropdownAble
 {

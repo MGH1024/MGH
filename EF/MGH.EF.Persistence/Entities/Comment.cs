@@ -1,6 +1,8 @@
-﻿namespace MGH.Domain.Entities.EF;
+﻿using MGH.Domain.Concretes;
 
-public class Comment : Entity<int>
+namespace MGH.EF.Persistence.Entities;
+
+public class Comment : AuditableEntity<int>
 {
     public string Name { get; set; }
     public string Text { get; set; }

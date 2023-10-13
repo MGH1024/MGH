@@ -1,6 +1,9 @@
-﻿namespace MGH.Domain.Entities.EF;
+﻿using MGH.Domain.Abstracts;
+using MGH.Domain.Concretes;
 
-public class Post : Entity<int>, IPageable, IDropdownAble
+namespace MGH.EF.Persistence.Entities;
+
+public class Post : AuditableEntity<int>, IPageable, IDropdownAble
 {
     public string Title { get; set; }
     public string Text { get; set; }
