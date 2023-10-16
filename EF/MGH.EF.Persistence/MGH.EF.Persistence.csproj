@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\MGH.Domain\MGH.Domain.csproj" />
+      <ProjectReference Include="..\..\Core.Domain\MGH.Domain\MGH.Domain.csproj" />
     </ItemGroup>
 
 </Project>

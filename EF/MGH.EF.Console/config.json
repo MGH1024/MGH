@@ -1,6 +1,0 @@
-{
-  "DbConnection": {
-    "SqlConnection": "Data Source=localhost,14333;Initial Catalog=dbMGH.EF.Review;User ID=sa; Password=Abcde@12345;Integrated Security=false;MultipleActiveResultSets=true",
-    "PostgresConnection": "User ID=postgres;Password=postgres;Host=localhost;Port=5432;Database=dbCleanArch;Pooling=true;"
-  }
-}
