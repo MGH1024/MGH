@@ -12,38 +12,38 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: Build
-        run: dotnet build MGH.Swagger/MGH.Swagger.csproj
-      - name: Pack
-        run: dotnet pack MGH.Swagger/MGH.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      # - uses: actions/checkout@v3
+      # - uses: actions/setup-dotnet@v3
+        # with:
+          # dotnet-version: '6.0.x'
+      # - name: Build
+        # run: dotnet build MGH.Swagger/MGH.Swagger.csproj
+      # - name: Pack
+        # run: dotnet pack MGH.Swagger/MGH.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
+      # - name: Publish
+        # run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: Build
-        run: dotnet build MGH.DevExtreme/MGH.DevExtreme.csproj
-      - name: Pack
-        run: dotnet pack MGH.DevExtreme/MGH.DevExtreme.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      # - uses: actions/checkout@v3
+      # - uses: actions/setup-dotnet@v3
+        # with:
+          # dotnet-version: '6.0.x'
+      # - name: Build
+        # run: dotnet build MGH.DevExtreme/MGH.DevExtreme.csproj
+      # - name: Pack
+        # run: dotnet pack MGH.DevExtreme/MGH.DevExtreme.csproj --configuration Release --no-restore --output ./nugetPackages
+      # - name: Publish
+        # run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: Build
-        run: dotnet build MGH.Exceptions/MGH.Exceptions.csproj
-      - name: Pack
-        run: dotnet pack MGH.Exceptions/MGH.Exceptions.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      # - uses: actions/checkout@v3
+      # - uses: actions/setup-dotnet@v3
+        # with:
+          # dotnet-version: '6.0.x'
+      # - name: Build
+        # run: dotnet build MGH.Exceptions/MGH.Exceptions.csproj
+      # - name: Pack
+        # run: dotnet pack MGH.Exceptions/MGH.Exceptions.csproj --configuration Release --no-restore --output ./nugetPackages
+      # - name: Publish
+        # run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
       - uses: actions/checkout@v3
@@ -58,27 +58,27 @@ jobs:
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.0.x'
-      - name: Build
-        run: dotnet build MGH.EntityFramework/MGH.EntityFramework.csproj
-      - name: Pack
-        run: dotnet pack MGH.EntityFramework/MGH.EntityFramework.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      # - uses: actions/checkout@v3
+      # - uses: actions/setup-dotnet@v3
+        # with:
+          # dotnet-version: '7.0.x'
+      # - name: Build
+        # run: dotnet build MGH.EntityFramework/MGH.EntityFramework.csproj
+      # - name: Pack
+        # run: dotnet pack MGH.EntityFramework/MGH.EntityFramework.csproj --configuration Release --no-restore --output ./nugetPackages
+      # - name: Publish
+        # run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: Build
-        run: dotnet build MGH.Extensions/MGH.Extensions.csproj
-      - name: Pack
-        run: dotnet pack MGH.Extensions/MGH.Extensions.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      # - uses: actions/checkout@v3
+      # - uses: actions/setup-dotnet@v3
+        # with:
+          # dotnet-version: '6.0.x'
+      # - name: Build
+        # run: dotnet build MGH.Extensions/MGH.Extensions.csproj
+      # - name: Pack
+        # run: dotnet pack MGH.Extensions/MGH.Extensions.csproj --configuration Release --no-restore --output ./nugetPackages
+      # - name: Publish
+        # run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
