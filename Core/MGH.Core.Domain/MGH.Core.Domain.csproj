@@ -4,15 +4,15 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <PackageVersion>1.0.2</PackageVersion>
+        <PackageVersion>1.0.3</PackageVersion>
         <Copyright>MGH</Copyright>
-        <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/MGH.Domain</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Domain</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
         <PackageTags>microservice, netcore</PackageTags>
-        <AssemblyVersion>1.0.2</AssemblyVersion>
-        <FileVersion>1.0.2</FileVersion>
-        <ProductVersion>1.0.2</ProductVersion>
-        <Title>MGH.Domain</Title>
+        <AssemblyVersion>1.0.3</AssemblyVersion>
+        <FileVersion>1.0.3</FileVersion>
+        <ProductVersion>1.0.3</ProductVersion>
+        <Title>MGH.Core.Domain</Title>
         <Authors>MGH</Authors>
         <Description>it's a package for manage Core Domains</Description>
     </PropertyGroup>

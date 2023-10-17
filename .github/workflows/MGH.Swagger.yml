@@ -51,9 +51,9 @@ jobs:
         with:
           dotnet-version: '7.0.x'
       - name: Build
-        run: dotnet build MGH.Domain/MGH.Domain.csproj
+        run: dotnet build Core/MGH.Core.Domain/MGH.Core.Domain.csproj
       - name: Pack
-        run: dotnet pack MGH.Domain/MGH.Domain.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack Core/MGH.Core.Domain/MGH.Core.Domain.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
