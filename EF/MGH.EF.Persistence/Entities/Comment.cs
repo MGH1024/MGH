@@ -1,4 +1,4 @@
-﻿using MGH.Domain.Concretes;
+﻿using MGH.Core.Domain.Concretes;
 
 namespace MGH.EF.Persistence.Entities;
 

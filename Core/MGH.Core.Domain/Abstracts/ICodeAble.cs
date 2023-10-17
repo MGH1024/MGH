@@ -1,4 +1,4 @@
-﻿namespace MGH.Domain.Abstracts;
+﻿namespace MGH.Core.Domain.Abstracts;
 
 public interface ICodeAble 
 {

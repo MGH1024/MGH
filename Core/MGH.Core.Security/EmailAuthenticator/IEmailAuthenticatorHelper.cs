@@ -1,4 +1,4 @@
-﻿namespace MGH.Security.EmailAuthenticator;
+﻿namespace MGH.Core.Security.EmailAuthenticator;
 
 public interface IEmailAuthenticatorHelper
 {

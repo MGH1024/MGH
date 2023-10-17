@@ -1,7 +1,7 @@
-﻿using MGH.Domain.Concretes;
-using MGH.Security.Enums;
+﻿using MGH.Core.Domain.Concretes;
+using MGH.Core.Security.Enums;
 
-namespace MGH.Security.Entities;
+namespace MGH.Core.Security.Entities;
 
 public class User : AuditableEntity<int>
 {
@@ -16,7 +16,7 @@ public class User : AuditableEntity<int>
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = null!;
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = null!;
     public virtual ICollection<EmailAuthenticator> EmailAuthenticators { get; set; } = null!;
-    public virtual ICollection<MGH.Security.Entities.OtpAuthenticator> OtpAuthenticators { get; set; } = null!;
+    public virtual ICollection<OtpAuthenticator> OtpAuthenticators { get; set; } = null!;
 
     public User()
     {

@@ -1,4 +1,4 @@
-﻿namespace MGH.Security.Constants;
+﻿namespace MGH.Core.Security.Constants;
 
 public static class GeneralOperationClaims
 {

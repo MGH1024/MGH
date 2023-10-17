@@ -1,7 +1,7 @@
-﻿using Core.Security.OtpAuthenticator;
-using Core.Security.OtpAuthenticator.OtpNet;
-using MGH.Security.EmailAuthenticator;
-using MGH.Security.JWT;
+﻿using MGH.Core.Security.EmailAuthenticator;
+using MGH.Core.Security.JWT;
+using MGH.Core.Security.OtpAuthenticator;
+using MGH.Core.Security.OtpAuthenticator.OtpNet;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MGH.Core.Security;

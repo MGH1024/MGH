@@ -1,4 +1,4 @@
-﻿namespace Core.Security.OtpAuthenticator;
+﻿namespace MGH.Core.Security.OtpAuthenticator;
 
 public interface IOtpAuthenticatorHelper
 {

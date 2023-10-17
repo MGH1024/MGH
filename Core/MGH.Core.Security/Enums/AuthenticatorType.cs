@@ -1,4 +1,4 @@
-﻿namespace MGH.Security.Enums;
+﻿namespace MGH.Core.Security.Enums;
 
 public enum AuthenticatorType
 {

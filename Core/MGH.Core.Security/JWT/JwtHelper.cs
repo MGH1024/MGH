@@ -1,13 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using MGH.Security.Encryption;
-using MGH.Security.Entities;
-using MGH.Security.Extensions;
+using MGH.Core.Security.Encryption;
+using MGH.Core.Security.Entities;
+using MGH.Core.Security.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MGH.Security.JWT;
+namespace MGH.Core.Security.JWT;
 
 public class JwtHelper : ITokenHelper
 {

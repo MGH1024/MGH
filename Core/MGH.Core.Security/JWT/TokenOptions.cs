@@ -1,4 +1,4 @@
-﻿namespace MGH.Security.JWT;
+﻿namespace MGH.Core.Security.JWT;
 
 public class TokenOptions
 {

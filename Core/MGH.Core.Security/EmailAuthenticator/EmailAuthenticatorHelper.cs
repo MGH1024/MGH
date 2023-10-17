@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace MGH.Security.EmailAuthenticator;
+namespace MGH.Core.Security.EmailAuthenticator;
 
 public class EmailAuthenticatorHelper : IEmailAuthenticatorHelper
 {

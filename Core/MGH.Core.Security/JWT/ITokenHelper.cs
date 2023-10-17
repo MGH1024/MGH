@@ -1,6 +1,6 @@
-﻿using MGH.Security.Entities;
+﻿using MGH.Core.Security.Entities;
 
-namespace MGH.Security.JWT;
+namespace MGH.Core.Security.JWT;
 
 public interface ITokenHelper
 {

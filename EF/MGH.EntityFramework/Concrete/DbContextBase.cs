@@ -1,6 +1,5 @@
-﻿using MGH.Domain;
-using System.Reflection;
-using MGH.Domain.Abstracts;
+﻿using System.Reflection;
+using MGH.Core.Domain.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

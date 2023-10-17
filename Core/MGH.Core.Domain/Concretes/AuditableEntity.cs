@@ -1,6 +1,6 @@
-﻿using MGH.Domain.Abstracts;
+﻿using MGH.Core.Domain.Abstracts;
 
-namespace MGH.Domain.Concretes;
+namespace MGH.Core.Domain.Concretes;
 
 public class AuditableEntity<TId> : IEntity<TId>, IAuditable
 {

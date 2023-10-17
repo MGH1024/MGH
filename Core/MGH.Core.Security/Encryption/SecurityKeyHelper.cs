@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MGH.Security.Encryption;
+namespace MGH.Core.Security.Encryption;
 
 public static class SecurityKeyHelper
 {

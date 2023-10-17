@@ -1,6 +1,6 @@
-﻿using MGH.Domain.Concretes;
+﻿using MGH.Core.Domain.Concretes;
 
-namespace MGH.Security.Entities;
+namespace MGH.Core.Security.Entities;
 
 public class UserOperationClaim : AuditableEntity<int>
 {

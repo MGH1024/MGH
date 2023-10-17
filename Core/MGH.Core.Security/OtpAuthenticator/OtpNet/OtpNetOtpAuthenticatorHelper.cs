@@ -1,6 +1,6 @@
 ﻿using OtpNet;
 
-namespace Core.Security.OtpAuthenticator.OtpNet;
+namespace MGH.Core.Security.OtpAuthenticator.OtpNet;
 
 public class OtpNetOtpAuthenticatorHelper : IOtpAuthenticatorHelper
 {
