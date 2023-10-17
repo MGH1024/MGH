@@ -2,13 +2,20 @@
 
 namespace MGH.Domain.Concretes;
 
-public class AuditableEntity<T> : IEntity<T>, IAuditable
+public class AuditableEntity<TId> : IEntity<TId>, IAuditable
 {
     public AuditableEntity()
     {
-        CreatedAt = DateTime.Now;
+        Id = default!;
     }
-    public T Id { get; set; }
+
+    public AuditableEntity(TId id)
+    {
+        Id = id;
+    }
+    
+    
+    public TId Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public string CreatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
