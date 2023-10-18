@@ -4,6 +4,17 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Copyright>MGH</Copyright>
+        <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Application</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
+        <PackageTags>microservice, netcore</PackageTags>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <ProductVersion>1.0.0</ProductVersion>
+        <Title>MGH.Core.Application</Title>
+        <Authors>MGH</Authors>
+        <Description>it's a package for manage Core Applicationlayer</Description>
     </PropertyGroup>
 
 </Project>
