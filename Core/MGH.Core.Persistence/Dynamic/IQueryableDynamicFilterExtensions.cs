@@ -36,7 +36,7 @@ public static class IQueryableDynamicFilterExtensions
     private static IQueryable<T> Filter<T>(IQueryable<T> queryable, Filter filter)
     {
         IList<Filter> filters = GetAllFilters(filter);
-        string?[] values = filters.Select(f => f.Value).ToArray();
+        string[] values = filters.Select(f => f.Value).ToArray();
         string where = Transform(filter, filters);
         if (!string.IsNullOrEmpty(where) && values != null)
             queryable = queryable.Where(where, values);

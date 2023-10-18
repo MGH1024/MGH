@@ -71,9 +71,9 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
     }
 
     public async Task<IPaginate<TEntity>> GetListAsync(
-        Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Expression<Func<TEntity, bool>> predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -95,9 +95,9 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         return await queryable.ToPaginateAsync(index, size, from: 0, cancellationToken);
     }
 
-    public async Task<TEntity?> GetAsync(
+    public async Task<TEntity> GetAsync(
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
@@ -115,8 +115,8 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
 
     public async Task<IPaginate<TEntity>> GetListByDynamicAsync(
         DynamicQuery dynamic,
-        Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Expression<Func<TEntity, bool>> predicate = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -137,7 +137,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
     }
 
     public async Task<bool> AnyAsync(
-        Expression<Func<TEntity, bool>>? predicate = null,
+        Expression<Func<TEntity, bool>> predicate = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
@@ -201,9 +201,9 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         return entities;
     }
 
-    public TEntity? Get(
+    public TEntity Get(
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         bool withDeleted = false,
         bool enableTracking = true
     )
@@ -219,9 +219,9 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
     }
 
     public IPaginate<TEntity> GetList(
-        Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Expression<Func<TEntity, bool>> predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -244,8 +244,8 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
 
     public IPaginate<TEntity> GetListByDynamic(
         DynamicQuery dynamic,
-        Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Expression<Func<TEntity, bool>> predicate = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -264,7 +264,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         return queryable.ToPaginate(index, size);
     }
 
-    public bool Any(Expression<Func<TEntity, bool>>? predicate = null, bool withDeleted = false, bool enableTracking = true)
+    public bool Any(Expression<Func<TEntity, bool>> predicate = null, bool withDeleted = false, bool enableTracking = true)
     {
         IQueryable<TEntity> queryable = Query();
         if (!enableTracking)
@@ -321,7 +321,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryProviderType
                 .GetMethods()
                 .First(m => m is { Name: nameof(query.Provider.CreateQuery), IsGenericMethod: true })
-                ?.MakeGenericMethod(navigationPropertyType)
+                .MakeGenericMethod(navigationPropertyType)
             ?? throw new InvalidOperationException("CreateQuery<TElement> method is not found in IQueryProvider.");
         var queryProviderQuery =
             (IQueryable<object>)createQueryMethod.Invoke(query.Provider, parameters: new object[] { query.Expression })!;
@@ -357,14 +357,14 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             .Metadata.GetNavigations()
             .Where(x => x is { IsOnDependent: false, ForeignKey.DeleteBehavior: DeleteBehavior.ClientCascade or DeleteBehavior.Cascade })
             .ToList();
-        foreach (INavigation? navigation in navigations)
+        foreach (INavigation navigation in navigations)
         {
             if (navigation.TargetEntityType.IsOwned())
                 continue;
             if (navigation.PropertyInfo == null)
                 continue;
 
-            object? navValue = navigation.PropertyInfo.GetValue(entity);
+            object navValue = navigation.PropertyInfo.GetValue(entity);
             if (navigation.IsCollection)
             {
                 if (navValue == null)
@@ -407,14 +407,14 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             .Metadata.GetNavigations()
             .Where(x => x is { IsOnDependent: false, ForeignKey.DeleteBehavior: DeleteBehavior.ClientCascade or DeleteBehavior.Cascade })
             .ToList();
-        foreach (INavigation? navigation in navigations)
+        foreach (INavigation navigation in navigations)
         {
             if (navigation.TargetEntityType.IsOwned())
                 continue;
             if (navigation.PropertyInfo == null)
                 continue;
 
-            object? navValue = navigation.PropertyInfo.GetValue(entity);
+            object navValue = navigation.PropertyInfo.GetValue(entity);
             if (navigation.IsCollection)
             {
                 if (navValue == null)
