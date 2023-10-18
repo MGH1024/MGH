@@ -5,7 +5,7 @@ using MimeKit.Cryptography;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 
-namespace Core.Mailing.MailKitImplementations;
+namespace MGH.Core.Mailing.MailKitImplementations;
 
 public class MailKitMailService : IMailService
 {

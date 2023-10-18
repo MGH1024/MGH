@@ -1,4 +1,4 @@
-﻿namespace Core.Mailing;
+﻿namespace MGH.Core.Mailing;
 
 public class ToEmail
 {
