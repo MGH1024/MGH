@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Core.CrossCuttingConcerns.Exceptions.Types;
+namespace MGH.Core.CrossCutting.Exceptions.Types;
 
 public class BusinessException : Exception
 {
@@ -9,9 +9,9 @@ public class BusinessException : Exception
     protected BusinessException(SerializationInfo info, StreamingContext context)
         : base(info, context) { }
 
-    public BusinessException(string? message)
+    public BusinessException(string message)
         : base(message) { }
 
-    public BusinessException(string? message, Exception? innerException)
+    public BusinessException(string message, Exception innerException)
         : base(message, innerException) { }
 }

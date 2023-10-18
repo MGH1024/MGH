@@ -4,17 +4,31 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <PackageVersion>1.0.0</PackageVersion>
+        <PackageVersion>1.0.1</PackageVersion>
         <Copyright>MGH</Copyright>
         <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Application</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
         <PackageTags>microservice, netcore</PackageTags>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <FileVersion>1.0.0</FileVersion>
-        <ProductVersion>1.0.0</ProductVersion>
+        <AssemblyVersion>1.0.1</AssemblyVersion>
+        <FileVersion>1.0.1</FileVersion>
+        <ProductVersion>1.0.1</ProductVersion>
         <Title>MGH.Core.Application</Title>
         <Authors>MGH</Authors>
         <Description>it's a package for manage Core Applicationlayer</Description>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="11.5.2" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+        <PackageReference Include="MediatR" Version="12.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MGH.Core.CrossCutting\MGH.Core.CrossCutting.csproj" />
+      <ProjectReference Include="..\MGH.Core.Persistence\MGH.Core.Persistence.csproj" />
+      <ProjectReference Include="..\MGH.Core.Security\MGH.Core.Security.csproj" />
+    </ItemGroup>
 
 </Project>

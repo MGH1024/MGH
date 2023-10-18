@@ -18,7 +18,7 @@ public class MongoDbLogger : LoggerServiceBase
             .MongoDBBson(cfg =>
             {
                 MongoClient client = new(logConfiguration.ConnectionString);
-                IMongoDatabase? mongoDbInstance = client.GetDatabase(logConfiguration.Collection);
+                IMongoDatabase mongoDbInstance = client.GetDatabase(logConfiguration.Collection);
                 cfg.SetMongoDatabase(mongoDbInstance);
             })
             .CreateLogger();

@@ -1,4 +1,4 @@
-﻿using Core.CrossCuttingConcerns.Exceptions.Types;
+﻿using MGH.Core.CrossCutting.Exceptions.Types;
 
 namespace MGH.Core.CrossCutting.Exceptions.Handlers;
 

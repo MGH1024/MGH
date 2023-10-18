@@ -1,5 +1,4 @@
-﻿using Core.CrossCuttingConcerns.Exceptions;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 
 namespace MGH.Core.CrossCutting.Exceptions.Extensions;
 

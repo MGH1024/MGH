@@ -1,4 +1,4 @@
-﻿namespace Core.CrossCuttingConcerns.Exceptions.Types;
+﻿namespace MGH.Core.CrossCutting.Exceptions.Types;
 
 public class ValidationException : Exception
 {
@@ -10,13 +10,13 @@ public class ValidationException : Exception
         Errors = Array.Empty<ValidationExceptionModel>();
     }
 
-    public ValidationException(string? message)
+    public ValidationException(string message)
         : base(message)
     {
         Errors = Array.Empty<ValidationExceptionModel>();
     }
 
-    public ValidationException(string? message, Exception? innerException)
+    public ValidationException(string message, Exception innerException)
         : base(message, innerException)
     {
         Errors = Array.Empty<ValidationExceptionModel>();
@@ -39,6 +39,6 @@ public class ValidationException : Exception
 
 public class ValidationExceptionModel
 {
-    public string? Property { get; set; }
-    public IEnumerable<string>? Errors { get; set; }
+    public string Property { get; set; }
+    public IEnumerable<string> Errors { get; set; }
 }

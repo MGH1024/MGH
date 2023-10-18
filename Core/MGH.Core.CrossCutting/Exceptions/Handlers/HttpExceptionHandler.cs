@@ -1,6 +1,6 @@
-﻿using Core.CrossCuttingConcerns.Exceptions.Types;
-using MGH.Core.CrossCutting.Exceptions.Extensions;
+﻿using MGH.Core.CrossCutting.Exceptions.Extensions;
 using MGH.Core.CrossCutting.Exceptions.HttpProblemDetails;
+using MGH.Core.CrossCutting.Exceptions.Types;
 using Microsoft.AspNetCore.Http;
 
 namespace MGH.Core.CrossCutting.Exceptions.Handlers;
@@ -13,7 +13,7 @@ public class HttpExceptionHandler : ExceptionHandler
         set => _response = value;
     }
 
-    private HttpResponse? _response;
+    private HttpResponse _response;
 
     protected override Task HandleException(BusinessException businessException)
     {

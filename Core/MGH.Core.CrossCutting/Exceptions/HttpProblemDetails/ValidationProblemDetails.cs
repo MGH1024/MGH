@@ -1,4 +1,4 @@
-﻿using Core.CrossCuttingConcerns.Exceptions.Types;
+﻿using MGH.Core.CrossCutting.Exceptions.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
