@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using MGH.Core.Domain.Concretes;
 using MGH.Core.Persistence.Dynamic;
 using MGH.Core.Persistence.Paging;
 using Microsoft.EntityFrameworkCore.Query;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 namespace MGH.Core.Persistence.Repositories;
 
 public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
-    where TEntity : Entity<TEntityId>
+    where TEntity : AuditableEntity<TEntityId>
 {
     Task<TEntity> GetAsync(
         Expression<Func<TEntity, bool>> predicate,

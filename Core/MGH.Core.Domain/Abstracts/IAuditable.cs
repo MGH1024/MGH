@@ -2,15 +2,15 @@
 
 public interface IAuditable
 {
-    DateTime CreatedAt { get; }
+    DateTime CreatedAt { get; set; }
 
-    string CreatedBy { get; }
+    string CreatedBy { get;set; }
 
-    DateTime? UpdatedAt { get; }
+    DateTime? UpdatedAt { get;set; }
 
-    string UpdatedBy { get; }
+    string UpdatedBy { get;set; }
 
-    DateTime? DeletedAt { get; }
+    DateTime? DeletedAt { get;set; }
 
-    string DeletedBy { get; }
+    string DeletedBy { get;set; }
 }
