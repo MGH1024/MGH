@@ -10,7 +10,7 @@ namespace MGH.Core.Mailing.MailKitImplementations;
 public class MailKitMailService : IMailService
 {
     private readonly MailSettings _mailSettings;
-    private DkimSigner? _signer;
+    private DkimSigner _signer;
 
     public MailKitMailService(IConfiguration configuration)
     {
@@ -59,7 +59,7 @@ public class MailKitMailService : IMailService
         BodyBuilder bodyBuilder = new() { TextBody = mail.TextBody, HtmlBody = mail.HtmlBody };
 
         if (mail.Attachments != null)
-            foreach (MimeEntity? attachment in mail.Attachments)
+            foreach (MimeEntity attachment in mail.Attachments)
                 if (attachment != null)
                     bodyBuilder.Attachments.Add(attachment);
 
@@ -92,7 +92,7 @@ public class MailKitMailService : IMailService
         using (StringReader stringReader = new(pemEncodedKey))
         {
             PemReader pemReader = new(stringReader);
-            object? pemObject = pemReader.ReadObject();
+            object pemObject = pemReader.ReadObject();
             result = ((AsymmetricCipherKeyPair)pemObject).Private;
         }
 

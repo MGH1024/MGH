@@ -10,7 +10,6 @@ public class User : AuditableEntity<int>
     public string Email { get; set; }
     public byte[] PasswordSalt { get; set; }
     public byte[] PasswordHash { get; set; }
-    public bool Status { get; set; }
     public AuthenticatorType AuthenticatorType { get; set; }
 
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = null!;
@@ -42,7 +41,6 @@ public class User : AuditableEntity<int>
         Email = email;
         PasswordSalt = passwordSalt;
         PasswordHash = passwordHash;
-        Status = status;
         AuthenticatorType = authenticatorType;
     }
 
@@ -63,7 +61,6 @@ public class User : AuditableEntity<int>
         Email = email;
         PasswordSalt = passwordSalt;
         PasswordHash = passwordHash;
-        Status = status;
         AuthenticatorType = authenticatorType;
     }
 }
