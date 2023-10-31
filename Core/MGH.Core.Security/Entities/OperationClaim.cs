@@ -7,6 +7,7 @@ public class OperationClaim : AuditableEntity<int>
     public string Name { get; set; }
 
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = null!;
+    public virtual ICollection<PolicyOperationClaim> PolicyOperationClaims { get; set; } = null!;
 
     public OperationClaim()
     {

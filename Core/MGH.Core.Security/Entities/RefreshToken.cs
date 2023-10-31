@@ -9,10 +9,10 @@ public class RefreshToken : AuditableEntity<int>
     public DateTime Expires { get; set; }
     public string CreatedByIp { get; set; }
     public DateTime? Revoked { get; set; }
-    public string? RevokedByIp { get; set; }
-    public string? ReplacedByToken { get; set; }
+    public string RevokedByIp { get; set; }
+    public string ReplacedByToken { get; set; }
 
-    public string? ReasonRevoked { get; set; }
+    public string ReasonRevoked { get; set; }
 
     public virtual User User { get; set; } = null!;
 

@@ -13,6 +13,7 @@ public class User : AuditableEntity<int>
     public AuthenticatorType AuthenticatorType { get; set; }
 
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = null!;
+    public virtual ICollection<PolicyOperationClaim> PolicyOperationClaims { get; set; } = null!;
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = null!;
     public virtual ICollection<EmailAuthenticator> EmailAuthenticators { get; set; } = null!;
     public virtual ICollection<OtpAuthenticator> OtpAuthenticators { get; set; } = null!;

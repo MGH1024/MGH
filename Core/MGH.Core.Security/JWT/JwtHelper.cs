@@ -31,7 +31,7 @@ public class JwtHelper : ITokenHelper
         SigningCredentials signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
         JwtSecurityToken jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);
         JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
-        string? token = jwtSecurityTokenHandler.WriteToken(jwt);
+        string token = jwtSecurityTokenHandler.WriteToken(jwt);
 
         return new AccessToken { Token = token, Expiration = _accessTokenExpiration };
     }
