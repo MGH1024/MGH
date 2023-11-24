@@ -1,4 +1,4 @@
-﻿namespace Core.Application.Requests;
+﻿namespace MGH.Core.Application.Requests;
 
 public class PageRequest
 {
