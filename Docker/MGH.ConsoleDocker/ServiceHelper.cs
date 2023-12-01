@@ -12,6 +12,7 @@ public abstract class ServiceHelper
         DisposeServiceProvider();
         var services = new ServiceCollection();
         services.AddTransient<ILogger, Logger>();
+        services.AddTransient<IPersonService, PersonService>();
         MyServiceProvider = services.BuildServiceProvider(true);
     }
 
