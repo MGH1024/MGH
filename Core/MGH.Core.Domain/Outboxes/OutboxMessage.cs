@@ -7,5 +7,5 @@ public class OutboxMessage
     public string Content { get; set; } = String.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? ProcessedAt { get; set; }
-    public string Error { get; set; }  
+    public string Error { get; set; }
 }
