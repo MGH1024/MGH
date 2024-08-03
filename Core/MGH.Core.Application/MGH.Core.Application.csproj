@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MGH.Core.CrossCutting\MGH.Core.CrossCutting.csproj" />
-      <ProjectReference Include="..\MGH.Core.Persistence\MGH.Core.Persistence.csproj" />
       <ProjectReference Include="..\MGH.Core.Security\MGH.Core.Security.csproj" />
     </ItemGroup>
 
