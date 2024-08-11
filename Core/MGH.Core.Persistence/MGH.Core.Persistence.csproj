@@ -4,14 +4,14 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <PackageVersion>2.0.1</PackageVersion>
+        <PackageVersion>2.0.2</PackageVersion>
         <Copyright>MGH</Copyright>
         <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Persistence</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
         <PackageTags>microservice, netcore</PackageTags>
-        <AssemblyVersion>2.0.1</AssemblyVersion>
-        <FileVersion>2.0.1</FileVersion>
-        <ProductVersion>2.0.1</ProductVersion>
+        <AssemblyVersion>2.0.2</AssemblyVersion>
+        <FileVersion>2.0.2</FileVersion>
+        <ProductVersion>2.0.2</ProductVersion>
         <Title>MGH.Core.Persisence</Title>
         <Authors>MGH</Authors>
         <Description>it's a package for manage Core Repositories</Description>

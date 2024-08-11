@@ -1,6 +1,6 @@
-﻿namespace MGH.Core.Persistence.Models.Filters;
+﻿namespace MGH.Core.Persistence.Models.Filters.GetModels;
 
-public class GetDynamicListAsyncModel<TEntity> :GetBaseModel<TEntity>
+public class GetDynamicListAsyncModel<TEntity> :GetModel<TEntity>
 {
     public int Index { get; set; } = 0;
     public int Size { get; set; } = 10;
