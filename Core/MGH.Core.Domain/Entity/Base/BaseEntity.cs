@@ -1,11 +1,11 @@
 ﻿namespace MGH.Core.Domain.Entity.Base;
 
-public class BaseEntity<T> : IEntity<T>,IEquatable<T>
+public class BaseEntity<TKey> : IEntity<TKey>,IEquatable<TKey>
 {
-    public T Id { get; protected set; }
-    public bool Equals(T obj)
+    public TKey Id { get; protected set; }
+    public bool Equals(TKey obj)
     {
-        if (obj is BaseEntity<T> entity)
+        if (obj is BaseEntity<TKey> entity)
             return Equals(entity);
 
         return base.Equals(obj);
@@ -16,7 +16,7 @@ public class BaseEntity<T> : IEntity<T>,IEquatable<T>
         return Id.GetHashCode();
     }
 
-    private bool Equals(BaseEntity<T> other)
+    private bool Equals(BaseEntity<TKey> other)
     {
         return other != null && Id.Equals(other.Id);
     }

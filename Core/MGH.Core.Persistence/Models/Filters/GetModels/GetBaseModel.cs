@@ -2,7 +2,7 @@
 
 namespace MGH.Core.Persistence.Models.Filters.GetModels;
 
-public class Base<TEntity>
+public class GetBaseModel<TEntity>
 {
     public bool WithDeleted { get; set; } = false;
     public bool EnableTracking { get; set; } = true; 
