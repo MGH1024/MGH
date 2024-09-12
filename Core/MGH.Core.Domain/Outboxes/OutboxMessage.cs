@@ -1,6 +1,8 @@
+using MGH.Core.Domain.Entity.Base;
+
 namespace MGH.Core.Domain.Outboxes;
 
-public class OutboxMessage
+public class OutboxMessage :IEntity<Guid>
 {
     public Guid Id { get; set; }
     public string Type { get; set; } = string.Empty;
