@@ -5,7 +5,7 @@ namespace MGH.Exceptions;
 
 /// <summary>
 ///     Authorization Exception
-///     TODO: Describe 401 and 403 usages (exception is used for both situation)
+///      Describe 401 and 403 usages (exception is used for both situation)
 /// </summary>
 public class AuthorizationException : GeneralException
 {
