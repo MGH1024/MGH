@@ -8,7 +8,7 @@ using MGH.Core.Persistence.Models.Filters.GetModels;
 
 namespace MGH.Core.Persistence.Base.Repository;
 
-public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntity, TKey> where TEntity :AuditAbleEntity<TEntity>,IEntity<TKey>
+public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntity, TKey> where TEntity :AuditAbleEntity<TEntity>
 {
     private IQueryable<TEntity> Query() => dbContext.Set<TEntity>();
 

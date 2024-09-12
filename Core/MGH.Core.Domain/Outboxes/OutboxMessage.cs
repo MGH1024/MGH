@@ -2,7 +2,7 @@ using MGH.Core.Domain.Entity.Base;
 
 namespace MGH.Core.Domain.Outboxes;
 
-public class OutboxMessage :IEntity<Guid>
+public class OutboxMessage : AuditAbleEntity<Guid>
 {
     public Guid Id { get; set; }
     public string Type { get; set; } = string.Empty;
@@ -10,4 +10,4 @@ public class OutboxMessage :IEntity<Guid>
     public DateTime CreatedAt { get; set; }
     public DateTime? ProcessedAt { get; set; }
     public string Error { get; set; }
-} 
+}
