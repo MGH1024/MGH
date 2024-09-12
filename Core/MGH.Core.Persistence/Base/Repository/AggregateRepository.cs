@@ -9,7 +9,7 @@ using MGH.Core.Persistence.Models.Filters.GetModels;
 
 namespace MGH.Core.Persistence.Base.Repository;
 
-public class AggregateRepository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntity, TKey> where TEntity : AggregateRoot<TKey>
+public class AggregateRepository<TEntity, TKey>(DbContext dbContext) : IAggregateRepository<TEntity, TKey> where TEntity : AggregateRoot<TKey>
 {
     private IQueryable<TEntity> Query() => dbContext.Set<TEntity>();
 
@@ -78,11 +78,6 @@ public class AggregateRepository<TEntity, TKey>(DbContext dbContext) : IReposito
     {
         await dbContext.AddAsync(entity, cancellationToken);
         return entity;
-    }
-
-    public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<TEntity> DeleteAsync(TEntity entity, bool permanent = false)
