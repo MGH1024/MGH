@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using MGH.Core.Domain.Aggregate;
 using MGH.Core.Domain.Entity.Base;
 using MGH.Core.Persistence.Extensions;
 using MGH.Core.Persistence.Models.Paging;
@@ -8,7 +9,7 @@ using MGH.Core.Persistence.Models.Filters.GetModels;
 
 namespace MGH.Core.Persistence.Base.Repository;
 
-public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntity, TKey> where TEntity :AuditAbleEntity<TEntity>,IEntity<TKey>
+public class AggregateRepository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntity, TKey> where TEntity : AggregateRoot<TKey>
 {
     private IQueryable<TEntity> Query() => dbContext.Set<TEntity>();
 
@@ -24,9 +25,9 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
         return await queryable.FirstOrDefaultAsync(getBaseModel.Predicate, getBaseModel.CancellationToken);
     }
 
-    public async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken)
+    public Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken)
     {
-        return await dbContext.Set<TEntity>().FindAsync(id, cancellationToken);
+        return Query().Where(a => a.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IPaginate<TEntity>> GetListAsync(GetListModelAsync<TEntity> getListAsyncModel)
