@@ -1,15 +1,26 @@
+using MGH.ApiDocker.Extensions;
+using MGH.ApiDocker.Models;
+using MGH.ApiDocker.Services;
+using Polly;
+using Polly.Extensions.Http;
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var httpClientFakeService =
+    builder.Configuration.GetSection("ExternalServices:HttpClientFakeService").Get<ExternalServiceInfo>();
+builder.Services.RegisterHttpClientService(httpClientFakeService);
+
+builder.Services.Configure<ExternalServiceInfo>(
+    builder.Configuration.GetSection("ExternalServices:NamedHttpClientFakeService"));
+var namedHttpClientFakeService =
+    builder.Configuration.GetSection("ExternalServices:NamedHttpClientFakeService").Get<ExternalServiceInfo>();
+builder.Services.RegisterNamedHttpClientService(namedHttpClientFakeService);
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
