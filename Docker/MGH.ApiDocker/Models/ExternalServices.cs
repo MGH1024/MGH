@@ -1,4 +1,4 @@
-﻿using MGH.Core.Application.HttpClient.Configurations;
+﻿using MGH.Core.Application.HttpClients.Configurations;
 
 namespace MGH.ApiDocker.Models;
 

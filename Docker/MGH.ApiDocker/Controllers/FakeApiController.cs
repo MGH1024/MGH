@@ -3,26 +3,41 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MGH.ApiDocker.Controllers;
 
+[ApiController]
+[Route("api/fake")]
 public class FakeApiController : ControllerBase
 {
-    private readonly IHttpClientFakeService _iHttpClientFakeService;
-    private readonly IHttpNamedFakeService _iHttpNamedFakeService;
+    private readonly IHttpClientFakeService _httpClientFakeService;
+    private readonly IHttpNamedFakeService _httpNamedFakeService;
 
-    public FakeApiController(IHttpClientFakeService iHttpClientFakeService, IHttpNamedFakeService iHttpNamedFakeService)
+    public FakeApiController(IHttpClientFakeService httpClientFakeService, IHttpNamedFakeService httpNamedFakeService)
     {
-        _iHttpClientFakeService = iHttpClientFakeService;
-        _iHttpNamedFakeService = iHttpNamedFakeService;
+        _httpClientFakeService = httpClientFakeService;
+        _httpNamedFakeService = httpNamedFakeService;
     }
 
-    [HttpGet("get-users-http-client")]
-    public async Task<IActionResult> GetUsersAsync()
+    [HttpGet("users-http-client")]
+    public async Task<IActionResult> GetUsersFromHttpClientAsync()
     {
-        return Ok(await _iHttpClientFakeService.GetUsers());
+        return await GetResponseAsync(() => _httpClientFakeService.GetUsers());
     }
-    
-    [HttpGet("get-users-named-http-client")]
-    public async Task<IActionResult> GetUsers2Async()
+
+    [HttpGet("users-named-http-client")]
+    public async Task<IActionResult> GetUsersFromNamedHttpClientAsync()
     {
-        return Ok(await _iHttpNamedFakeService.GetUsers());
+        return await GetResponseAsync(() => _httpNamedFakeService.GetUsers());
+    }
+
+    [HttpGet("users-named-http-client/{id}")]
+    public async Task<IActionResult> GetUserByIdFromNamedHttpClientAsync(int id)
+    {
+        return await GetResponseAsync(() => _httpNamedFakeService.GetUserById(id));
+    }
+
+    // Helper method to reduce duplication
+    private async Task<IActionResult> GetResponseAsync<T>(Func<Task<T>> fetchData)
+    {
+        var data = await fetchData();
+        return Ok(data);
     }
 }

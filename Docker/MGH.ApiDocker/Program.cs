@@ -1,5 +1,5 @@
 using MGH.ApiDocker.Extensions;
-using MGH.Core.Application.HttpClient.Configurations;
+using MGH.Core.Application.HttpClients.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();

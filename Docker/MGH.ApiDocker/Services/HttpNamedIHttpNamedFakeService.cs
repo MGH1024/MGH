@@ -1,20 +1,23 @@
-﻿using System.Text.Json;
-using MGH.ApiDocker.Models;
-using MGH.Core.Application.HttpClient.Configurations;
+﻿using MGH.ApiDocker.Models;
+using MGH.Core.Application.HttpClients.Base;
+using MGH.Core.Application.HttpClients.Configurations;
 using Microsoft.Extensions.Options;
 
 namespace MGH.ApiDocker.Services;
 
-public class HttpNamedIHttpNamedFakeService(IHttpClientFactory httpClientFactory,
-    IOptions<ExternalServiceInfo> options) : IHttpNamedFakeService
+public class HttpNamedIHttpNamedFakeService(
+    IHttpClientFactory httpClientFactory,
+    IOptions<ExternalServiceInfo> options)
+    : BaseHttpClient(httpClientFactory.CreateClient(options.Value.HttpClientName)),
+        IHttpNamedFakeService
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient(options.Value.HttpClientName);
-
     public async Task<IEnumerable<User>> GetUsers()
     {
-        var response = await _httpClient.GetAsync("/users");
-        response.EnsureSuccessStatusCode();
-        var json = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<IEnumerable<User>>(json);
+        return await GetAsync<IEnumerable<User>>("/users");
+    }
+
+    public async Task<User> GetUserById(int id)
+    {
+        return await GetAsync<User>($"/users/{id}");
     }
 }

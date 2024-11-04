@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.Application.HttpClient.Configurations;
+﻿namespace MGH.Core.Application.HttpClients.Configurations;
 
 public class ExternalServiceInfo
 {

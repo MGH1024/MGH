@@ -1,15 +1,13 @@
-﻿using System.Text.Json;
-using MGH.ApiDocker.Models;
+﻿using MGH.ApiDocker.Models;
+using MGH.Core.Application.HttpClients.Base;
 
 namespace MGH.ApiDocker.Services;
 
-public class HttpClientIHttpClientFakeService(HttpClient httpClient) : IHttpClientFakeService
+public class HttpClientIHttpClientFakeService(HttpClient httpClient)
+    : BaseHttpClient(httpClient), IHttpClientFakeService
 {
     public async Task<IEnumerable<User>> GetUsers()
     {
-        var response =await httpClient.GetAsync("/users");
-        response.EnsureSuccessStatusCode();
-        var json = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<IEnumerable<User>>(json);
+        return await GetAsync<IEnumerable<User>>("/users");
     }
 }
