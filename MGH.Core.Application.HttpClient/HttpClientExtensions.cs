@@ -1,33 +1,11 @@
-﻿using MGH.ApiDocker.Models;
-using MGH.ApiDocker.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace MGH.ApiDocker.Extensions;
+namespace MGH.Core.Application.HttpClient;
 
 public static class HttpClientExtensions
 {
-    public static void RegisterHttpClientService(this IServiceCollection services,
-        ExternalServiceInfo httpClientFakeService)
-    {
-        services
-            .AddHttpClientWithPolicies<IHttpClientFakeService, HttpClientIHttpClientFakeService>(
-                httpClientFakeService.BaseUrl,
-                httpClientFakeService.HandleLifeTime,
-                httpClientFakeService.HttpClientName);
-    }
-
-    public static void RegisterNamedHttpClientService(this IServiceCollection services,
-        ExternalServiceInfo namedHttpClientFakeService)
-    {
-        services
-            .AddHttpClientWithPolicies<IHttpNamedFakeService, HttpNamedIHttpNamedFakeService>(
-                namedHttpClientFakeService.BaseUrl,
-                namedHttpClientFakeService.HandleLifeTime,
-                namedHttpClientFakeService.HttpClientName);
-        services.AddScoped<IHttpNamedFakeService, HttpNamedIHttpNamedFakeService>();
-    }
-
     public static IServiceCollection AddHttpClientWithPolicies<TClient, TImplementation>(
         this IServiceCollection services, string baseAddress, int handlerLifeTime,
         string httpClientName = "")

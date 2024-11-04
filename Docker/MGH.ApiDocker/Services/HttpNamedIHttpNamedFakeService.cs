@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using MGH.ApiDocker.Models;
+using MGH.Core.Application.HttpClient.Configurations;
 using Microsoft.Extensions.Options;
 
 namespace MGH.ApiDocker.Services;

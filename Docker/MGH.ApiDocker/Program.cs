@@ -1,8 +1,5 @@
 using MGH.ApiDocker.Extensions;
-using MGH.ApiDocker.Models;
-using MGH.ApiDocker.Services;
-using Polly;
-using Polly.Extensions.Http;
+using MGH.Core.Application.HttpClient.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
