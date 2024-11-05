@@ -30,7 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\MGH.Core.Application.HttpClient\MGH.Core.Application.HttpClient.csproj" />
+      <ProjectReference Include="..\..\Core\MGH.Core.Application.HttpClient\MGH.Core.Application.HttpClient.csproj" />
     </ItemGroup>
-
 </Project>

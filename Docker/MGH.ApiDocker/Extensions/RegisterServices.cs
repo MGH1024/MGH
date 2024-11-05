@@ -1,5 +1,4 @@
-﻿using MGH.ApiDocker.Models;
-using MGH.ApiDocker.Services;
+﻿using MGH.ApiDocker.Services;
 using MGH.Core.Application.HttpClients;
 using MGH.Core.Application.HttpClients.Configurations;
 
