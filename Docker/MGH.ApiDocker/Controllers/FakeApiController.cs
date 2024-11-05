@@ -1,4 +1,5 @@
-﻿using MGH.ApiDocker.Services;
+﻿using MGH.ApiDocker.Models;
+using MGH.ApiDocker.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MGH.ApiDocker.Controllers;
@@ -16,22 +17,29 @@ public class FakeApiController : ControllerBase
         _httpNamedFakeService = httpNamedFakeService;
     }
 
-    [HttpGet("users-http-client")]
+    [HttpGet("posts-http-client")]
     public async Task<IActionResult> GetUsersFromHttpClientAsync()
     {
-        return await GetResponseAsync(() => _httpClientFakeService.GetUsers());
+        return await GetResponseAsync(() => _httpClientFakeService.GetPosts());
     }
 
-    [HttpGet("users-named-http-client")]
+    [HttpGet("posts-named-http-client")]
     public async Task<IActionResult> GetUsersFromNamedHttpClientAsync()
     {
-        return await GetResponseAsync(() => _httpNamedFakeService.GetUsers());
+        return await GetResponseAsync(() => _httpNamedFakeService.GetPosts());
     }
 
-    [HttpGet("users-named-http-client/{id}")]
+    [HttpGet("posts-named-http-client/{id}")]
     public async Task<IActionResult> GetUserByIdFromNamedHttpClientAsync(int id)
     {
-        return await GetResponseAsync(() => _httpNamedFakeService.GetUserById(id));
+        return await GetResponseAsync(() => _httpNamedFakeService.GetPostById(id));
+    }
+
+    [HttpPost("posts")]
+    public async Task<IActionResult> RegisterPost([FromBody] RegisterPostDto registerPostDto, CancellationToken
+        cancellationToken)
+    {
+        return Created("registered", await _httpNamedFakeService.RegisterPostAsync(registerPostDto, cancellationToken));
     }
 
     // Helper method to reduce duplication

@@ -4,6 +4,7 @@ namespace MGH.ApiDocker.Services;
 
 public interface IHttpNamedFakeService
 {
-    Task<IEnumerable<User>> GetUsers();
-    Task<User> GetUserById(int id);
+    Task<IEnumerable<Post>> GetPosts();
+    Task<Post> GetPostById(int id);
+    Task<RegisterPostDto> RegisterPostAsync(RegisterPostDto registerPostDto, CancellationToken cancellationToken);
 }

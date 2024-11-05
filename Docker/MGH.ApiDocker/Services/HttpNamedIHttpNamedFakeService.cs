@@ -6,18 +6,22 @@ using Microsoft.Extensions.Options;
 namespace MGH.ApiDocker.Services;
 
 public class HttpNamedIHttpNamedFakeService(
-    IHttpClientFactory httpClientFactory,
-    IOptions<ExternalServiceInfo> options)
-    : BaseHttpClient(httpClientFactory.CreateClient(options.Value.HttpClientName)),
-        IHttpNamedFakeService
+    IHttpClientFactory httpClientFactory, IOptions<ExternalServiceInfo> options)
+    : BaseHttpClient(httpClientFactory.CreateClient(options.Value.HttpClientName)), IHttpNamedFakeService
 {
-    public async Task<IEnumerable<User>> GetUsers()
+    public async Task<IEnumerable<Post>> GetPosts()
     {
-        return await GetAsync<IEnumerable<User>>("/users");
+        return await GetAsync<IEnumerable<Post>>("/posts",true);
     }
 
-    public async Task<User> GetUserById(int id)
+    public async Task<Post> GetPostById(int id)
     {
-        return await GetAsync<User>($"/users/{id}");
+        return await GetAsync<Post>($"/posts/{id}",false);
+    }
+
+    public async Task<RegisterPostDto> RegisterPostAsync(RegisterPostDto registerPostDto, CancellationToken 
+        cancellationToken)
+    {
+        return await PostAsync<RegisterPostDto>("/posts", registerPostDto,true, cancellationToken);
     }
 }

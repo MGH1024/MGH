@@ -4,5 +4,5 @@ namespace MGH.ApiDocker.Services;
 
 public interface IHttpClientFakeService
 {
-    Task<IEnumerable<User>> GetUsers();
+    Task<IEnumerable<Post>> GetPosts();
 }
