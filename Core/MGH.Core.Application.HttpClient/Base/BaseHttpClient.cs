@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace MGH.Core.Application.HttpClients.Base;
 
-public class BaseHttpClient(HttpClient httpClient)
+public abstract class BaseHttpClient(HttpClient httpClient)
 {
-    private string Token { get; set; }
-    private DateTime TokenExpiry { get; set; }
+    protected string Token { get; set; }
+    protected DateTime TokenExpiry { get; set; }
 
     protected async Task<T> GetAsync<T>(string endpoint, bool isEnableAuth = false)
     {
@@ -59,10 +59,10 @@ public class BaseHttpClient(HttpClient httpClient)
         var content = new StringContent(JsonSerializer.Serialize(data));
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-        var response = await httpClient.PostAsync(endpoint, content);
+        var response = await httpClient.PostAsync(endpoint, content,cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var json = await response.Content.ReadAsStringAsync();
+        var json = await response.Content.ReadAsStringAsync(cancellationToken);
         try
         {
             return JsonSerializer.Deserialize<T>(json) ??
@@ -75,13 +75,7 @@ public class BaseHttpClient(HttpClient httpClient)
     }
 
 
-    protected virtual async Task LoginAsync()
-    {
-        if (IsTokenActive()) return;
-
-        Token = "abcdtyrsdfjjfjsdfjll45345345-dfdffsd-sdfsdfsdsd";
-        TokenExpiry = DateTime.Now.AddSeconds(3600);
-    }
+    protected abstract  Task LoginAsync();
 
     protected bool IsTokenActive() => !string.IsNullOrEmpty(Token) && DateTime.Now <= TokenExpiry;
 }

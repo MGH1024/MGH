@@ -24,4 +24,18 @@ public class HttpNamedIHttpNamedFakeService(
     {
         return await PostAsync<RegisterPostDto>("/posts", registerPostDto,true, cancellationToken);
     }
+    
+    protected override async Task LoginAsync()
+    {
+        if (IsTokenActive())
+            return;
+
+        var tokenResponse = "retertert-sdfsdfsdf-sdfsdfsghghjfghdfg543";
+
+        if (tokenResponse is null || string.IsNullOrEmpty(tokenResponse))
+            throw new InvalidOperationException("Failed to retrieve a valid token.");
+
+        Token = tokenResponse;
+        TokenExpiry = DateTime.Now.AddSeconds(3600);
+    }
 }

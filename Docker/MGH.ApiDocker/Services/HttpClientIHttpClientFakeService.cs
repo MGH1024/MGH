@@ -10,4 +10,18 @@ public class HttpClientIHttpClientFakeService(HttpClient httpClient) : BaseHttpC
     {
         return await GetAsync<IEnumerable<Post>>("/posts",isEnableAuth: true);
     }
+    
+    protected override async Task LoginAsync()
+    {
+        if (IsTokenActive())
+            return;
+
+        var tokenResponse = "retertert-sdfsdfsdf-sdfsdfsghghjfghdfg543";
+
+        if (tokenResponse is null || string.IsNullOrEmpty(tokenResponse))
+            throw new InvalidOperationException("Failed to retrieve a valid token.");
+
+        Token = tokenResponse;
+        TokenExpiry = DateTime.Now.AddSeconds(3600);
+    }
 }
