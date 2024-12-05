@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<PackageVersion>3.0.0</PackageVersion>
+		<Copyright>MGH</Copyright>
+		<PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Infrastructure.Securities.Identity</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
+		<PackageTags>microservice, netcore</PackageTags>
+		<AssemblyVersion>3.0.0</AssemblyVersion>
+		<FileVersion>3.0.0</FileVersion>
+		<ProductVersion>3.0.0</ProductVersion>
+		<Title>MGH.Core.Infrastructure.Securities.Identity</Title>
+		<Authors>MGH</Authors>
+		<Description>it's a package for manage Core Infrastructures securities identity </Description>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
+    </ItemGroup>
+</Project>

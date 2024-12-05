@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <PackageVersion>3.0.0</PackageVersion>
+        <Copyright>MGH</Copyright>
+        <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Domain</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
+        <PackageTags>microservice, netcore</PackageTags>
+        <AssemblyVersion>3.0.0</AssemblyVersion>
+        <FileVersion>3.0.0</FileVersion>
+        <ProductVersion>3.0.0</ProductVersion>
+        <Title>MGH.Core.Domain</Title>
+        <Authors>MGH</Authors>
+        <Description>it's a package for manage Core Domains</Description>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="MediatR.Contracts" Version="2.0.1"/>
+        <PackageReference Include="MediatR" Version="12.4.0"/>
+    </ItemGroup>
+</Project>
