@@ -35,7 +35,6 @@ jobs:
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
-
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
         with:
@@ -48,8 +47,6 @@ jobs:
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
-
-
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
         with:
@@ -60,20 +57,7 @@ jobs:
         run: dotnet pack MGH.Core.Domain/MGH.Core.Domain.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-        
-      
-      # - uses: actions/checkout@v3
-      # - uses: actions/setup-dotnet@v3
-      #   with:
-      #     dotnet-version: '8.0.x'
-      # - name: Build
-      #   run: dotnet build MGH.Core.Endpoint.Swagger/MGH.Core.Endpoint.Swagger.csproj
-      # - name: Pack
-      #   run: dotnet pack MGH.Core.EndPoint.Swagger/MGH.Core.EndPoint.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
-      # - name: Publish
-      #   run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
+    
 
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
@@ -85,8 +69,6 @@ jobs:
         run: dotnet pack MGH.Core.Infrastructure/MGH.Core.Infrastructure.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
 
 
       - uses: actions/checkout@v3
@@ -113,7 +95,6 @@ jobs:
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
 
-
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
         with:
@@ -136,7 +117,6 @@ jobs:
         run: dotnet pack MGH.Core.Infrastructure.EventBus.RabbitMq/MGH.Core.Infrastructure.EventBus.RabbitMq.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
   
 
       - uses: actions/checkout@v3
@@ -207,6 +187,18 @@ jobs:
         run: dotnet build MGH.Core.Infrastructure.Securities.Identity/MGH.Core.Infrastructure.Securities.Identity.csproj
       - name: Pack
         run: dotnet pack MGH.Core.Infrastructure.Securities.Identity/MGH.Core.Infrastructure.Securities.Identity.csproj --configuration Release --no-restore --output ./nugetPackages
+      - name: Publish
+        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+
+
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build
+        run: dotnet build MGH.Core.Endpoint.Swagger/MGH.Core.Endpoint.Swagger.csproj
+      - name: Pack
+        run: dotnet pack MGH.Core.EndPoint.Swagger/MGH.Core.EndPoint.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
