@@ -1,7 +1,0 @@
-﻿namespace MGH.Core.Persistence.Models.Filters;
-
-public class Sort(string field, string dir)
-{
-    public string Field { get; set; } = field;
-    public string Dir { get; set; } = dir;
-}
