@@ -198,7 +198,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Endpoint.Swagger/MGH.Core.Endpoint.Swagger.csproj
       - name: Pack
-        run: dotnet pack MGH.Core.EndPoint.Swagger/MGH.Core.EndPoint.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack  MGH.Core.Endpoint.Swagger/MGH.Core.Endpoint.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
