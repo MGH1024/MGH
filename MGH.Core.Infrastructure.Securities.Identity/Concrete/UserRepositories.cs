@@ -1,8 +1,8 @@
-﻿using MGH.Identity.Abstract;
-using MGH.Identity.Entities;
+﻿using MGH.Core.Infrastructure.Securities.Identity.Abstract;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace MGH.Identity.Concrete;
+namespace MGH.Core.Infrastructure.Securities.Identity.Concrete;
 
 public class UserRepository : IUserRepository
 {

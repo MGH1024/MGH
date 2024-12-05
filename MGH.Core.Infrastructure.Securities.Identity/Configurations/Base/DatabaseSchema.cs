@@ -1,4 +1,4 @@
-﻿namespace MGH.Identity.Configurations.Base;
+﻿namespace MGH.Core.Infrastructure.Securities.Identity.Configurations.Base;
 
 public static class DatabaseSchema
 {

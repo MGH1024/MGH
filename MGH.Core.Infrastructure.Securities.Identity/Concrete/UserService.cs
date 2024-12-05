@@ -1,12 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using MGH.Identity.Abstract;
-using MGH.Identity.Entities;
-using MGH.Identity.Models;
+using MGH.Core.Infrastructure.Securities.Identity.Abstract;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
+using MGH.Core.Infrastructure.Securities.Identity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace MGH.Identity.Concrete;
+namespace MGH.Core.Infrastructure.Securities.Identity.Concrete;
 
 public class UserService : IUserService
 {

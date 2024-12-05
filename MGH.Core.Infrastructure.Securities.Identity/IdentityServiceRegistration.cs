@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using MGH.Identity.Abstract;
-using MGH.Identity.Concrete;
-using MGH.Identity.Configurations.IdentityConfig;
-using MGH.Identity.Entities;
-using MGH.Identity.Models;
+using MGH.Core.Infrastructure.Securities.Identity.Abstract;
+using MGH.Core.Infrastructure.Securities.Identity.Concrete;
+using MGH.Core.Infrastructure.Securities.Identity.Configurations.IdentityConfig;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
+using MGH.Core.Infrastructure.Securities.Identity.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MGH.Identity;
+namespace MGH.Core.Infrastructure.Securities.Identity;
 
 public static class IdentityServiceRegistration
 {

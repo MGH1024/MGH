@@ -1,4 +1,4 @@
-﻿namespace MGH.Identity.Models;
+﻿namespace MGH.Core.Infrastructure.Securities.Identity.Models;
 
 public class DbConnection
 {

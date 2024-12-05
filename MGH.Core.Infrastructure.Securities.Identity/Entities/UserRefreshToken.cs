@@ -1,4 +1,4 @@
-﻿namespace MGH.Identity.Entities;
+﻿namespace MGH.Core.Infrastructure.Securities.Identity.Entities;
 
 public sealed class UserRefreshToken
 {

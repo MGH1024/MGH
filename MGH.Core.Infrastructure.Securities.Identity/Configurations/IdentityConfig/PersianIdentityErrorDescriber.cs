@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MGH.Identity.Configurations.IdentityConfig;
+namespace MGH.Core.Infrastructure.Securities.Identity.Configurations.IdentityConfig;
 
 public class PersianIdentityErrorDescriber : IdentityErrorDescriber
 {

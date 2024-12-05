@@ -2,15 +2,15 @@
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
-using MGH.Identity.Abstract;
-using MGH.Identity.Entities;
-using MGH.Identity.Enums;
-using MGH.Identity.Models;
+using MGH.Core.Infrastructure.Securities.Identity.Abstract;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
+using MGH.Core.Infrastructure.Securities.Identity.Enums;
+using MGH.Core.Infrastructure.Securities.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MGH.Identity.Concrete;
+namespace MGH.Core.Infrastructure.Securities.Identity.Concrete;
 
 public class AuthService : IAuthService
 {

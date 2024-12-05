@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MGH.Identity.Entities;
-using MGH.Identity.Models;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
+using MGH.Core.Infrastructure.Securities.Identity.Models;
 
-namespace MGH.Identity.Profiles;
+namespace MGH.Core.Infrastructure.Securities.Identity.Profiles;
 
 public class MappingProfile : Profile
 {

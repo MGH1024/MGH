@@ -1,7 +1,7 @@
-﻿using MGH.Identity.Entities;
+﻿using MGH.Core.Infrastructure.Securities.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace MGH.Identity.Abstract;
+namespace MGH.Core.Infrastructure.Securities.Identity.Abstract;
 
 public interface IRoleService
 {

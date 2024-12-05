@@ -1,4 +1,4 @@
-﻿namespace MGH.Identity.Enums;
+﻿namespace MGH.Core.Infrastructure.Securities.Identity.Enums;
 
 public enum Roles
 {

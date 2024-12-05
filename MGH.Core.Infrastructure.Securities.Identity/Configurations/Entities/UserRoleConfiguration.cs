@@ -1,9 +1,9 @@
-﻿using MGH.Identity.Configurations.Base;
-using MGH.Identity.Entities;
+﻿using MGH.Core.Infrastructure.Securities.Identity.Configurations.Base;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MGH.Identity.Configurations.Entities;
+namespace MGH.Core.Infrastructure.Securities.Identity.Configurations.Entities;
 
 public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
 {

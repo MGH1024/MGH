@@ -1,8 +1,8 @@
-﻿using MGH.Identity.Entities;
-using MGH.Identity.Enums;
-using MGH.Identity.Models;
+﻿using MGH.Core.Infrastructure.Securities.Identity.Entities;
+using MGH.Core.Infrastructure.Securities.Identity.Enums;
+using MGH.Core.Infrastructure.Securities.Identity.Models;
 
-namespace MGH.Identity.Abstract;
+namespace MGH.Core.Infrastructure.Securities.Identity.Abstract;
 
 public interface IAuthService
 {

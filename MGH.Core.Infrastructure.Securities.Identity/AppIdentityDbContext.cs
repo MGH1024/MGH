@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-using MGH.Identity.Entities;
+using MGH.Core.Infrastructure.Securities.Identity.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace MGH.Identity;
+namespace MGH.Core.Infrastructure.Securities.Identity;
 
 public class AppIdentityDbContext :IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
 {

@@ -1,7 +1,7 @@
-﻿using MGH.Identity.Entities;
+﻿using MGH.Core.Infrastructure.Securities.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace MGH.Identity.Configurations.IdentityConfig;
+namespace MGH.Core.Infrastructure.Securities.Identity.Configurations.IdentityConfig;
 
 public class PasswordValidator : IPasswordValidator<User>
 {
