@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
-namespace MGH.Core.Endpoint.Swagger.Swagger;
+namespace MGH.Core.Endpoint.Swagger;
 
 public static class SwaggerUseMiddlewareExtension
 {

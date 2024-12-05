@@ -1,9 +1,9 @@
-﻿using MGH.Core.Endpoint.Swagger.Swagger.Models;
+﻿using MGH.Core.Endpoint.Swagger.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace MGH.Core.Endpoint.Swagger.Swagger;
+namespace MGH.Core.Endpoint.Swagger;
 
 public static class BearerTokenExtension
 {
