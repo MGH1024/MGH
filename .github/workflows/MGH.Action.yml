@@ -82,7 +82,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure/MGH.Core.Infrastructure.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure/MGH.Core.Infrastructure.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure/MGH.Core.Infrastructure.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -96,7 +96,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.Cache.Redis/MGH.Core.Infrastructure.Cache.Redis.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.Cache.Redis/MGH.Core.Infrastructure.Cache.Redis.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.Cache.Redis/MGH.Core.Infrastructure.Cache.Redis.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -108,7 +108,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.ElasticSearch/MGH.Core.Infrastructure.ElasticSearch.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.ElasticSearch/MGH.Core.Infrastructure.ElasticSearch.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.ElasticSearch/MGH.Core.Infrastructure.ElasticSearch.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -121,7 +121,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.EventBus/MGH.Core.Infrastructure.EventBus.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.EventBus/MGH.Core.Infrastructure.EventBus.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.EventBus/MGH.Core.Infrastructure.EventBus.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -133,7 +133,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.EventBus.RabbitMq/MGH.Core.Infrastructure.EventBus.RabbitMq.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.EventBus.RabbitMq/MGH.Core.Infrastructure.EventBus.RabbitMq.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.EventBus.RabbitMq/MGH.Core.Infrastructure.EventBus.RabbitMq.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -146,7 +146,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.HealthCheck/MGH.Core.Infrastructure.HealthCheck.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.HealthCheck/MGH.Core.Infrastructure.HealthCheck.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.HealthCheck/MGH.Core.Infrastructure.HealthCheck.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -158,7 +158,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.HttpClient/MGH.Core.Infrastructure.HttpClient.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.HttpClient/MGH.Core.Infrastructure.HttpClient.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.HttpClient/MGH.Core.Infrastructure.HttpClient.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
   
@@ -170,7 +170,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.Persistence.Dapper/MGH.Core.Infrastructure.Persistence.Dapper.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.Persistence.Dapper/MGH.Core.Infrastructure.Persistence.Dapper.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.Persistence.Dapper/MGH.Core.Infrastructure.Persistence.Dapper.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
   
@@ -182,7 +182,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.Persistence.EF/MGH.Core.Infrastructure.Persistence.EF.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.Persistence.EF/MGH.Core.Infrastructure.Persistence.EF.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.Persistence.EF/MGH.Core.Infrastructure.Persistence.EF.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
   
@@ -194,7 +194,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.Securities/MGH.Core.Infrastructure.Securities.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.Securities/MGH.Core.Infrastructure.Securities.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.Securities/MGH.Core.Infrastructure.Securities.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
@@ -206,7 +206,7 @@ jobs:
       - name: Build
         run: dotnet build MGH.Core.Infrastructure.Securities.Identity/MGH.Core.Infrastructure.Securities.Identity.csproj
       - name: Pack
-        run: dotnet pack Core/MGH.Core.Infrastructure.Securities.Identity/MGH.Core.Infrastructure.Securities.Identity.csproj --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack MGH.Core.Infrastructure.Securities.Identity/MGH.Core.Infrastructure.Securities.Identity.csproj --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
