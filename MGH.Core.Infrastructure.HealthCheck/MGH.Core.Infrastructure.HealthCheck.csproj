@@ -33,7 +33,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\MGH.Core.Infrastructure.Cache.Redis\MGH.Core.Infrastructure.Caching.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure.Caching\MGH.Core.Infrastructure.Caching.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure.EventBus.RabbitMq\MGH.Core.Infrastructure.EventBus.RabbitMq.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure.Persistence.EF\MGH.Core.Infrastructure.Persistence.EF.csproj" />
