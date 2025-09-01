@@ -1,17 +1,29 @@
 ﻿using System.Collections;
-using MGH.Core.Domain.BaseEntity;
-using MGH.Core.Domain.BaseEntity.Abstract;
+using MGH.Core.Domain.BaseModels;
+using MGH.Core.Infrastructure.Persistence.Base;
 using MGH.Core.Infrastructure.Persistence.EF.Extensions;
-using MGH.Core.Infrastructure.Persistence.EF.Models.Filters.GetModels;
-using MGH.Core.Infrastructure.Persistence.EF.Models.Paging;
+using MGH.Core.Infrastructure.Persistence.Models.Filters.GetModels;
+using MGH.Core.Infrastructure.Persistence.Models.Paging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Base.Repository;
 
-public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntity, TKey> where TEntity :AuditAbleEntity<TKey>
+public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity :class,IEntity
 {
-    private IQueryable<TEntity> Query() => dbContext.Set<TEntity>();
+    private readonly DbContext _dbContext;
+
+    protected Repository()
+    {
+        
+    }
+
+    protected Repository(DbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    private IQueryable<TEntity> Query() => _dbContext.Set<TEntity>();
 
     public async Task<TEntity> GetAsync(GetModel<TEntity> getBaseModel)
     {
@@ -27,7 +39,7 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
 
     public async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken)
     {
-        return await dbContext.Set<TEntity>().FindAsync(id, cancellationToken);
+        return await _dbContext.Set<TEntity>().FindAsync(id,cancellationToken);
     }
 
     public async Task<IPaginate<TEntity>> GetListAsync(GetListModelAsync<TEntity> getListAsyncModel)
@@ -76,7 +88,7 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
 
     public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        await dbContext.AddAsync(entity, cancellationToken);
+        await _dbContext.AddAsync(entity, cancellationToken);
         return entity;
     }
 
@@ -100,14 +112,14 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
         }
         else
         {
-            dbContext.Remove(entity);
+            _dbContext.Remove(entity);
         }
     }
 
     private void CheckHasEntityHaveOneToOneRelation(TEntity entity)
     {
         bool hasEntityHaveOneToOneRelation =
-            dbContext
+            _dbContext
                 .Entry(entity)
                 .Metadata.GetForeignKeys()
                 .All(
@@ -123,13 +135,13 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
             );
     }
 
-    private async Task SetEntityAsSoftDeletedAsync(IAuditAbleEntity entity)
+    private async Task SetEntityAsSoftDeletedAsync(IEntity entity)
     {
         if (entity.DeletedAt.HasValue)
             return;
         entity.DeletedAt =DateTime.UtcNow;
 
-        var navigations = dbContext
+        var navigations = _dbContext
             .Entry(entity)
             .Metadata.GetNavigations()
             .Where(x => x is
@@ -149,19 +161,19 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
             {
                 if (navValue == null)
                 {
-                    IQueryable query = dbContext.Entry(entity).Collection(navigation.PropertyInfo.Name).Query();
+                    IQueryable query = _dbContext.Entry(entity).Collection(navigation.PropertyInfo.Name).Query();
                     navValue = await GetRelationLoaderQuery(query,
                         navigationPropertyType: navigation.PropertyInfo.GetType()).ToListAsync();
                 }
 
-                foreach (IAuditAbleEntity navValueItem in (IEnumerable)navValue)
+                foreach (IEntity navValueItem in (IEnumerable)navValue)
                     await SetEntityAsSoftDeletedAsync(navValueItem);
             }
             else
             {
                 if (navValue == null)
                 {
-                    IQueryable query = dbContext.Entry(entity).Reference(navigation.PropertyInfo.Name).Query();
+                    IQueryable query = _dbContext.Entry(entity).Reference(navigation.PropertyInfo.Name).Query();
                     navValue = await GetRelationLoaderQuery(query,
                             navigationPropertyType: navigation.PropertyInfo.GetType())
                         .FirstOrDefaultAsync();
@@ -169,11 +181,11 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
                         continue;
                 }
 
-                await SetEntityAsSoftDeletedAsync((IAuditAbleEntity)navValue);
+                await SetEntityAsSoftDeletedAsync((IEntity)navValue);
             }
         }
 
-        dbContext.Update(entity);
+        _dbContext.Update(entity);
     }
 
     private IQueryable<object> GetRelationLoaderQuery(IQueryable query, Type navigationPropertyType)
@@ -186,7 +198,7 @@ public class Repository<TEntity, TKey>(DbContext dbContext) : IRepository<TEntit
                 .MakeGenericMethod(navigationPropertyType);
         var queryProviderQuery =
             (IQueryable<object>)createQueryMethod.Invoke(query.Provider,
-                parameters: new object[] { query.Expression })!;
-        return queryProviderQuery.Where(x => !((IAuditAbleEntity)x).DeletedAt.HasValue);
+                parameters: [query.Expression])!;
+        return queryProviderQuery.Where(x => !((IEntity)x).DeletedAt.HasValue);
     }
 }

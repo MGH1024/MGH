@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.BaseEntity;
+﻿using MGH.Core.Domain.BaseModels;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class OperationClaim : AuditAbleEntity<int>
+public class OperationClaim : Entity<int>
 {
     public string Name { get; set; }
 
@@ -20,8 +20,8 @@ public class OperationClaim : AuditAbleEntity<int>
     }
 
     public OperationClaim(int id, string name)
-        : base(id)
     {
+        Id = id;
         Name = name;
     }
 }

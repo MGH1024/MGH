@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using MGH.Core.Domain.Entity.Audits;
+using MGH.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using MGH.Core.Infrastructure.Public;
 using Microsoft.AspNetCore.Http;

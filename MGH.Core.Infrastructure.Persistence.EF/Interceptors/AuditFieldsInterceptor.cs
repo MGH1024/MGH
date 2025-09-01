@@ -1,5 +1,4 @@
 ﻿using MGH.Core.Infrastructure.Persistence.EF.Extensions;
-using MGH.Core.Infrastructure.Persistence.EF.Models;
 using MGH.Core.Infrastructure.Public;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;

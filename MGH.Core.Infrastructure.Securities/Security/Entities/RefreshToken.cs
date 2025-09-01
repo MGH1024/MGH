@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.BaseEntity;
+﻿using MGH.Core.Domain.BaseModels;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class RefreshToken : AuditAbleEntity<int>
+public class RefreshToken : Entity<int>
 {
     public int UserId { get; set; }
     public string Token { get; set; }
@@ -30,8 +30,9 @@ public class RefreshToken : AuditAbleEntity<int>
     }
 
     public RefreshToken(int id, int userId, string token, DateTime expires, string createdByIp)
-        : base(id)
+
     {
+        Id = id;
         UserId = userId;
         Token = token;
         Expires = expires;

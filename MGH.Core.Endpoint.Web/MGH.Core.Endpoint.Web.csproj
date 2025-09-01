@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<PackageVersion>3.0.1</PackageVersion>
+		<Copyright>MGH</Copyright>
+		<PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Endpoint.Swagger</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
+		<PackageTags>microservice, netcore</PackageTags>
+		<AssemblyVersion>3.0.1</AssemblyVersion>
+		<FileVersion>3.0.1</FileVersion>
+		<ProductVersion>3.0.1</ProductVersion>
+		<Title>MGH.Core.Endpoint.web</Title>
+		<Authors>MGH</Authors>
+		<Description>it's a package for manage basic web porpuses in endpoints</Description>
+	</PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="MediatR" Version="12.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MGH.Core.Infrastructure.Securities\MGH.Core.Infrastructure.Securities.csproj" />
+    </ItemGroup>
+
+</Project>

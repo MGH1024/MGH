@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Securities.Identity", "MGH.Core.Infrastructure.Securities.Identity\MGH.Core.Infrastructure.Securities.Identity.csproj", "{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Application", "MGH.Core.Application\MGH.Core.Application.csproj", "{CA2170DB-8B02-4E20-9E77-FF3857A2F717}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.CrossCutting", "MGH.Core.CrossCutting\MGH.Core.CrossCutting.csproj", "{27F8FB9B-F4D2-4278-9626-7375586FD3CE}"
@@ -17,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Endpoint.Swagger",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure", "MGH.Core.Infrastructure\MGH.Core.Infrastructure.csproj", "{7EE72DE7-3970-408C-90E6-FCA586591D42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Cache.Redis", "MGH.Core.Infrastructure.Cache.Redis\MGH.Core.Infrastructure.Cache.Redis.csproj", "{54934C75-3AB9-4F44-AF5A-2AEC49091D7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Caching", "MGH.Core.Infrastructure.Cache.Redis\MGH.Core.Infrastructure.Caching.csproj", "{54934C75-3AB9-4F44-AF5A-2AEC49091D7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.ElasticSearch", "MGH.Core.Infrastructure.ElasticSearch\MGH.Core.Infrastructure.ElasticSearch.csproj", "{95436043-DD12-4C8D-ABF5-E28EBDB6E802}"
 EndProject
@@ -35,16 +33,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Per
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Securities", "MGH.Core.Infrastructure.Securities\MGH.Core.Infrastructure.Securities.csproj", "{77F698D7-93E6-48E3-B472-FF762362AE8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Core.Infrastructure.Persistence", "MGH.Core.Infrastructure.Persistence\MGH.Core.Infrastructure.Persistence.csproj", "{5808FFB9-B544-C3CA-9698-9D5034FF9F14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGH.Core.Endpoint.Web", "MGH.Core.Endpoint.Web\MGH.Core.Endpoint.Web.csproj", "{FD491619-E812-E940-58DB-BD0B9DDF05BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8404E2CF-3B4B-42C0-A3F4-B2B68FA84C80}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA2170DB-8B02-4E20-9E77-FF3857A2F717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA2170DB-8B02-4E20-9E77-FF3857A2F717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA2170DB-8B02-4E20-9E77-FF3857A2F717}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -105,6 +103,14 @@ Global
 		{77F698D7-93E6-48E3-B472-FF762362AE8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77F698D7-93E6-48E3-B472-FF762362AE8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77F698D7-93E6-48E3-B472-FF762362AE8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5808FFB9-B544-C3CA-9698-9D5034FF9F14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5808FFB9-B544-C3CA-9698-9D5034FF9F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5808FFB9-B544-C3CA-9698-9D5034FF9F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5808FFB9-B544-C3CA-9698-9D5034FF9F14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD491619-E812-E940-58DB-BD0B9DDF05BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD491619-E812-E940-58DB-BD0B9DDF05BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD491619-E812-E940-58DB-BD0B9DDF05BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD491619-E812-E940-58DB-BD0B9DDF05BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,12 +1,12 @@
 ﻿using HealthChecks.UI.Client;
-using MGH.Core.Infrastructure.Persistence.EF.Models.Configuration;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using MGH.Core.Infrastructure.Cache.Redis.Models;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Model;
+using Microsoft.Extensions.Configuration;
+using MGH.Core.Infrastructure.Caching.Redis;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using MGH.Core.Infrastructure.Persistence.Models.Configuration;
 
 namespace MGH.Core.Infrastructure.HealthCheck;
 
@@ -19,8 +19,8 @@ public static class RegisterHealthCheck
             configuration.GetSection(nameof(DatabaseConnection)).GetValue<string>("SqlConnection") ??
             throw new ArgumentNullException(nameof(DatabaseConnection.SqlConnection));
 
-        var defaultConnection = configuration.GetSection("RabbitMq:DefaultConnection").Get<RabbitMqConnection>()
-                                ?? throw new ArgumentNullException(nameof(RabbitMq.DefaultConnection));
+        var defaultConnection = configuration.GetSection("RabbitMq:Connections:Default").Get<RabbitMqConfig>()
+                                ?? throw new ArgumentNullException(nameof(RabbitMqOptions.Connections.Default));
 
         var redisConnection = configuration.GetSection("RedisConnections:DefaultConfiguration")
                                   .Get<RedisConfiguration>()
@@ -31,15 +31,15 @@ public static class RegisterHealthCheck
             .AddSqlServer(sqlConnectionString)
             .AddDbContextCheck<T>()
             .AddRabbitMQ(defaultConnection.HealthAddress)
-            .AddRedis(redisConnection.Configuration,name:nameof(RedisConnections.DefaultConfiguration));
+            .AddRedis(redisConnection.Configuration, name: nameof(RedisConnections.DefaultConfiguration));
 
         services.AddHealthChecksUI(setup =>
-            {
-                setup.SetEvaluationTimeInSeconds(10); // Set the evaluation time for health checks
-                setup.MaximumHistoryEntriesPerEndpoint(60); // Set maximum history of health checks
-                setup.SetApiMaxActiveRequests(1); // Set maximum API request concurrency
-                setup.AddHealthCheckEndpoint("Health Check API", "/api/health"); // Map your health check API
-            })
+        {
+            setup.SetEvaluationTimeInSeconds(10); // Set the evaluation time for health checks
+            setup.MaximumHistoryEntriesPerEndpoint(60); // Set maximum history of health checks
+            setup.SetApiMaxActiveRequests(1); // Set maximum API request concurrency
+            setup.AddHealthCheckEndpoint("Health Check API", "/api/health"); // Map your health check API
+        })
             .AddInMemoryStorage();
     }
 

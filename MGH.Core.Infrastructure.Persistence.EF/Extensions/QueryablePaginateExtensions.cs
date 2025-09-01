@@ -1,4 +1,4 @@
-﻿using MGH.Core.Infrastructure.Persistence.EF.Models.Paging;
+﻿using MGH.Core.Infrastructure.Persistence.Models.Paging;
 using Microsoft.EntityFrameworkCore;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Extensions;

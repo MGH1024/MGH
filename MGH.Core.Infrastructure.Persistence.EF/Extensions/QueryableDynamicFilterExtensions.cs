@@ -1,7 +1,7 @@
 ﻿using System.Linq.Dynamic.Core;
 using System.Text;
-using MGH.Core.Domain.BaseEntity;
-using MGH.Core.Infrastructure.Persistence.EF.Models.Filters;
+using MGH.Core.Domain.BaseModels;
+using MGH.Core.Infrastructure.Persistence.Models.Filters;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Extensions;
 

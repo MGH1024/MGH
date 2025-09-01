@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.BaseEntity.Abstract;
+﻿using MGH.Core.Domain.BaseModels;
+using MGH.Core.Infrastructure.Caching.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using MGH.Core.Infrastructure.Cache.Redis.Services;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Interceptors;
@@ -18,7 +18,7 @@ public class RemoveCacheInterceptor(ICachingService<IEntityType> cachingService)
         if (dbContext is null)
             return base.SavingChangesAsync(eventData, result, cancellationToken);
 
-        var modifiedEntries = dbContext.ChangeTracker.Entries<IAuditAbleEntity>().ToList();
+        var modifiedEntries = dbContext.ChangeTracker.Entries<IEntity>().ToList();
         foreach (var item in modifiedEntries)
         {
             var entityType = item.Context.Model.FindEntityType(item.Entity.GetType());
@@ -42,7 +42,7 @@ public class RemoveCacheInterceptor(ICachingService<IEntityType> cachingService)
         return entityType?.ClrType.Name is { } entityName ? $"GetList_{entityName}" : string.Empty;
     }
 
-    private static string GenerateSpecificKeyForEntities(IEntityType entityType, EntityEntry<IAuditAbleEntity> item)
+    private static string GenerateSpecificKeyForEntities(IEntityType entityType, EntityEntry<IEntity> item)
     {
         if (entityType?.ClrType.Name is null)
             return string.Empty;
@@ -57,7 +57,7 @@ public class RemoveCacheInterceptor(ICachingService<IEntityType> cachingService)
         return $"{entityName}_Id:{idValue}";
     }
 
-    private static object GetPkValue(EntityEntry<IAuditAbleEntity> item, IKey primaryKey)
+    private static object GetPkValue(EntityEntry<IEntity> item, IKey primaryKey)
     {
         var keyValues = primaryKey.Properties
             .Select(p => item.Property(p.Name).CurrentValue)

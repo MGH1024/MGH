@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
-using MGH.Core.Domain.BaseEntity.Abstract;
-using MGH.Core.Domain.Entity.Outboxes;
-using MGH.Core.Infrastructure.Persistence.EF.Models;
+using MGH.Core.Domain.BaseModels;
+using MGH.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,10 +12,10 @@ public static class AddAuditFieldsInterceptorExtension
     public static void SetOutbox(this DbContextEventData eventData, DbContext dbContext)
     {
         var outboxMessages =
-            eventData.Context?.ChangeTracker.Entries<IAggregateRoot>()
+            eventData.Context?.ChangeTracker.Entries<IAggregate>()
                 .Select(a => a.Entity)
-                .Where(a => a.Events.Any())
-                .SelectMany(a => a.Events)
+                .Where(a => a.DomainEvents.Any())
+                .SelectMany(a => a.DomainEvents)
                 .Select(a => new OutboxMessage
                 {
                     Id = Guid.NewGuid(),
@@ -35,7 +34,7 @@ public static class AddAuditFieldsInterceptorExtension
     
     public static void SetAuditEntries(this DbContextEventData eventData,AuditInterceptorDto auditInterceptorDto)
     {
-        var modifiedEntries = eventData.Context?.ChangeTracker.Entries<IAuditAbleEntity>().ToList();
+        var modifiedEntries = eventData.Context?.ChangeTracker.Entries<IEntity>().ToList();
         if (modifiedEntries == null) return;
         foreach (var item in modifiedEntries)
         {

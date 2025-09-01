@@ -1,8 +1,8 @@
-using MGH.Core.Domain.BaseEntity;
+using MGH.Core.Domain.BaseModels;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class Policy :AuditAbleEntity<int>
+public class Policy :Entity<int>
 {
     public string Title { get; set; }
     
@@ -13,8 +13,9 @@ public class Policy :AuditAbleEntity<int>
         Title = title;
     }
 
-    public Policy(int id,string title) :base(id)
+    public Policy(int id,string title)
     {
+        Id = id;
         Title = title;
     }
 }

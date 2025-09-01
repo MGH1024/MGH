@@ -1,8 +1,8 @@
-using MGH.Core.Domain.BaseEntity;
+using MGH.Core.Domain.BaseModels;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class PolicyOperationClaim :AuditAbleEntity<int>
+public class PolicyOperationClaim :Entity<int>
 {
     public int PolicyId { get; set; }
     public int OperationClaimId { get; set; }
@@ -16,8 +16,9 @@ public class PolicyOperationClaim :AuditAbleEntity<int>
         OperationClaimId = operationClaimId;
     }
     
-    public PolicyOperationClaim(int id, int policyId, int operationClaimId) : base(id)
+    public PolicyOperationClaim(int id, int policyId, int operationClaimId)
     {
+        Id = id;
         PolicyId = policyId;
         OperationClaimId = operationClaimId;
     }

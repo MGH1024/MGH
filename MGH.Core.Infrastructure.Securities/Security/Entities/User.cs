@@ -1,9 +1,8 @@
-﻿
-using MGH.Core.Domain.BaseEntity;
+﻿using MGH.Core.Domain.BaseModels;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class User : AuditAbleEntity<int>
+public class User : Entity<int>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -48,8 +47,8 @@ public class User : AuditAbleEntity<int>
         byte[] passwordHash,
         bool status
     )
-        : base(id)
     {
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
