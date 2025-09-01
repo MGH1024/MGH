@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MGH.Core.Infrastructure.Caching.Redis;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using MGH.Core.Infrastructure.Persistence.Models.Configuration;
+using MGH.Core.Infrastructure.Caching.Redis;
 
 namespace MGH.Core.Infrastructure.HealthCheck;
 

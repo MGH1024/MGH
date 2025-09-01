@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Endpoint.Swagger",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure", "MGH.Core.Infrastructure\MGH.Core.Infrastructure.csproj", "{7EE72DE7-3970-408C-90E6-FCA586591D42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Caching", "MGH.Core.Infrastructure.Cache.Redis\MGH.Core.Infrastructure.Caching.csproj", "{54934C75-3AB9-4F44-AF5A-2AEC49091D7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.Caching", "MGH.Core.Infrastructure.Caching\MGH.Core.Infrastructure.Caching.csproj", "{54934C75-3AB9-4F44-AF5A-2AEC49091D7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MGH.Core.Infrastructure.ElasticSearch", "MGH.Core.Infrastructure.ElasticSearch\MGH.Core.Infrastructure.ElasticSearch.csproj", "{95436043-DD12-4C8D-ABF5-E28EBDB6E802}"
 EndProject

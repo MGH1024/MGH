@@ -26,6 +26,7 @@
     <ItemGroup>
         <ProjectReference Include="..\MGH.Core.Domain\MGH.Core.Domain.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure.Cache.Redis\MGH.Core.Infrastructure.Caching.csproj" />
+        <ProjectReference Include="..\MGH.Core.Infrastructure.Caching\MGH.Core.Infrastructure.Caching.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure.Persistence\MGH.Core.Infrastructure.Persistence.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure\MGH.Core.Infrastructure.csproj" />
     </ItemGroup>
