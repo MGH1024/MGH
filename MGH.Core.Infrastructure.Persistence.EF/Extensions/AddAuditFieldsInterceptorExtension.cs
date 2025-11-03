@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using MGH.Core.Domain.BaseModels;
+using MGH.Core.Domain.Base;
 using MGH.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -12,7 +12,7 @@ public static class AddAuditFieldsInterceptorExtension
     public static void SetOutbox(this DbContextEventData eventData, DbContext dbContext)
     {
         var outboxMessages =
-            eventData.Context?.ChangeTracker.Entries<IAggregate>()
+            eventData.Context?.ChangeTracker.Entries<IAggregateRoot>()
                 .Select(a => a.Entity)
                 .Where(a => a.DomainEvents.Any())
                 .SelectMany(a => a.DomainEvents)
@@ -31,8 +31,8 @@ public static class AddAuditFieldsInterceptorExtension
         if (outboxMessages != null)
             dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
     }
-    
-    public static void SetAuditEntries(this DbContextEventData eventData,AuditInterceptorDto auditInterceptorDto)
+
+    public static void SetAuditEntries(this DbContextEventData eventData, AuditInterceptorDto auditInterceptorDto)
     {
         var modifiedEntries = eventData.Context?.ChangeTracker.Entries<IEntity>().ToList();
         if (modifiedEntries == null) return;
@@ -44,10 +44,10 @@ public static class AddAuditFieldsInterceptorExtension
 
             if (item.State == EntityState.Added)
                 item.AttachAddedState(auditInterceptorDto);
-            
+
             if (item.State == EntityState.Deleted)
                 item.AttachDeletedState(auditInterceptorDto);
-            
+
             if (item.State == EntityState.Modified)
             {
                 item.AttachModifiedState(auditInterceptorDto);
@@ -55,8 +55,8 @@ public static class AddAuditFieldsInterceptorExtension
             }
         }
     }
-    
-    private static void AttachAddedState(this EntityEntry item,AuditInterceptorDto auditInterceptorDto)
+
+    private static void AttachAddedState(this EntityEntry item, AuditInterceptorDto auditInterceptorDto)
     {
         item.Property("CreatedAt").CurrentValue = auditInterceptorDto.Now;
         item.Property("CreatedBy").CurrentValue = auditInterceptorDto.Username;
@@ -68,7 +68,7 @@ public static class AddAuditFieldsInterceptorExtension
         var deletedAtValue = item.Property("DeletedAt").CurrentValue;
         if (deletedAtValue is not null)
         {
-            item.Property("DeletedAt").CurrentValue =  auditInterceptorDto.Now;
+            item.Property("DeletedAt").CurrentValue = auditInterceptorDto.Now;
             item.Property("DeletedBy").CurrentValue = auditInterceptorDto.Username;
             item.Property("DeletedByIp").CurrentValue = auditInterceptorDto.IpAddress;
         }
@@ -76,7 +76,7 @@ public static class AddAuditFieldsInterceptorExtension
 
     private static void AttachModifiedState(this EntityEntry item, AuditInterceptorDto auditInterceptorDto)
     {
-        item.Property("UpdatedAt").CurrentValue =  auditInterceptorDto.Now;
+        item.Property("UpdatedAt").CurrentValue = auditInterceptorDto.Now;
         item.Property("UpdatedBy").CurrentValue = auditInterceptorDto.Username;
         item.Property("UpdatedByIp").CurrentValue = auditInterceptorDto.IpAddress;
     }

@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.BaseModels;
+﻿using MGH.Core.Domain.Base;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class RefreshToken : Entity<int>
+public class RefreshToken : FullAuditableEntity<int>
 {
     public int UserId { get; set; }
     public string Token { get; set; }

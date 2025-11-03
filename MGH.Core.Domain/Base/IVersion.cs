@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.Domain.BaseModels;
+﻿namespace MGH.Core.Domain.Base;
 
 public interface IVersion
 {

@@ -1,6 +1,8 @@
-﻿namespace MGH.Core.Domain.BaseModels;
+﻿using MGH.Core.Domain.Audits;
 
-public abstract class Entity<T> : IEntity<T>
+namespace MGH.Core.Domain.Base;
+
+public abstract class FullAuditableEntity<T> : IEntity<T>,IFullAuditable
 {
     public T Id { get; set; }
     public DateTime CreatedAt { get; set; }

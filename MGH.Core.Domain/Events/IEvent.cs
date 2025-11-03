@@ -2,6 +2,6 @@
 
 public interface IEvent
 {
-     Guid Id { get; set; }
-     DateTime OccurredOn { get; set; }
+     Guid Id { get;  }
+     DateTime OccurredOn { get;}
 }

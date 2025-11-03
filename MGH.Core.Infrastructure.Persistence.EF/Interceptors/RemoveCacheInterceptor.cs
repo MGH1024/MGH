@@ -1,4 +1,4 @@
-﻿using MGH.Core.Domain.BaseModels;
+﻿using MGH.Core.Domain.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Diagnostics;

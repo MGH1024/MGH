@@ -1,8 +1,8 @@
-using MGH.Core.Domain.BaseModels;
+using MGH.Core.Domain.Base;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class PolicyOperationClaim :Entity<int>
+public class PolicyOperationClaim :FullAuditableEntity<int>
 {
     public int PolicyId { get; set; }
     public int OperationClaimId { get; set; }

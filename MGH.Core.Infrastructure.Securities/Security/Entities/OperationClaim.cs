@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.BaseModels;
+﻿using MGH.Core.Domain.Base;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class OperationClaim : Entity<int>
+public class OperationClaim : FullAuditableEntity<int>
 {
     public string Name { get; set; }
 
