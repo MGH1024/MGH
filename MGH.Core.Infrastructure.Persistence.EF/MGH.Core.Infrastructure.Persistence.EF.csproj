@@ -4,25 +4,25 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<PackageVersion>3.0.3</PackageVersion>
+		<PackageVersion>3.0.4</PackageVersion>
 		<Copyright>MGH</Copyright>
 		<PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Infrastructure.Persistence.EF</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
 		<PackageTags>microservice, netcore</PackageTags>
-		<AssemblyVersion>3.0.3</AssemblyVersion>
-		<FileVersion>3.0.3</FileVersion>
-		<ProductVersion>3.0.3</ProductVersion>
+		<AssemblyVersion>3.0.4</AssemblyVersion>
+		<FileVersion>3.0.4</FileVersion>
+		<ProductVersion>3.0.4</ProductVersion>
 		<Title>MGH.Core.Infrastructure.Persistence.EF</Title>
 		<Authors>MGH</Authors>
 		<Description>it's a package for manage Core Infrastructures persistence ef</Description>
     </PropertyGroup>
-    
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.4" />
-    </ItemGroup>
-    
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.9" />
+	</ItemGroup>
+	
     <ItemGroup>
         <ProjectReference Include="..\MGH.Core.Domain\MGH.Core.Domain.csproj" />
         <ProjectReference Include="..\MGH.Core.Infrastructure.Cache.Redis\MGH.Core.Infrastructure.Caching.csproj" />
