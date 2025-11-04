@@ -4,14 +4,14 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <PackageVersion>3.0.1</PackageVersion>
+        <PackageVersion>3.0.2</PackageVersion>
         <Copyright>MGH</Copyright>
         <PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Application</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
         <PackageTags>microservice, netcore</PackageTags>
-        <AssemblyVersion>3.0.1</AssemblyVersion>
-        <FileVersion>3.0.1</FileVersion>
-        <ProductVersion>3.0.1</ProductVersion>
+        <AssemblyVersion>3.0.2</AssemblyVersion>
+        <FileVersion>3.0.2</FileVersion>
+        <ProductVersion>3.0.2</ProductVersion>
         <Title>MGH.Core.Application</Title>
         <Authors>MGH</Authors>
         <Description>it's a package for manage Core Application layer</Description>
@@ -22,7 +22,7 @@
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
 		<PackageReference Include="MediatR" Version="12.4.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 
