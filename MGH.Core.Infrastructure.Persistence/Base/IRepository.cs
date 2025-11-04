@@ -5,12 +5,12 @@ namespace MGH.Core.Infrastructure.Persistence.Base;
 
 public interface IRepository<TEntity, in TKey>
 {
-    Task<TEntity> GetAsync(GetModel<TEntity> getBaseModel);
-    Task<TEntity> GetAsync(TKey id,CancellationToken cancellationToken);
-    Task<IPaginate<TEntity>> GetListAsync(GetListModelAsync<TEntity> getListAsyncModel);
-    Task<IPaginate<TEntity>> GetDynamicListAsync(GetDynamicListModelAsync<TEntity> dynamicListAsyncModel);
-    Task<bool> AnyAsync(GetBaseModel<TEntity> getBaseModel, CancellationToken cancellationToken);
-    Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken);
-    Task<TEntity> DeleteAsync(TEntity entity, bool permanent = false);
-    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+    Task<TEntity> GetAsync(GetModel<TEntity> getBaseModel, CancellationToken cancellationToken = default);
+    Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
+    Task<IPaginate<TEntity>> GetListAsync(GetListModelAsync<TEntity> getListAsyncModel, CancellationToken cancellationToken = default);
+    Task<IPaginate<TEntity>> GetDynamicListAsync(GetDynamicListModelAsync<TEntity> dynamicListAsyncModel, CancellationToken cancellationToken = default);
+    Task<bool> AnyAsync(GetBaseModel<TEntity> getBaseModel, CancellationToken cancellationToken = default);
+    Task<TEntity> AddAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
+    Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
+    Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
 }
