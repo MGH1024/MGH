@@ -84,14 +84,14 @@ public static class RegisterHealthCheck
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddHealthChecksDashboard(this IServiceCollection services)
+    public static IServiceCollection AddHealthChecksDashboard(this IServiceCollection services, string title)
     {
         services.AddHealthChecksUI(setup =>
         {
             setup.SetEvaluationTimeInSeconds(10);
             setup.MaximumHistoryEntriesPerEndpoint(60);
             setup.SetApiMaxActiveRequests(1);
-            setup.AddHealthCheckEndpoint("Health Check API", "/api/health");
+            setup.AddHealthCheckEndpoint(title, "/health");
         })
             .AddInMemoryStorage();
 
