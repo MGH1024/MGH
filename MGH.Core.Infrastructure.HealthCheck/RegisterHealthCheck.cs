@@ -1,53 +1,89 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
-using MGH.Core.Infrastructure.Persistence.Models.Configuration;
-using MGH.Core.Infrastructure.Caching.Redis;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace MGH.Core.Infrastructure.HealthCheck;
 
 public static class RegisterHealthCheck
 {
-    public static IServiceCollection AddSqlServerHealthCheck<T>(this IServiceCollection services, IConfiguration configuration)
+    /// <summary>
+    /// it checks sql server healthy status in low level with calling simple 'select 1' query
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="builder"></param>
+    /// <param name="connectionString"></param>
+    /// <returns></returns>
+    public static IHealthChecksBuilder AddSqlServerHealthCheck<T>(
+        this IHealthChecksBuilder builder, string connectionString)
         where T : DbContext
     {
-        var sqlConnectionString =
-            configuration.GetSection(nameof(DatabaseConnection)).GetValue<string>("SqlConnection") ??
-            throw new ArgumentNullException(nameof(DatabaseConnection.SqlConnection));
-
-        services.AddHealthChecks()
-            .AddSqlServer(sqlConnectionString)
-            .AddDbContextCheck<T>();
-
-        return services;
+        builder.AddSqlServer(
+            connectionString: connectionString,
+            name: "Sql Server",
+            healthQuery: "SELECT 1;",
+            failureStatus: HealthStatus.Unhealthy,
+            tags: new string[] { "db", "sql", "sqlserver" });
+        return builder;
     }
 
-    public static IServiceCollection AddRabbitMqHealthCheck(this IServiceCollection services, IConfiguration configuration)
+    /// <summary>
+    /// it check dbContext healthy status in ef core side and use builtIn Context connection string
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="builder"></param>
+    /// <param name="connectionString"></param>
+    /// <returns></returns>
+    public static IHealthChecksBuilder AddDbContextHealthCheck<T>(
+       this IHealthChecksBuilder builder, string connectionString)
+       where T : DbContext
     {
-        var defaultConnection = configuration.GetSection("RabbitMq:Connections:Default").Get<RabbitMqConfig>() ??
-                                throw new ArgumentNullException(nameof(RabbitMqOptions.Connections.Default));
-
-        services.AddHealthChecks()
-            .AddRabbitMQ(defaultConnection.HealthAddress);
-
-        return services;
+        builder.AddDbContextCheck<T>(
+            name: typeof(T).Name,
+            failureStatus: HealthStatus.Unhealthy,
+            tags: new string[] { "db", "dbContext" });
+        return builder;
     }
 
-    public static IServiceCollection AddRedisHealthCheck(this IServiceCollection services, IConfiguration configuration)
+    /// <summary>
+    /// it check rabbit healthy status
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="rabbitConnectionString"></param>
+    /// <returns></returns>
+    public static IHealthChecksBuilder AddRabbitMqHealthCheck(
+        this IHealthChecksBuilder builder, string rabbitConnectionString)
     {
-        var redisConnection = configuration.GetSection("RedisConnections:DefaultConfiguration").Get<RedisConfiguration>() ??
-                              throw new ArgumentNullException(nameof(RedisConnections.DefaultConfiguration));
-
-        services.AddHealthChecks()
-            .AddRedis(redisConnection.Configuration, name: nameof(RedisConnections.DefaultConfiguration));
-
-        return services;
+        builder.AddRabbitMQ(
+            rabbitConnectionString: rabbitConnectionString,
+            name: "RabbitMq",
+            tags: new string[] { "rabbit" });
+        return builder;
     }
 
+    /// <summary>
+    /// it check redis healthy status
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="redisConnectionString"></param>
+    /// <returns></returns>
+    public static IHealthChecksBuilder AddRedisHealthCheck(
+        this IHealthChecksBuilder builder, string redisConnectionString)
+    {
+        builder.AddRedis(
+            redisConnectionString: redisConnectionString,
+            name: "Redis",
+            tags: new string[] { "redis" });
+        return builder;
+    }
+
+    /// <summary>
+    /// it capable project to add health chack dashboard
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
     public static IServiceCollection AddHealthChecksDashboard(this IServiceCollection services)
     {
         services.AddHealthChecksUI(setup =>
@@ -62,9 +98,13 @@ public static class RegisterHealthCheck
         return services;
     }
 
+    /// <summary>
+    /// it add health check Middleware to the web application
+    /// </summary>
+    /// <param name="app"></param>
     public static void UseHealthChecksEndpoints(this WebApplication app)
     {
-        app.MapHealthChecks("/api/health", new HealthCheckOptions()
+        app.MapHealthChecks("/health", new HealthCheckOptions()
         {
             Predicate = _ => true,
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
