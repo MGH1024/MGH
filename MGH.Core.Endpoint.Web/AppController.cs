@@ -97,8 +97,11 @@ public abstract class AppController(ISender sender) : ControllerBase
     /// </exception>
     protected void SetCookie(string key, string value, DateTime expires, bool httpOnly = true, bool secure = true)
     {
-        if (Response == null)
+        if (Response is null)
             throw new InvalidOperationException("HTTP response is not available to set cookies.");
+
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException($"Cookie '{key}' cannot have a null or empty value.", nameof(value));
 
         var cookieOptions = new CookieOptions
         {
