@@ -5,7 +5,7 @@ using MGH.Core.Infrastructure.Persistence.EF.Extensions;
 using MGH.Core.Infrastructure.Persistence.Models.Paging;
 using MGH.Core.Infrastructure.Persistence.Models.Filters.GetModels;
 
-namespace MGH.Core.Infrastructure.Persistence.EF.Base.Repository;
+namespace MGH.Core.Infrastructure.Persistence.EF.Base.Repositories;
 
 public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
 {
