@@ -1,13 +1,25 @@
 ﻿using MediatR;
-using MGH.Core.Infrastructure.Securities.Security.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using MGH.Core.Infrastructure.Securities.Security.Extensions;
 
 namespace MGH.Core.Endpoint.Web;
 
-public abstract class AppController(ISender sender) : ControllerBase
+public abstract class AppController(ISender sender, IHostingEnvironment env) : ControllerBase
 {
     protected readonly ISender Sender = sender;
+    protected readonly IHostingEnvironment Env = env;
+
+    /// <summary>
+    /// get current environment
+    /// </summary>
+    /// <returns>get current environment</returns>
+    [HttpGet("env")]
+    public IActionResult GetEnv()
+    {
+        return Ok(Env.EnvironmentName);
+    }
 
     /// <summary>
     /// Retrieves the client's IP address from the current HTTP request.
@@ -107,7 +119,7 @@ public abstract class AppController(ISender sender) : ControllerBase
         {
             HttpOnly = httpOnly,          // Prevent client-side scripts from reading it
             Secure = secure,              // Send only over HTTPS
-            SameSite = SameSiteMode.Strict, // Prevent cross-site request forgery (CSRF)
+            SameSite = Env.IsDevelopment() ? SameSiteMode.Lax : SameSiteMode.Strict,  // Prevent cross-site request forgery (CSRF)
             Path = "/",                   // Limit cookie scope
             Expires = expires
         };
