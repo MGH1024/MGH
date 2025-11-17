@@ -19,11 +19,11 @@ public abstract class AppController(ISender sender) : ControllerBase
     /// get current environment
     /// </summary>
     /// <returns>get current environment</returns>
-    [HttpGet("env")]
-    public IActionResult GetEnv()
-    {
-        return Ok(Env.EnvironmentName);
-    }
+    //[HttpGet("env")]
+    //public IActionResult GetEnv()
+    //{
+    //    return Ok(Env.EnvironmentName);
+    //}
 
     /// <summary>
     /// Retrieves the client's IP address from the current HTTP request.
