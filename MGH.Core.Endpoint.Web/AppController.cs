@@ -2,14 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.Securities.Security.Extensions;
 
 namespace MGH.Core.Endpoint.Web;
 
-public abstract class AppController(ISender sender, IHostingEnvironment env) : ControllerBase
+public abstract class AppController(ISender sender) : ControllerBase
 {
     protected readonly ISender Sender = sender;
-    protected readonly IHostingEnvironment Env = env;
+
+    protected IHostingEnvironment Env =>
+        HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>();
+
 
     /// <summary>
     /// get current environment
