@@ -9,28 +9,28 @@ namespace MGH.Core.Infrastructure.Persistence.EF.Extensions;
 
 public static class AddAuditFieldsInterceptorExtension
 {
-    public static void SetOutbox(this DbContextEventData eventData, DbContext dbContext)
-    {
-        var outboxMessages =
-            eventData.Context?.ChangeTracker.Entries<IAggregateRoot>()
-                .Select(a => a.Entity)
-                .Where(a => a.DomainEvents.Any())
-                .SelectMany(a => a.DomainEvents)
-                .Select(a => new OutboxMessage
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedAt = DateTime.Now,
-                    Type = a.GetType().Name,
-                    Content = JsonSerializer.Serialize(a, new JsonSerializerOptions
-                    {
-                        WriteIndented = false,
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    })
-                }).ToList();
+    //public static void SetOutbox(this DbContextEventData eventData, DbContext dbContext)
+    //{
+    //    var outboxMessages =
+    //        eventData.Context?.ChangeTracker.Entries<IAggregateRoot>()
+    //            .Select(a => a.Entity)
+    //            .Where(a => a.DomainEvents.Any())
+    //            .SelectMany(a => a.DomainEvents)
+    //            .Select(a => new OutboxMessage
+    //            {
+    //                Id = Guid.NewGuid(),
+    //                CreatedAt = DateTime.Now,
+    //                Type = a.GetType().Name,
+    //                Content = JsonSerializer.Serialize(a, new JsonSerializerOptions
+    //                {
+    //                    WriteIndented = false,
+    //                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    //                })
+    //            }).ToList();
 
-        if (outboxMessages != null)
-            dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
-    }
+    //    if (outboxMessages != null)
+    //        dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
+    //}
 
     public static void SetAuditEntries(this DbContextEventData eventData, AuditInterceptorDto auditInterceptorDto)
     {

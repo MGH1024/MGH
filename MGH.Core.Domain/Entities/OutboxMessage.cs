@@ -1,11 +1,11 @@
-using MGH.Core.Domain.Base;
-
 namespace MGH.Core.Domain.Entities;
 
-public class OutboxMessage : FullAuditableEntity<Guid>
+public class OutboxMessage
 {
-    public string Type { get; set; } = string.Empty;
-    public string Content { get; set; } = String.Empty;
-    public DateTime? ProcessedAt { get; set; }
+    public Guid Id { get; set; }
     public string Error { get; set; }
+    public DateTime OccurredOn { get; set; }
+    public DateTime? ProcessedAt { get; set; }
+    public string Type { get; set; } = string.Empty;
+    public object Payload { get; set; } = string.Empty;
 }

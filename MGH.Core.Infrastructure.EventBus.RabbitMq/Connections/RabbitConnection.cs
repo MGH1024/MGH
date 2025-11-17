@@ -1,8 +1,8 @@
-﻿using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
-using Microsoft.Extensions.Options;
-using Polly;
+﻿using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Microsoft.Extensions.Options;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 

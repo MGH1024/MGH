@@ -1,4 +1,5 @@
-﻿using MGH.Core.Domain.Events;
+﻿using System.Threading;
+using MGH.Core.Domain.Events;
 
 namespace MGH.Core.Infrastructure.EventBus;
 
@@ -7,12 +8,12 @@ public interface IEventBus
     /// <summary>
     /// Publishes a single event message to RabbitMQ
     /// </summary>
-    void Publish<T>(T model) where T : IEvent;
+    Task Publish<T>(T model, PublishMode mode,CancellationToken cancelationToken) where T : IEvent;
 
     /// <summary>
     /// Publishes a batch of events to RabbitMQ
     /// </summary>
-    void Publish<T>(IEnumerable<T> models) where T : IEvent;
+    Task Publish<T>(IEnumerable<T> models, PublishMode mode, CancellationToken cancelationToken) where T : IEvent;
 
     /// <summary>
     /// Consume a specific event type with a provided handler function.
