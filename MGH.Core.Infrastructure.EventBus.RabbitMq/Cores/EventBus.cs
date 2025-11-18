@@ -32,7 +32,7 @@ public class EventBus : IEventBus
         BindExchangesAndQueues(_rabbitConnection.GetChannel());
     }
 
-    public async Task Publish<T>(
+    public async Task PublishAsync<T>(
         IEnumerable<T> models,
         PublishMode mode,
         CancellationToken cancellationToken = default)
@@ -48,7 +48,7 @@ public class EventBus : IEventBus
                 break;
 
             case PublishMode.Outbox:
-                await PublishToOutbox(models, cancellationToken);
+                await PublishToOutboxAsync(models, cancellationToken);
                 break;
 
             default:
@@ -56,7 +56,7 @@ public class EventBus : IEventBus
         }
     }
 
-    public async Task Publish<T>(
+    public async Task PublishAsync<T>(
         T model,
         PublishMode mode,
         CancellationToken cancellationToken = default)
@@ -72,7 +72,7 @@ public class EventBus : IEventBus
                 break;
 
             case PublishMode.Outbox:
-                await PublishToOutbox(model, cancellationToken);
+                await PublishToOutboxAsync(model, cancellationToken);
                 break;
 
             default:
@@ -269,34 +269,37 @@ public class EventBus : IEventBus
         }
     }
 
-    private async Task PublishToOutbox<T>(
-        IEnumerable<T> models,
-        CancellationToken cancellationToken)
-    where T : IEvent
+    private async Task PublishToOutboxAsync<T>(
+     IEnumerable<T> models,
+     CancellationToken cancellationToken)
+     where T : IEvent
     {
-        var outboxes = models.Select(a => new OutboxMessage
+        var outboxes = models.Select(model =>
         {
-            Type = typeof(T).FullName!,
-            OccurredOn = DateTime.UtcNow,
-            Payload = JsonSerializer.Serialize(a),
-            Id = string.IsNullOrEmpty(a.Id.ToString()) ? Guid.NewGuid() : a.Id,
-        });
+            var outbox = new OutboxMessage
+            {
+                Id = model.Id == Guid.Empty ? Guid.NewGuid() : model.Id,
+                OccurredOn = DateTime.UtcNow
+            };
 
+            outbox.SerializePayload(model); // sets Type + Payload
+            return outbox;
+        });
         await _outboxStore.AddToOutBoxRangeAsync(outboxes);
     }
 
-    private async Task PublishToOutbox<T>(
+
+    private async Task PublishToOutboxAsync<T>(
        T model,
        CancellationToken cancellationToken)
-   where T : IEvent
+    where T : IEvent
     {
         var outboxMessage = new OutboxMessage
         {
-            Type = typeof(T).FullName!,
             OccurredOn = DateTime.UtcNow,
-            Payload = JsonSerializer.Serialize(model),
-            Id = string.IsNullOrEmpty(model.Id.ToString()) ? Guid.NewGuid() : model.Id,
+            Id = model.Id == Guid.Empty ? Guid.NewGuid() : model.Id,
         };
+        outboxMessage.SerializePayload(model);
         await _outboxStore.AddToOutBoxAsync(outboxMessage);
     }
 
