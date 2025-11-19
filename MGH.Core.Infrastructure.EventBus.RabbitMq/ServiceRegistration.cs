@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq;
 
@@ -11,8 +11,8 @@ public static class ServiceRegistration
     public static void AddRabbitMqEventBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
-        services.AddTransient<IEventBus, Cores.EventBus>();
-        services.AddTransient<IRabbitConnection, RabbitConnection>();
+        services.AddSingleton<IEventBus, Cores.EventBus>();
+        services.AddSingleton<IRabbitConnection, RabbitConnection>();
     }
 
 
