@@ -13,7 +13,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Cores;
 
 public class EventBus : IEventBus
 {
-    private readonly IOutboxStore _outboxStore;
+    //private readonly IOutboxStore _outboxStore;
     private readonly RabbitMqOptions _rabbitMqOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IRabbitConnection _rabbitConnection;
@@ -24,7 +24,7 @@ public class EventBus : IEventBus
         IOptions<RabbitMqOptions> options,
         IRabbitConnection rabbitConnection)
     {
-        _outboxStore = outboxStore;
+        //_outboxStore = outboxStore;
         _rabbitMqOptions = options.Value;
         _serviceProvider = serviceProvider;
         _rabbitConnection.ConnectService();
@@ -285,7 +285,9 @@ public class EventBus : IEventBus
             outbox.SerializePayload(model); // sets Type + Payload
             return outbox;
         });
-        await _outboxStore.AddToOutBoxRangeAsync(outboxes);
+        using var scope = _serviceProvider.CreateScope();
+        var outboxStore = scope.ServiceProvider.GetRequiredService<IOutboxStore>();
+        await outboxStore.AddToOutBoxRangeAsync(outboxes);
     }
 
 
@@ -294,13 +296,15 @@ public class EventBus : IEventBus
        CancellationToken cancellationToken)
     where T : IEvent
     {
+        using var scope = _serviceProvider.CreateScope();
+        var outboxStore = scope.ServiceProvider.GetRequiredService<IOutboxStore>();
         var outboxMessage = new OutboxMessage
         {
             OccurredOn = DateTime.UtcNow,
             Id = model.Id == Guid.Empty ? Guid.NewGuid() : model.Id,
         };
         outboxMessage.SerializePayload(model);
-        await _outboxStore.AddToOutBoxAsync(outboxMessage);
+        await outboxStore.AddToOutBoxAsync(outboxMessage);
     }
 
     private BaseMessage GetBaseMessageFromAttribute(Type type)
