@@ -13,18 +13,15 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Cores;
 
 public class EventBus : IEventBus
 {
-    //private readonly IOutboxStore _outboxStore;
     private readonly RabbitMqOptions _rabbitMqOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IRabbitConnection _rabbitConnection;
 
     public EventBus(
-        IOutboxStore outboxStore,
         IServiceProvider serviceProvider,
         IOptions<RabbitMqOptions> options,
         IRabbitConnection rabbitConnection)
     {
-        //_outboxStore = outboxStore;
         _rabbitMqOptions = options.Value;
         _serviceProvider = serviceProvider;
         _rabbitConnection.ConnectService();
