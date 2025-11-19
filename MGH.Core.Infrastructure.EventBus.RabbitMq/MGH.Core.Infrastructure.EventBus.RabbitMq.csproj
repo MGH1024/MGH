@@ -4,14 +4,14 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<PackageVersion>3.0.6</PackageVersion>
+		<PackageVersion>3.0.61</PackageVersion>
 		<Copyright>MGH</Copyright>
 		<PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Infrastructure.EventBus.RabbitMq</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
 		<PackageTags>microservice, netcore</PackageTags>
-		<AssemblyVersion>3.0.6</AssemblyVersion>
-		<FileVersion>3.0.6</FileVersion>
-		<ProductVersion>3.0.6</ProductVersion>
+		<AssemblyVersion>3.0.61</AssemblyVersion>
+		<FileVersion>3.0.61</FileVersion>
+		<ProductVersion>3.0.61</ProductVersion>
 		<Title>MGH.Core.Infrastructure.EventBus.RabbitMq</Title>
 		<Authors>MGH</Authors>
 		<Description>it's a package for manage Core Infrastructures Event Bus Rabbit Mq</Description>

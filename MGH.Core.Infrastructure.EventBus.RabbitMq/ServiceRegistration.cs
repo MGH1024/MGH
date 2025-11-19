@@ -11,7 +11,7 @@ public static class ServiceRegistration
     public static void AddRabbitMqEventBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
-        services.AddSingleton<IEventBus, Cores.EventBus>();
+        services.AddScoped<IEventBus, Cores.EventBus>();
         services.AddSingleton<IRabbitConnection, RabbitConnection>();
     }
 
