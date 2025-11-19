@@ -1,7 +1,7 @@
-﻿using MGH.Core.Infrastructure.Persistence.EF.Extensions;
+﻿using Microsoft.AspNetCore.Http;
 using MGH.Core.Infrastructure.Public;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using MGH.Core.Infrastructure.Persistence.EF.Extensions;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Interceptors;
 

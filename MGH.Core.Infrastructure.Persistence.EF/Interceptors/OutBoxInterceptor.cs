@@ -14,8 +14,6 @@ public class OutBoxInterceptor() : SaveChangesInterceptor
 
         if (eventData.Context == null) 
             return base.SavingChangesAsync(eventData, result, cancellationToken);
-        
-        //eventData.SetOutbox(dbContext);
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
