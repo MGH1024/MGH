@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace MGH.Core.Domain.Entities;
+namespace MGH.Core.Infrastructure.Persistence.Entities;
 
 public class OutboxMessage
 {
@@ -11,13 +11,12 @@ public class OutboxMessage
     public string Type { get; set; } = string.Empty;
     public string Payload { get; set; } = string.Empty;
 
-
     public void SerializePayload(object payload)
     {
         if (payload is null)
             throw new ArgumentNullException(nameof(payload));
 
-        Type = payload.GetType().AssemblyQualifiedName!;
+        Type = payload.GetType().Name!;
         Payload = JsonSerializer.Serialize(payload);
     }
 

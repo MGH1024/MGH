@@ -3,4 +3,5 @@
 public interface IDateTime
 {
     DateTime IranNow { get; }
+    DateTime UtcNow { get; }
 }

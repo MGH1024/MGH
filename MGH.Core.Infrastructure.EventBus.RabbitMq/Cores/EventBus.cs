@@ -2,9 +2,9 @@
 using RabbitMQ.Client;
 using System.Text.Json;
 using MGH.Core.Domain.Events;
-using MGH.Core.Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
+using MGH.Core.Infrastructure.Persistence.Entities;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Attributes;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
@@ -22,18 +22,35 @@ public class EventBus : IEventBus
         IOptions<RabbitMqOptions> options,
         IRabbitConnection rabbitConnection)
     {
+        if (options?.Value == null)
+            throw new ArgumentNullException(nameof(options), "RabbitMQ configuration is missing.");
+
         _rabbitMqOptions = options.Value;
+
+        if (_rabbitMqOptions.EventBus == null)
+            throw new ArgumentNullException(nameof(_rabbitMqOptions.EventBus), "EventBus section is missing.");
+
+        if (string.IsNullOrWhiteSpace(_rabbitMqOptions.EventBus.ExchangeName))
+            throw new ArgumentNullException("exchange name is null or empty");
+
+        if (string.IsNullOrWhiteSpace(_rabbitMqOptions.EventBus.ExchangeType))
+            throw new ArgumentNullException("exchange type is null or empty");
+
+        if (string.IsNullOrWhiteSpace(_rabbitMqOptions.EventBus.QueueName))
+            throw new ArgumentNullException("queue name is null or empty");
+
         _serviceProvider = serviceProvider;
-        _rabbitConnection.ConnectService();
         _rabbitConnection = rabbitConnection;
+        _rabbitConnection.ConnectService();
+
+        //todo move from here to host
         BindExchangesAndQueues(_rabbitConnection.GetChannel());
     }
 
     public async Task PublishAsync<T>(
         IEnumerable<T> models,
         PublishMode mode,
-        CancellationToken cancellationToken = default)
-    where T : IEvent
+        CancellationToken cancellationToken = default) where T : IEvent
     {
         if (models == null || !models.Any())
             throw new ArgumentException("The collection of models cannot be null or empty.", nameof(models));
@@ -56,8 +73,7 @@ public class EventBus : IEventBus
     public async Task PublishAsync<T>(
         T model,
         PublishMode mode,
-        CancellationToken cancellationToken = default)
-    where T : IEvent
+        CancellationToken cancellationToken = default) where T : IEvent
     {
         if (model == null)
             throw new ArgumentException("The model can not be null or empty.", nameof(model));
@@ -267,6 +283,21 @@ public class EventBus : IEventBus
     }
 
     private async Task PublishToOutboxAsync<T>(
+      T model,
+      CancellationToken cancellationToken)
+   where T : IEvent
+    {
+        var outboxMessage = new OutboxMessage
+        {
+            OccurredOn = DateTime.UtcNow,
+            Id = model.Id == Guid.Empty ? Guid.NewGuid() : model.Id,
+        };
+        var outboxStore = _serviceProvider.GetRequiredService<IOutboxStore>();
+        outboxMessage.SerializePayload(model);
+        await outboxStore.AddToOutBoxAsync(outboxMessage);
+    }
+
+    private async Task PublishToOutboxAsync<T>(
      IEnumerable<T> models,
      CancellationToken cancellationToken)
      where T : IEvent
@@ -282,26 +313,8 @@ public class EventBus : IEventBus
             outbox.SerializePayload(model); // sets Type + Payload
             return outbox;
         });
-        using var scope = _serviceProvider.CreateScope();
-        var outboxStore = scope.ServiceProvider.GetRequiredService<IOutboxStore>();
+        var outboxStore = _serviceProvider.GetRequiredService<IOutboxStore>();
         await outboxStore.AddToOutBoxRangeAsync(outboxes);
-    }
-
-
-    private async Task PublishToOutboxAsync<T>(
-       T model,
-       CancellationToken cancellationToken)
-    where T : IEvent
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var outboxStore = scope.ServiceProvider.GetRequiredService<IOutboxStore>();
-        var outboxMessage = new OutboxMessage
-        {
-            OccurredOn = DateTime.UtcNow,
-            Id = model.Id == Guid.Empty ? Guid.NewGuid() : model.Id,
-        };
-        outboxMessage.SerializePayload(model);
-        await outboxStore.AddToOutBoxAsync(outboxMessage);
     }
 
     private BaseMessage GetBaseMessageFromAttribute(Type type)

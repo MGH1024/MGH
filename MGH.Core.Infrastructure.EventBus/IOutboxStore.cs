@@ -1,4 +1,4 @@
-﻿using MGH.Core.Domain.Entities;
+﻿using MGH.Core.Infrastructure.Persistence.Entities;
 
 namespace MGH.Core.Infrastructure.EventBus
 {

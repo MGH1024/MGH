@@ -1,9 +1,9 @@
 ﻿using MGH.Core.Domain.Base;
 using Microsoft.EntityFrameworkCore;
+using MGH.Core.Infrastructure.Caching.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using MGH.Core.Infrastructure.Caching.Models;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Interceptors;
 
@@ -36,7 +36,7 @@ public class RemoveCacheInterceptor(ICachingService<IEntityType> cachingService)
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
-    
+
     private static string GeneratePatternKeyForEntities(IEntityType entityType)
     {
         return entityType?.ClrType.Name is { } entityName ? $"GetList_{entityName}" : string.Empty;

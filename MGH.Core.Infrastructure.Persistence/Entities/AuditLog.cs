@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.Domain.Entities;
+﻿namespace MGH.Core.Infrastructure.Persistence.Entities;
 
 public class AuditLog
 {

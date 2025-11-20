@@ -32,7 +32,7 @@ public class JwtHelper(IOptions<TokenOptions> options) : ITokenHelper
         var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         var token = jwtSecurityTokenHandler.WriteToken(jwt);
 
-        var accessTokenExpiration = DateTime.Now.AddMilliseconds(_tokenOptions.AccessTokenExpiration);
+        var accessTokenExpiration = DateTime.UtcNow.AddMilliseconds(_tokenOptions.AccessTokenExpiration);
         return new AccessToken { Token = token, Expiration = accessTokenExpiration };
     }
 
@@ -47,7 +47,7 @@ public class JwtHelper(IOptions<TokenOptions> options) : ITokenHelper
         {
             UserId = user.Id,
             Token = RandomRefreshToken(),
-            Expires = DateTime.Now.AddMilliseconds(_tokenOptions.RefreshTokenTtl)
+            Expires = DateTime.UtcNow.AddMilliseconds(_tokenOptions.RefreshTokenTtl)
         };
     }
 
@@ -57,12 +57,12 @@ public class JwtHelper(IOptions<TokenOptions> options) : ITokenHelper
     private JwtSecurityToken CreateJwtSecurityToken(TokenOptions tokenOptions, User user, SigningCredentials signingCredentials,
         IEnumerable<OperationClaim> operationClaims)
     {
-        var accessTokenExpiration = DateTime.Now.AddMilliseconds(_tokenOptions.AccessTokenExpiration);
+        var accessTokenExpiration = DateTime.UtcNow.AddMilliseconds(_tokenOptions.AccessTokenExpiration);
         return new JwtSecurityToken(
             tokenOptions.Issuer,
             tokenOptions.Audience,
             expires: accessTokenExpiration,
-            notBefore: DateTime.Now,
+            notBefore: DateTime.UtcNow,
             claims: SetClaims(user, operationClaims),
             signingCredentials: signingCredentials
         );

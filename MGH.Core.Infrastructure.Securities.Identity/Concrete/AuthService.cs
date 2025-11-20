@@ -1,14 +1,14 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
+﻿using AutoMapper;
 using System.Text;
-using AutoMapper;
+using Microsoft.Extensions.Options;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using MGH.Core.Infrastructure.Securities.Identity.Abstract;
 using MGH.Core.Infrastructure.Securities.Identity.Entities;
 using MGH.Core.Infrastructure.Securities.Identity.Enums;
 using MGH.Core.Infrastructure.Securities.Identity.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace MGH.Core.Infrastructure.Securities.Identity.Concrete;
 
@@ -112,16 +112,16 @@ public class AuthService : IAuthService
                 //token
                 var token = await GenerateTokenByUser(user);
                 var tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-                var tokenValidDate = DateTime.Now
+                var tokenValidDate = DateTime.UtcNow
                     .AddMinutes(_auth.TokenAddedExpirationDateValue);
 
                 //refreshToken
                 var refreshToken = GenerateRefreshToken();
-                var refreshTokenValidDate = DateTime.Now
+                var refreshTokenValidDate = DateTime.UtcNow
                     .AddMinutes(_auth.RefreshTokenAddedExpirationDateValue);
                 await _userService.CreateUserRefreshToken(new UserRefreshToken
                 {
-                    CreatedDate = DateTime.Now,
+                    CreatedDate = DateTime.UtcNow,
                     ExpirationDate = refreshTokenValidDate,
                     IpAddress = ipAddress,
                     IsInvalidated = false,
@@ -152,7 +152,7 @@ public class AuthService : IAuthService
                 errors.Add("your account is lock");
                 return new AuthResponse
                 {
-                    Success=false,
+                    Success = false,
                     Errors = errors,
                 };
             }
@@ -161,8 +161,8 @@ public class AuthService : IAuthService
         errors.Add("user not found");
         return new AuthResponse
         {
-            Errors=errors,
-            Success=false,
+            Errors = errors,
+            Success = false,
         };
     }
 
@@ -183,14 +183,14 @@ public class AuthService : IAuthService
 
 
         var newToken = new JwtSecurityTokenHandler().WriteToken(await GenerateTokenByUser(user));
-        var newTokenValidDate = DateTime.Now
+        var newTokenValidDate = DateTime.UtcNow
             .AddMinutes(_auth.TokenAddedExpirationDateValue);
 
 
-        if (userRefreshToken.ExpirationDate <DateTime.Now)
+        if (userRefreshToken.ExpirationDate < DateTime.UtcNow)
         {
             var newRefreshToken = GenerateRefreshToken();
-            var newRefreshTokenValidDate = DateTime.Now
+            var newRefreshTokenValidDate = DateTime.UtcNow
                 .AddMinutes(_auth.RefreshTokenAddedExpirationDateValue);
 
             //deActiveOldRefreshToken
@@ -200,7 +200,7 @@ public class AuthService : IAuthService
             //generate new and save in db
             await _userService.CreateUserRefreshToken(new UserRefreshToken
             {
-                CreatedDate = DateTime.Now,
+                CreatedDate = DateTime.UtcNow,
                 ExpirationDate = newRefreshTokenValidDate,
                 IpAddress = ipAddress,
                 IsInvalidated = false,

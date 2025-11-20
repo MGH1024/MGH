@@ -1,5 +1,5 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
+﻿using System.Text.Json;
+using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 
 namespace MGH.Core.Infrastructure.HttpClient.Base;
@@ -35,7 +35,7 @@ public abstract class BaseHttpClient(System.Net.Http.HttpClient httpClient)
         };
         try
         {
-            return JsonSerializer.Deserialize<T>(json,options) ??
+            return JsonSerializer.Deserialize<T>(json, options) ??
                    throw new InvalidOperationException("Deserialization returned null.");
         }
         catch (JsonException ex)
@@ -45,7 +45,7 @@ public abstract class BaseHttpClient(System.Net.Http.HttpClient httpClient)
     }
 
     protected async Task<T> PostAsync<T>(string endpoint, object data, bool isEnableAuth = false,
-        CancellationToken cancellationToken=default)
+        CancellationToken cancellationToken = default)
     {
         if (isEnableAuth)
         {
@@ -59,7 +59,7 @@ public abstract class BaseHttpClient(System.Net.Http.HttpClient httpClient)
         var content = new StringContent(JsonSerializer.Serialize(data));
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-        var response = await httpClient.PostAsync(endpoint, content,cancellationToken);
+        var response = await httpClient.PostAsync(endpoint, content, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -75,7 +75,7 @@ public abstract class BaseHttpClient(System.Net.Http.HttpClient httpClient)
     }
 
 
-    protected abstract  Task LoginAsync();
+    protected abstract Task LoginAsync();
 
-    protected bool IsTokenActive() => !string.IsNullOrEmpty(Token) && DateTime.Now <= TokenExpiry;
+    protected bool IsTokenActive() => !string.IsNullOrEmpty(Token) && DateTime.UtcNow <= TokenExpiry;
 }

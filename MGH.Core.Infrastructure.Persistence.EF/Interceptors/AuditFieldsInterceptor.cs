@@ -11,8 +11,8 @@ public class AuditFieldsInterceptor(IDateTime dateTime, IHttpContextAccessor htt
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
         InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
-        var auditInterceptorDto = new AuditInterceptorDto(GetCurrentUsername(),GetCurrentIpAddress(),dateTime.IranNow);
-        
+        var auditInterceptorDto = new AuditInterceptorDto(GetCurrentUsername(), GetCurrentIpAddress(), dateTime.UtcNow);
+
         if (eventData.Context == null)
             return base.SavingChangesAsync(eventData, result, cancellationToken);
 

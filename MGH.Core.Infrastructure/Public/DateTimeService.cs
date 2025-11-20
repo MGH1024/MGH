@@ -2,6 +2,11 @@
 
 public class DateTimeService : IDateTime
 {
-    public DateTime IranNow => TimeZoneInfo
-        .ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Iran Standard Time"));
+    private static readonly TimeZoneInfo IranTimeZone =
+         TimeZoneInfo.FindSystemTimeZoneById("Iran Standard Time");
+
+    public DateTime UtcNow => DateTime.UtcNow;
+
+    public DateTime IranNow =>
+        TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, IranTimeZone);
 }
