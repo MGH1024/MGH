@@ -316,42 +316,49 @@ public class EventBus : IEventBus
         await outboxStore.AddToOutBoxRangeAsync(outboxes);
     }
 
-    //private string GetRoutingKey(Type type)
-    //{
-    //    Console.WriteLine($"[DEBUG] Event Type Short Name: {type.Name}");               // Class name only
-    //    Console.WriteLine($"[DEBUG] Event Type Full Name: {type.FullName}");        // Namespace + class
-    //    Console.WriteLine($"[DEBUG] Event Type Namespace: {type.Namespace}");           // Namespace only
-    //    Console.WriteLine($"[DEBUG] Event Type Assembly Name: {type.Assembly.GetName().Name}"); // Assembly name
-    //    Console.WriteLine($"[DEBUG] Event Type Assembly Qualified Name: {type.AssemblyQualifiedName}"); // Full assembly info
-    //    Console.WriteLine($"[DEBUG] Event Type Reflected Type: {type.ReflectedType?.FullName ?? "null"}"); // Enclosing type if nested
-
-    //    var eventTypeName = type.Name;
-    //    if (!_options.EventBus.RoutingKeys.TryGetValue(eventTypeName, out string routingKey))
-    //        throw new InvalidOperationException($"Routing key for event " +
-    //            $"'{eventTypeName}' not found in configuration.");
-    //    return routingKey;
-    //}
-
     private string GetRoutingKey(Type type)
     {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
+        // Debug: print all routing keys from configuration
+        Console.WriteLine("[DEBUG] Configured Routing Keys:");
+        foreach (var kvp in _options.EventBus.RoutingKeys)
+        {
+            Console.WriteLine($"    Key: '{kvp.Key}', Value: '{kvp.Value}'");
+        }
 
-        string fullName = type.FullName!;
-        string shortName = type.Name;
+        Console.WriteLine($"[DEBUG] Event Type Short Name: {type.Name}");               // Class name only
+        Console.WriteLine($"[DEBUG] Event Type Full Name: {type.FullName}");        // Namespace + class
+        Console.WriteLine($"[DEBUG] Event Type Namespace: {type.Namespace}");           // Namespace only
+        Console.WriteLine($"[DEBUG] Event Type Assembly Name: {type.Assembly.GetName().Name}"); // Assembly name
+        Console.WriteLine($"[DEBUG] Event Type Assembly Qualified Name: {type.AssemblyQualifiedName}"); // Full assembly info
+        Console.WriteLine($"[DEBUG] Event Type Reflected Type: {type.ReflectedType?.FullName ?? "null"}"); // Enclosing type if nested
 
-        if (_options.EventBus.RoutingKeys.ContainsKey(fullName))
-            return _options.EventBus.RoutingKeys[fullName];
-
-        if (_options.EventBus.RoutingKeys.ContainsKey(shortName))
-            return _options.EventBus.RoutingKeys[shortName];
-
-        if (_options.EventBus.RoutingKeys.ContainsKey("common"))
-            return _options.EventBus.RoutingKeys["common"];
-
-        // If nothing matches, throw
-        throw new InvalidOperationException(
-            $"Routing key for event '{fullName}' not found in configuration.");
+        var eventTypeName = type.Name;
+        if (!_options.EventBus.RoutingKeys.TryGetValue(eventTypeName, out string routingKey))
+            throw new InvalidOperationException($"Routing key for event " +
+                $"'{eventTypeName}' not found in configuration.");
+        return routingKey;
     }
+
+    //private string GetRoutingKey(Type type)
+    //{
+    //    if (type == null)
+    //        throw new ArgumentNullException(nameof(type));
+
+    //    string fullName = type.FullName!;
+    //    string shortName = type.Name;
+
+    //    if (_options.EventBus.RoutingKeys.ContainsKey(fullName))
+    //        return _options.EventBus.RoutingKeys[fullName];
+
+    //    if (_options.EventBus.RoutingKeys.ContainsKey(shortName))
+    //        return _options.EventBus.RoutingKeys[shortName];
+
+    //    if (_options.EventBus.RoutingKeys.ContainsKey("common"))
+    //        return _options.EventBus.RoutingKeys["common"];
+
+    //    // If nothing matches, throw
+    //    throw new InvalidOperationException(
+    //        $"Routing key for event '{fullName}' not found in configuration.");
+    //}
 
 }
