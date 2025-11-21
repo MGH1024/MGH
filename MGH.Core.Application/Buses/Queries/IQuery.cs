@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace MGH.Core.Domain.Buses.Queries;
+namespace MGH.Core.Application.Buses.Queries;
 public interface IQuery<out TResult> : IRequest<TResult>
 {
 }

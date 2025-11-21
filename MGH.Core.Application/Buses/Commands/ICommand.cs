@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace MGH.Core.Domain.Buses.Commands;
+namespace MGH.Core.Application.Buses.Commands;
 public interface ICommand : IRequest
 {
 }
