@@ -1,6 +1,6 @@
-﻿namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
+﻿namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 
-public class EndToEndExchangeBinding
+public class EndToEndExchangeBindingOptions
 {
     public string RoutingKey { get; set; }
     public string SourceExchange { get; set; }

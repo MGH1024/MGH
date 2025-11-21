@@ -1,6 +1,6 @@
-﻿namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
+﻿namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 
-public class RabbitMqConfig
+public class RabbitMqSettings
 {
     public string Host { get; set; }
     public string Port { get; set; }

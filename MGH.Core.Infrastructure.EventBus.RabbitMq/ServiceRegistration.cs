@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq;
 
@@ -11,7 +11,7 @@ public static class ServiceRegistration
     public static void AddRabbitMqEventBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
-        services.AddScoped<IEventBus, Cores.EventBus>();
+        services.AddScoped<IEventBus, EventBus>();
         services.AddSingleton<IRabbitConnection, RabbitConnection>();
     }
 

@@ -5,15 +5,14 @@ using MGH.Core.Domain.Events;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.Persistence.Entities;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Attributes;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 
-namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Cores;
+namespace MGH.Core.Infrastructure.EventBus.RabbitMq;
 
 public class EventBus : IEventBus
 {
-    private readonly RabbitMqOptions _rabbitMqOptions;
+    private readonly RabbitMqOptions _options;
     private readonly IServiceProvider _serviceProvider;
     private readonly IRabbitConnection _rabbitConnection;
 
@@ -25,18 +24,18 @@ public class EventBus : IEventBus
         if (options?.Value == null)
             throw new ArgumentNullException(nameof(options), "RabbitMQ configuration is missing.");
 
-        _rabbitMqOptions = options.Value;
+        _options = options.Value;
 
-        if (_rabbitMqOptions.EventBus == null)
-            throw new ArgumentNullException(nameof(_rabbitMqOptions.EventBus), "EventBus section is missing.");
+        if (_options.EventBus == null)
+            throw new ArgumentNullException(nameof(_options.EventBus), "EventBus section is missing.");
 
-        if (string.IsNullOrWhiteSpace(_rabbitMqOptions.EventBus.ExchangeName))
+        if (string.IsNullOrWhiteSpace(_options.EventBus.ExchangeName))
             throw new ArgumentNullException("exchange name is null or empty");
 
-        if (string.IsNullOrWhiteSpace(_rabbitMqOptions.EventBus.ExchangeType))
+        if (string.IsNullOrWhiteSpace(_options.EventBus.ExchangeType))
             throw new ArgumentNullException("exchange type is null or empty");
 
-        if (string.IsNullOrWhiteSpace(_rabbitMqOptions.EventBus.QueueName))
+        if (string.IsNullOrWhiteSpace(_options.EventBus.QueueName))
             throw new ArgumentNullException("queue name is null or empty");
 
         _serviceProvider = serviceProvider;
@@ -98,11 +97,11 @@ public class EventBus : IEventBus
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
 
-        var baseMessage = GetBaseMessageFromAttribute(typeof(T));
+        var routingKey = GetRoutingKey(typeof(T));
         channel.QueueBind(
-           queue: _rabbitMqOptions.EventBus.QueueName,
-           exchange: _rabbitMqOptions.EventBus.ExchangeName,
-           routingKey: baseMessage.RoutingKey);
+           queue: _options.EventBus.QueueName,
+           exchange: _options.EventBus.ExchangeName,
+           routingKey: routingKey);
 
         var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
         consumer.Received += async (model, ea) =>
@@ -122,7 +121,7 @@ public class EventBus : IEventBus
             }
         };
 
-        channel.BasicConsume(_rabbitMqOptions.EventBus.QueueName, false, consumer);
+        channel.BasicConsume(_options.EventBus.QueueName, false, consumer);
     }
 
     public void Consume<T>() where T : IEvent
@@ -130,12 +129,12 @@ public class EventBus : IEventBus
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
 
-        var baseMessage = GetBaseMessageFromAttribute(typeof(T));
+        var routingKey = GetRoutingKey(typeof(T));
 
         channel.QueueBind(
-           queue: _rabbitMqOptions.EventBus.QueueName,
-           exchange: _rabbitMqOptions.EventBus.ExchangeName,
-           routingKey: baseMessage.RoutingKey);
+           queue: _options.EventBus.QueueName,
+           exchange: _options.EventBus.ExchangeName,
+           routingKey: routingKey);
 
         var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
         consumer.Received += async (model, ea) =>
@@ -172,27 +171,27 @@ public class EventBus : IEventBus
             }
         };
 
-        channel.BasicConsume(queue: _rabbitMqOptions.EventBus.QueueName, autoAck: false, consumer: consumer);
+        channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
     }
 
     private void BindExchangesAndQueues(IModel channel)
     {
         channel.ExchangeDeclare(
-           exchange: _rabbitMqOptions.EventBus.ExchangeName,
-           type: _rabbitMqOptions.EventBus.ExchangeType,
+           exchange: _options.EventBus.ExchangeName,
+           type: _options.EventBus.ExchangeType,
            durable: true,
            autoDelete: false,
            arguments: null);
 
         channel.QueueDeclare(
-            queue: _rabbitMqOptions.EventBus.QueueName,
+            queue: _options.EventBus.QueueName,
             durable: true,
             exclusive: false,
             autoDelete: false,
             arguments: null);
 
 
-        foreach (var item in _rabbitMqOptions.EventBus.EndToEndExchangeBindings)
+        foreach (var item in _options.EventBus.EndToEndExchangeBindings)
         {
             if (string.IsNullOrWhiteSpace(item.SourceExchange) ||
                 string.IsNullOrWhiteSpace(item.DestinationExchange) ||
@@ -217,14 +216,14 @@ public class EventBus : IEventBus
                 routingKey: item.RoutingKey);
 
             channel.QueueDeclare(
-                queue: _rabbitMqOptions.EventBus.QueueName,
+                queue: _options.EventBus.QueueName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
 
             channel.QueueBind(
-                queue: _rabbitMqOptions.EventBus.QueueName,
+                queue: _options.EventBus.QueueName,
                 exchange: item.DestinationExchange,
                 routingKey: item.RoutingKey);
         }
@@ -239,16 +238,16 @@ public class EventBus : IEventBus
         var messageJson = JsonSerializer.Serialize(model);
         var messageByte = Encoding.UTF8.GetBytes(messageJson);
 
-        var baseMessage = GetBaseMessageFromAttribute(typeof(T));
+        var routingKey = GetRoutingKey(typeof(T));
 
         channel.QueueBind(
-           queue: _rabbitMqOptions.EventBus.QueueName,
-           exchange: _rabbitMqOptions.EventBus.ExchangeName,
-           routingKey: baseMessage.RoutingKey);
+           queue: _options.EventBus.QueueName,
+           exchange: _options.EventBus.ExchangeName,
+           routingKey: routingKey);
 
         channel.BasicPublish(
-            exchange: _rabbitMqOptions.EventBus.ExchangeName,
-            routingKey: baseMessage.RoutingKey,
+            exchange: _options.EventBus.ExchangeName,
+            routingKey: routingKey,
             basicProperties: basicProperties,
             body: messageByte);
     }
@@ -261,12 +260,12 @@ public class EventBus : IEventBus
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
 
-        var baseMessage = GetBaseMessageFromAttribute(typeof(T));
+        var routingKey = GetRoutingKey(typeof(T));
 
         channel.QueueBind(
-           queue: _rabbitMqOptions.EventBus.QueueName,
-           exchange: _rabbitMqOptions.EventBus.ExchangeName,
-           routingKey: baseMessage.RoutingKey);
+           queue: _options.EventBus.QueueName,
+           exchange: _options.EventBus.ExchangeName,
+           routingKey: routingKey);
 
         var basicProperties = channel.CreateBasicProperties();
         foreach (var model in models)
@@ -275,8 +274,8 @@ public class EventBus : IEventBus
             var messageByte = Encoding.UTF8.GetBytes(messageJson);
 
             channel.BasicPublish(
-                exchange: _rabbitMqOptions.EventBus.ExchangeName,
-                routingKey: baseMessage.RoutingKey,
+                exchange: _options.EventBus.ExchangeName,
+                routingKey: routingKey,
                 basicProperties: basicProperties,
                 body: messageByte);
         }
@@ -317,15 +316,12 @@ public class EventBus : IEventBus
         await outboxStore.AddToOutBoxRangeAsync(outboxes);
     }
 
-    private BaseMessage GetBaseMessageFromAttribute(Type type)
+    private string GetRoutingKey(Type type)
     {
-        var attribute = type
-            .GetCustomAttributes(typeof(EventRoutingAttribute), true)
-            .FirstOrDefault() as EventRoutingAttribute;
-
-        if (attribute == null)
-            throw new InvalidOperationException($"EventRoutingAttribute is not defined for type {type.Name}.");
-
-        return new BaseMessage(attribute.RoutingKey);
+        var eventTypeName = type.Name;
+        if (!_options.EventBus.RoutingKeys.TryGetValue(eventTypeName, out string routingKey))
+            throw new InvalidOperationException($"Routing key for event " +
+                $"'{eventTypeName}' not found in configuration.");
+        return routingKey;
     }
 }

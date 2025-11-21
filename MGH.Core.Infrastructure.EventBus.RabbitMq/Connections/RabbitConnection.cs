@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Options;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Configurations;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 
