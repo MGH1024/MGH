@@ -318,6 +318,13 @@ public class EventBus : IEventBus
 
     private string GetRoutingKey(Type type)
     {
+        Console.WriteLine($"[DEBUG] Event Type Short Name: {type.Name}");               // Class name only
+        Console.WriteLine($"[DEBUG] Event Type Full Name: {eventTypeFullName}");        // Namespace + class
+        Console.WriteLine($"[DEBUG] Event Type Namespace: {type.Namespace}");           // Namespace only
+        Console.WriteLine($"[DEBUG] Event Type Assembly Name: {type.Assembly.GetName().Name}"); // Assembly name
+        Console.WriteLine($"[DEBUG] Event Type Assembly Qualified Name: {type.AssemblyQualifiedName}"); // Full assembly info
+        Console.WriteLine($"[DEBUG] Event Type Reflected Type: {type.ReflectedType?.FullName ?? "null"}"); // Enclosing type if nested
+
         var eventTypeName = type.Name;
         if (!_options.EventBus.RoutingKeys.TryGetValue(eventTypeName, out string routingKey))
             throw new InvalidOperationException($"Routing key for event " +
