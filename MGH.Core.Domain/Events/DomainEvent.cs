@@ -7,19 +7,9 @@ public class DomainEvent : IEvent
     public long EventOrder { get; }
     public Guid Id { get; }
     public DateTime OccurredOn { get; }
-    public string EventType { get; }
 
     public DomainEvent(object eventData)
     {
-        Id = Guid.NewGuid();
-        EventData = eventData;
-        EventOrder = GetNextOrder();
-        OccurredOn = DateTime.UtcNow;
-    }
-
-    public DomainEvent(object eventData, string type)
-    {
-        EventType = type;
         Id = Guid.NewGuid();
         EventData = eventData;
         EventOrder = GetNextOrder();
