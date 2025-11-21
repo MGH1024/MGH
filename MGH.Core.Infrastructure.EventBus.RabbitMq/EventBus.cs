@@ -92,26 +92,112 @@ public class EventBus : IEventBus
         }
     }
 
-    public void Consume<T>(Func<T, Task> handler) where T : IEvent
+    //public void Consume<T>(Func<T, Task> handler) where T : IEvent
+    //{
+    //    _rabbitConnection.ConnectService();
+    //    var channel = _rabbitConnection.GetChannel();
+
+    //    var routingKey = GetRoutingKey(typeof(T));
+    //    channel.QueueBind(
+    //       queue: _options.EventBus.QueueName,
+    //       exchange: _options.EventBus.ExchangeName,
+    //       routingKey: routingKey);
+
+    //    var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
+    //    consumer.Received += async (model, ea) =>
+    //    {
+    //        try
+    //        {
+    //            var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+    //            var message = JsonSerializer.Deserialize<T>(json);
+    //            if (message != null)
+    //                await handler(message);
+
+    //            channel.BasicAck(ea.DeliveryTag, false);
+    //        }
+    //        catch
+    //        {
+    //            channel.BasicNack(ea.DeliveryTag, false, false);
+    //        }
+    //    };
+
+    //    channel.BasicConsume(_options.EventBus.QueueName, false, consumer);
+    //}
+
+    //public void Consume<T>() where T : IEvent
+    //{
+    //    _rabbitConnection.ConnectService();
+    //    var channel = _rabbitConnection.GetChannel();
+
+    //    var routingKey = GetRoutingKey(typeof(T));
+
+    //    channel.QueueBind(
+    //       queue: _options.EventBus.QueueName,
+    //       exchange: _options.EventBus.ExchangeName,
+    //       routingKey: routingKey);
+
+    //    var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
+    //    consumer.Received += async (model, ea) =>
+    //    {
+    //        using var scope = _serviceProvider.CreateScope();
+    //        try
+    //        {
+    //            var handler = scope.ServiceProvider.GetService<IEventHandler<T>>();
+    //            if (handler == null)
+    //                throw new InvalidOperationException($"Handler for event type {typeof(T).Name} not registered.");
+
+    //            var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+    //            var message = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+    //            {
+    //                PropertyNameCaseInsensitive = true
+    //            });
+
+    //            if (message == null)
+    //            {
+    //                channel.BasicNack(ea.DeliveryTag, false, false); // discard message
+    //                return;
+    //            }
+
+    //            await handler.HandleAsync(message);
+    //            channel.BasicAck(ea.DeliveryTag, false);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+    //            Console.WriteLine($"Error handling message for type {typeof(T).Name}: {ex.Message}");
+    //            Console.WriteLine($"Raw message: {json}");
+
+    //            channel.BasicNack(ea.DeliveryTag, false, false); // reject and don't requeue
+    //        }
+    //    };
+
+    //    channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
+    //}
+
+    public void Consume<T>() where T : IEvent
     {
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
 
         var routingKey = GetRoutingKey(typeof(T));
-        channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
+        channel.QueueBind(_options.EventBus.QueueName, _options.EventBus.ExchangeName, routingKey);
 
         var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
         consumer.Received += async (model, ea) =>
         {
+            using var scope = _serviceProvider.CreateScope();
+            var handler = scope.ServiceProvider.GetRequiredService<IEventHandler<T>>();
+
             try
             {
                 var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonSerializer.Deserialize<T>(json);
+                var message = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
                 if (message != null)
-                    await handler(message);
+                    await handler.HandleAsync(message);
 
                 channel.BasicAck(ea.DeliveryTag, false);
             }
@@ -121,57 +207,59 @@ public class EventBus : IEventBus
             }
         };
 
-        channel.BasicConsume(_options.EventBus.QueueName, false, consumer);
+        channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
     }
 
-    public void Consume<T>() where T : IEvent
+    public void Consume<T>(Func<T, Task> handler) where T : IEvent
     {
+        if (handler == null) throw new ArgumentNullException(nameof(handler));
+
+        // Ensure RabbitMQ connection is established once
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
 
+        // Get routing key from configuration
         var routingKey = GetRoutingKey(typeof(T));
 
+        // Bind queue to exchange (idempotent, safe to call multiple times)
         channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
+            queue: _options.EventBus.QueueName,
+            exchange: _options.EventBus.ExchangeName,
+            routingKey: routingKey
+        );
 
         var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
-        consumer.Received += async (model, ea) =>
+
+        consumer.Received += async (sender, ea) =>
         {
-            using var scope = _serviceProvider.CreateScope();
             try
             {
-                var handler = scope.ServiceProvider.GetService<IEventHandler<T>>();
-                if (handler == null)
-                    throw new InvalidOperationException($"Handler for event type {typeof(T).Name} not registered.");
-
                 var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var message = JsonSerializer.Deserialize<T>(json);
 
-                if (message == null)
+                if (message != null)
                 {
-                    channel.BasicNack(ea.DeliveryTag, false, false); // discard message
-                    return;
+                    await handler(message);
                 }
 
-                await handler.HandleAsync(message);
+                // Acknowledge the message
                 channel.BasicAck(ea.DeliveryTag, false);
             }
             catch (Exception ex)
             {
-                var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-                Console.WriteLine($"Error handling message for type {typeof(T).Name}: {ex.Message}");
-                Console.WriteLine($"Raw message: {json}");
-
+                Console.WriteLine($"Error handling message for {typeof(T).Name}: {ex.Message}");
                 channel.BasicNack(ea.DeliveryTag, false, false); // reject and don't requeue
             }
         };
 
-        channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
+        // Start consuming
+        channel.BasicConsume(
+            queue: _options.EventBus.QueueName,
+            autoAck: false,
+            consumer: consumer
+        );
+
+        Console.WriteLine($"[INFO] Consumer started for event: {typeof(T).FullName}, routing key: {routingKey}");
     }
 
     private void BindExchangesAndQueues(IModel channel)
@@ -318,47 +406,10 @@ public class EventBus : IEventBus
 
     private string GetRoutingKey(Type type)
     {
-        // Debug: print all routing keys from configuration
-        Console.WriteLine("[DEBUG] Configured Routing Keys:");
-        foreach (var kvp in _options.EventBus.RoutingKeys)
-        {
-            Console.WriteLine($"    Key: '{kvp.Key}', Value: '{kvp.Value}'");
-        }
-
-        Console.WriteLine($"[DEBUG] Event Type Short Name: {type.Name}");               // Class name only
-        Console.WriteLine($"[DEBUG] Event Type Full Name: {type.FullName}");        // Namespace + class
-        Console.WriteLine($"[DEBUG] Event Type Namespace: {type.Namespace}");           // Namespace only
-        Console.WriteLine($"[DEBUG] Event Type Assembly Name: {type.Assembly.GetName().Name}"); // Assembly name
-        Console.WriteLine($"[DEBUG] Event Type Assembly Qualified Name: {type.AssemblyQualifiedName}"); // Full assembly info
-        Console.WriteLine($"[DEBUG] Event Type Reflected Type: {type.ReflectedType?.FullName ?? "null"}"); // Enclosing type if nested
-
         var eventTypeName = type.Name;
         if (!_options.EventBus.RoutingKeys.TryGetValue(eventTypeName, out string routingKey))
             throw new InvalidOperationException($"Routing key for event " +
                 $"'{eventTypeName}' not found in configuration.");
         return routingKey;
     }
-
-    //private string GetRoutingKey(Type type)
-    //{
-    //    if (type == null)
-    //        throw new ArgumentNullException(nameof(type));
-
-    //    string fullName = type.FullName!;
-    //    string shortName = type.Name;
-
-    //    if (_options.EventBus.RoutingKeys.ContainsKey(fullName))
-    //        return _options.EventBus.RoutingKeys[fullName];
-
-    //    if (_options.EventBus.RoutingKeys.ContainsKey(shortName))
-    //        return _options.EventBus.RoutingKeys[shortName];
-
-    //    if (_options.EventBus.RoutingKeys.ContainsKey("common"))
-    //        return _options.EventBus.RoutingKeys["common"];
-
-    //    // If nothing matches, throw
-    //    throw new InvalidOperationException(
-    //        $"Routing key for event '{fullName}' not found in configuration.");
-    //}
-
 }
