@@ -319,7 +319,7 @@ public class EventBus : IEventBus
     private string GetRoutingKey(Type type)
     {
         Console.WriteLine($"[DEBUG] Event Type Short Name: {type.Name}");               // Class name only
-        Console.WriteLine($"[DEBUG] Event Type Full Name: {eventTypeFullName}");        // Namespace + class
+        Console.WriteLine($"[DEBUG] Event Type Full Name: {type.FullName}");        // Namespace + class
         Console.WriteLine($"[DEBUG] Event Type Namespace: {type.Namespace}");           // Namespace only
         Console.WriteLine($"[DEBUG] Event Type Assembly Name: {type.Assembly.GetName().Name}"); // Assembly name
         Console.WriteLine($"[DEBUG] Event Type Assembly Qualified Name: {type.AssemblyQualifiedName}"); // Full assembly info
