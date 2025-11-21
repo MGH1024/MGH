@@ -37,7 +37,9 @@ public static class ServiceRegistration
 
     public static void StartConsumingRegisteredEventHandlers(this IServiceProvider serviceProvider)
     {
-        var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+        using var scope = serviceProvider.CreateScope();
+        var scopedProvider = scope.ServiceProvider;
+        var eventBus = scopedProvider.GetRequiredService<IEventBus>();
 
         var handlerInterfaceType = typeof(IEventHandler<>);
 
