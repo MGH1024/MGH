@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using MGH.Core.CrossCutting.Exceptions.Handlers;
-using MGH.Core.CrossCutting.Logging.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using MGH.Core.CrossCutting.Logging.Models;
+using MGH.Core.CrossCutting.Exceptions.Handlers;
 
 namespace MGH.Core.CrossCutting.Exceptions.MiddleWares;
 

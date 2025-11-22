@@ -1,7 +1,7 @@
-﻿using MGH.Core.CrossCutting.Exceptions.Extensions;
-using MGH.Core.CrossCutting.Exceptions.HttpProblemDetails;
+﻿using Microsoft.AspNetCore.Http;
 using MGH.Core.CrossCutting.Exceptions.Types;
-using Microsoft.AspNetCore.Http;
+using MGH.Core.CrossCutting.Exceptions.Extensions;
+using MGH.Core.CrossCutting.Exceptions.HttpProblemDetails;
 
 namespace MGH.Core.CrossCutting.Exceptions.Handlers;
 

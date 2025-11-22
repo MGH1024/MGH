@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
+using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq;
 
@@ -14,7 +14,6 @@ public static class ServiceRegistration
         services.AddScoped<IEventBus, EventBus>();
         services.AddSingleton<IRabbitConnection, RabbitConnection>();
     }
-
 
     public static void AddEventHandlers(this IServiceCollection services, params Assembly[] assembliesToScan)
     {
@@ -35,10 +34,8 @@ public static class ServiceRegistration
         }
     }
 
-    public static void StartConsumingRegisteredEventHandlers(this IServiceProvider serviceProvider)
+    public static void StartConsumingRegisteredEventHandlers(this IServiceProvider scopedProvider)
     {
-        using var scope = serviceProvider.CreateScope();
-        var scopedProvider = scope.ServiceProvider;
         var eventBus = scopedProvider.GetRequiredService<IEventBus>();
 
         var handlerInterfaceType = typeof(IEventHandler<>);
