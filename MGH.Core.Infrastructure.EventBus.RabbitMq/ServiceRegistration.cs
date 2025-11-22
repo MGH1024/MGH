@@ -13,6 +13,7 @@ public static class ServiceRegistration
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
         services.AddScoped<IEventBus, EventBus>();
         services.AddSingleton<IRabbitConnection, RabbitConnection>();
+        services.AddSingleton<IRabbitMqDeclarer, RabbitMqDeclarer>();
     }
 
     public static void AddEventHandlers(this IServiceCollection services, params Assembly[] assembliesToScan)

@@ -15,11 +15,13 @@ public class EventBus : IEventBus
     private readonly RabbitMqOptions _options;
     private readonly IServiceProvider _serviceProvider;
     private readonly IRabbitConnection _rabbitConnection;
+    private readonly IRabbitMqDeclarer _rabbitMqDeclarer;
 
     public EventBus(
         IServiceProvider serviceProvider,
         IOptions<RabbitMqOptions> options,
-        IRabbitConnection rabbitConnection)
+        IRabbitConnection rabbitConnection,
+        IRabbitMqDeclarer rabbitMqDeclarer)
     {
         if (options?.Value == null)
             throw new ArgumentNullException(nameof(options), "RabbitMQ configuration is missing.");
@@ -27,7 +29,7 @@ public class EventBus : IEventBus
         _options = options.Value;
 
         if (_options.EventBus == null)
-            throw new ArgumentNullException(nameof(_options.EventBus), "EventBus section is missing.");
+            throw new ArgumentNullException(nameof(_options.EventBus), "Event Bus section is missing.");
 
         if (string.IsNullOrWhiteSpace(_options.EventBus.ExchangeName))
             throw new ArgumentNullException("exchange name is null or empty");
@@ -41,9 +43,9 @@ public class EventBus : IEventBus
         _serviceProvider = serviceProvider;
         _rabbitConnection = rabbitConnection;
         _rabbitConnection.ConnectService();
-
-        //todo move from here to host
-        BindExchangesAndQueues(_rabbitConnection.GetChannel());
+        _rabbitMqDeclarer = rabbitMqDeclarer;
+        _rabbitMqDeclarer.BindExchangesAndQueues();
+        _rabbitMqDeclarer.EndToEndExchangeBinding();
     }
 
     public async Task PublishAsync<T>(
@@ -96,13 +98,6 @@ public class EventBus : IEventBus
     {
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
-
-        var routingKey = GetRoutingKey(typeof(T));
-        channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
-
         var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
         consumer.Received += async (model, ea) =>
         {
@@ -127,13 +122,6 @@ public class EventBus : IEventBus
     {
         _rabbitConnection.ConnectService();
         var channel = _rabbitConnection.GetChannel();
-
-        var routingKey = GetRoutingKey(typeof(T));
-
-        channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
 
         var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
         consumer.Received += async (model, ea) =>
@@ -170,61 +158,6 @@ public class EventBus : IEventBus
         channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
     }
 
-    private void BindExchangesAndQueues(IModel channel)
-    {
-        channel.ExchangeDeclare(
-           exchange: _options.EventBus.ExchangeName,
-           type: _options.EventBus.ExchangeType,
-           durable: true,
-           autoDelete: false,
-           arguments: null);
-
-        channel.QueueDeclare(
-            queue: _options.EventBus.QueueName,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null);
-
-
-        foreach (var item in _options.EventBus.EndToEndExchangeBindings)
-        {
-            if (string.IsNullOrWhiteSpace(item.SourceExchange) ||
-                string.IsNullOrWhiteSpace(item.DestinationExchange) ||
-                string.IsNullOrWhiteSpace(item.RoutingKey))
-                continue;
-
-            channel.ExchangeDeclare(
-                exchange: item.SourceExchange,
-                type: ExchangeType.Direct,
-                durable: true,
-                autoDelete: false);
-
-            channel.ExchangeDeclare(
-                exchange: item.DestinationExchange,
-                type: ExchangeType.Direct,
-                durable: true,
-                autoDelete: false);
-
-            channel.ExchangeBind(
-                destination: item.DestinationExchange,
-                source: item.SourceExchange,
-                routingKey: item.RoutingKey);
-
-            channel.QueueDeclare(
-                queue: _options.EventBus.QueueName,
-                durable: true,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            channel.QueueBind(
-                queue: _options.EventBus.QueueName,
-                exchange: item.DestinationExchange,
-                routingKey: item.RoutingKey);
-        }
-    }
-
     private void PublishDirect<T>(T model) where T : IEvent
     {
         _rabbitConnection.ConnectService();
@@ -234,11 +167,6 @@ public class EventBus : IEventBus
         var messageByte = EventBusJsonHelper.SerializeEventBusEvent(model);
 
         var routingKey = GetRoutingKey(typeof(T));
-
-        channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
 
         channel.BasicPublish(
             exchange: _options.EventBus.ExchangeName,
@@ -256,10 +184,6 @@ public class EventBus : IEventBus
         var channel = _rabbitConnection.GetChannel();
 
         var routingKey = GetRoutingKey(typeof(T));
-        channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
 
         var basicProperties = channel.CreateBasicProperties();
 
