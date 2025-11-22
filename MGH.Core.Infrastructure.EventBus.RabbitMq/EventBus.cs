@@ -1,9 +1,8 @@
 ﻿using System.Text;
 using RabbitMQ.Client;
-using System.Text.Json;
-using MGH.Core.CrossCutting;
 using MGH.Core.Domain.Events;
 using Microsoft.Extensions.Options;
+using MGH.Core.CrossCutting.JsonHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.Persistence.Entities;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
@@ -93,6 +92,37 @@ public class EventBus : IEventBus
         }
     }
 
+    public void Consume<T>(Func<T, Task> handler) where T : IEvent
+    {
+        _rabbitConnection.ConnectService();
+        var channel = _rabbitConnection.GetChannel();
+
+        var routingKey = GetRoutingKey(typeof(T));
+        channel.QueueBind(
+           queue: _options.EventBus.QueueName,
+           exchange: _options.EventBus.ExchangeName,
+           routingKey: routingKey);
+
+        var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
+        consumer.Received += async (model, ea) =>
+        {
+            try
+            {
+                var message = EventBusJsonHelper.DeserializeEventBusEvent<T>(ea.Body.ToArray());
+                if (message != null)
+                    await handler(message);
+
+                channel.BasicAck(ea.DeliveryTag, false);
+            }
+            catch
+            {
+                channel.BasicNack(ea.DeliveryTag, false, false);
+            }
+        };
+
+        channel.BasicConsume(_options.EventBus.QueueName, false, consumer);
+    }
+
     public void Consume<T>() where T : IEvent
     {
         _rabbitConnection.ConnectService();
@@ -115,11 +145,8 @@ public class EventBus : IEventBus
                 if (handler == null)
                     throw new InvalidOperationException($"Handler for event type {typeof(T).Name} not registered.");
 
-                var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var message = EventBusJsonHelper.DeserializeEventBusEvent<T>(ea.Body.ToArray());
+
 
                 if (message == null)
                 {
@@ -142,39 +169,6 @@ public class EventBus : IEventBus
 
         channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
     }
-
-    public void Consume<T>(Func<T, Task> handler) where T : IEvent
-    {
-        _rabbitConnection.ConnectService();
-        var channel = _rabbitConnection.GetChannel();
-
-        var routingKey = GetRoutingKey(typeof(T));
-        channel.QueueBind(
-           queue: _options.EventBus.QueueName,
-           exchange: _options.EventBus.ExchangeName,
-           routingKey: routingKey);
-
-        var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
-        consumer.Received += async (model, ea) =>
-        {
-            try
-            {
-                var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonSerializer.Deserialize<T>(json);
-                if (message != null)
-                    await handler(message);
-
-                channel.BasicAck(ea.DeliveryTag, false);
-            }
-            catch
-            {
-                channel.BasicNack(ea.DeliveryTag, false, false);
-            }
-        };
-
-        channel.BasicConsume(_options.EventBus.QueueName, false, consumer);
-    }
-
 
     private void BindExchangesAndQueues(IModel channel)
     {
@@ -237,7 +231,7 @@ public class EventBus : IEventBus
         var channel = _rabbitConnection.GetChannel();
 
         var basicProperties = channel.CreateBasicProperties();
-        var messageByte = JsonHelper.SerializeEvent(model);
+        var messageByte = EventBusJsonHelper.SerializeEventBusEvent(model);
 
         var routingKey = GetRoutingKey(typeof(T));
 
@@ -271,7 +265,7 @@ public class EventBus : IEventBus
 
         foreach (var model in models)
         {
-            var messageByte = JsonHelper.SerializeEvent(model);
+            var messageByte = EventBusJsonHelper.SerializeEventBusEvent(model);
 
             channel.BasicPublish(
                 exchange: _options.EventBus.ExchangeName,
@@ -283,7 +277,8 @@ public class EventBus : IEventBus
 
     private async Task PublishToOutboxAsync<T>(
         T model,
-        CancellationToken cancellationToken) where T : IEvent
+        CancellationToken cancellationToken
+        ) where T : IEvent
     {
         var outboxMessage = new OutboxMessage
         {
