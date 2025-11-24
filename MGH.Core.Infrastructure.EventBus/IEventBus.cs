@@ -16,8 +16,8 @@ public interface IEventBus
     /// Publishes a batch of events to RabbitMQ
     /// </summary>
     Task PublishAsync<T>(
-        IEnumerable<T> models,
         PublishMode mode,
+        IEnumerable<T> models,
         CancellationToken cancelationToken) where T : IEvent;
 
     /// <summary>
