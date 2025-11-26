@@ -2,5 +2,5 @@
 
 public class ConnectionOptions
 {
-    public RabbitMqSettings Default { get; set; }
+    public required RabbitMqSettings Default { get; set; }
 }

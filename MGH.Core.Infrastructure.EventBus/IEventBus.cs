@@ -23,10 +23,10 @@ public interface IEventBus
     /// <summary>
     /// Consume a specific event type with a provided handler function.
     /// </summary>
-    void Consume<T>(Func<T, Task> handler) where T : IEvent;
+    Task ConsumeAsync<T>(Func<T, Task> handler) where T : IEvent;
 
     /// <summary>
     /// Consume a specific event type using the registered IEventHandler<T> from DI.
     /// </summary>
-    void Consume<T>() where T : IEvent;
+    Task ConsumeAsync<T>() where T : IEvent;
 }

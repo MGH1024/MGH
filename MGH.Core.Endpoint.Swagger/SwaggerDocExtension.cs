@@ -1,7 +1,7 @@
-﻿using MGH.Core.Endpoint.Swagger.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
+using MGH.Core.Endpoint.Swagger.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MGH.Core.Endpoint.Swagger;
 

@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using System.Text.Json;
-using MGH.Core.Infrastructure.Caching.Models;
 using StackExchange.Redis;
+using MGH.Core.CrossCutting.JsonHelpers;
+using MGH.Core.Infrastructure.Caching.Models;
 
 namespace MGH.Core.Infrastructure.Caching.Redis;
 
@@ -9,30 +9,42 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
 {
     public T Get(string key)
     {
-        var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
-        var result = database.StringGet(key);
-        return result.HasValue ? JsonSerializer.Deserialize<T>(result!) : default;
+        var db = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
+        var value = db.StringGet(key);
+
+        return value.HasValue
+            ? RedisJsonHelper.Deserialize<T>(value.ToString())
+            : default;
     }
 
     public async Task<T> GetAsync(string key)
     {
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
-        var redisValue = await database.StringGetAsync(key);
-        return redisValue.HasValue ? JsonSerializer.Deserialize<T>(redisValue!) : default;
+        var value = await database.StringGetAsync(key);
+
+        return value.HasValue
+            ? RedisJsonHelper.Deserialize<T>(value.ToString())
+            : default;
     }
 
     public IEnumerable<T> GetList(string key)
     {
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
-        var resultValue = database.StringGet(key);
-        return resultValue.HasValue ? JsonSerializer.Deserialize<IEnumerable<T>>(resultValue) : default;
+        var value = database.StringGet(key);
+
+        return value.HasValue
+            ? RedisJsonHelper.Deserialize<IEnumerable<T>>(value)
+            : default;
     }
 
     public async Task<IEnumerable<T>> GetListAsync(string key)
     {
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
-        var redisValue = await database.StringGetAsync(key);
-        return redisValue.HasValue ? JsonSerializer.Deserialize<IEnumerable<T>>(redisValue) : default;
+        var value = await database.StringGetAsync(key);
+
+        return value.HasValue 
+            ? RedisJsonHelper.Deserialize<IEnumerable<T>>(value) 
+            : default;
     }
 
     public void Remove(string key)
@@ -81,7 +93,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
 
     public void Set(string key, object obj, int time = 3)
     {
-        var cacheObj = JsonSerializer.Serialize(obj);
+        var cacheObj = RedisJsonHelper.Serialize(obj);
         var ts = new TimeSpan(0, time, 0);
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
         database.StringSet(key, cacheObj, ts);
@@ -89,13 +101,13 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
 
     public async Task SetAsync(string key, object obj, int time = 3)
     {
-        var cacheObj = JsonSerializer.Serialize(obj);
+        var cacheObj = RedisJsonHelper.Serialize(obj);
         var ts = new TimeSpan(0, time, 0);
 
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
         await database.StringSetAsync(key, cacheObj, ts);
     }
-    
+
     public bool Exists(string key)
     {
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
@@ -124,7 +136,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
         var endpoints = connectionMultiplexer.GetEndPoints(true);
         return endpoints;
     }
-    
+
     private void Remove(string key, int dbNumber)
     {
         var database = connectionMultiplexer.GetDatabase(dbNumber);

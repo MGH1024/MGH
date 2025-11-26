@@ -1,35 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<PackageVersion>3.0.4</PackageVersion>
+		<PackageVersion>4.0.0</PackageVersion>
 		<Copyright>MGH</Copyright>
 		<PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Infrastructure.HealthCheck</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
 		<PackageTags>microservice, netcore</PackageTags>
-		<AssemblyVersion>3.0.4</AssemblyVersion>
-		<FileVersion>3.0.4</FileVersion>
-		<ProductVersion>3.0.4</ProductVersion>
+		<AssemblyVersion>4.0.0</AssemblyVersion>
+		<FileVersion>4.0.0</FileVersion>
+		<ProductVersion>4.0.0</ProductVersion>
 		<Title>MGH.Core.Infrastructure.HealthCheck</Title>
 		<Authors>MGH</Authors>
 		<Description>it's a package for manage Core Infrastructures Health check</Description>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="8.0.2" />
-        <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.2" />
-        <PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.2" />
-        <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.7" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
-        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
+        <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -2,6 +2,6 @@
 
 public class RabbitMqOptions
 {
-    public ConnectionOptions Connections { get; set; }
-    public EventBusOptions EventBus { get; set; }
+    public required ConnectionOptions Connections { get; set; }
+    public required EventBusOptions EventBus { get; set; }
 }

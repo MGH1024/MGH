@@ -10,13 +10,13 @@
         /// Declares the main exchange and queue, sets up retry queues, 
         /// and binds queues to the appropriate routing keys.
         /// </summary>
-        void BindExchangesAndQueues();
+        Task BindExchangesAndQueuesAsync();
 
         /// <summary>
         /// Declares and binds end-to-end exchanges according to the configuration.
         /// This includes binding source exchanges to destination exchanges and 
         /// associating them with the main queue if necessary.
         /// </summary>
-        void EndToEndExchangeBinding();
+        Task EndToEndExchangeBindingAsync();
     }
 }

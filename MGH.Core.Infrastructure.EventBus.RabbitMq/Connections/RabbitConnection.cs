@@ -84,7 +84,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         public void ConnectService()
         {
             if (_isDisposed) return;
-            _connectionPolicy.Execute(() =>
+            _connectionPolicy.Execute(async () =>
             {
                 if (_isDisposed) return;
                 if (_connection != null && _connection.IsOpen) return;
@@ -92,34 +92,40 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
                 try
                 {
                     _connection?.Dispose();
-                    _connection = _connectionFactory.CreateConnection(clientProvidedName: "RabbitMQ_Connection");
+                    _connection = await _connectionFactory.CreateConnectionAsync(clientProvidedName: "RabbitMQ_Connection");
                     if (!_connection.IsOpen)
                         throw new InvalidOperationException("RabbitMQ connection could not be opened.");
 
-                    _connection.ConnectionShutdown += (s, e) =>
+                    _connection.ConnectionShutdownAsync += async (s, e) =>
                     {
                         if (!_isDisposed)
                         {
                             _logger.LogWarning("RabbitMQ connection shutdown detected. Reconnecting...");
                             ConnectService();
                         }
+                        await Task.CompletedTask;
                     };
-                    _connection.CallbackException += (s, e) =>
+
+                    _connection.CallbackExceptionAsync += async (s, e) =>
                     {
                         if (!_isDisposed)
                         {
                             _logger.LogWarning(e.Exception, "RabbitMQ callback exception. Reconnecting...");
                             ConnectService();
                         }
+                        await Task.CompletedTask;
                     };
-                    _connection.ConnectionBlocked += (s, e) =>
+
+                    _connection.ConnectionBlockedAsync += async (s, e) =>
                     {
                         if (!_isDisposed)
                         {
                             _logger.LogWarning("RabbitMQ connection blocked. Reconnecting...");
                             ConnectService();
                         }
+                        await Task.CompletedTask;
                     };
+
                 }
                 catch (Exception ex)
                 {
@@ -156,19 +162,19 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// Returns a channel for publishing messages to RabbitMQ.
         /// </summary>
         /// <returns>A new <see cref="IModel"/> for publishing.</returns>
-        public IModel GetPublishChannel() => CreateChannel();
+        public async Task<IChannel> GetPublishChannelAsync() => await CreateChannelAsync();
 
         /// <summary>
         /// Returns a channel for consuming messages from RabbitMQ.
         /// </summary>
         /// <returns>A new <see cref="IModel"/> for consuming.</returns>
-        public IModel GetConsumeChannel() => CreateChannel();
+        public async Task<IChannel> GetConsumeChannelAsync() => await CreateChannelAsync();
 
         /// <summary>
         /// Returns a channel for declaring exchanges and queues in RabbitMQ.
         /// </summary>
         /// <returns>A new <see cref="IModel"/> for declaration operations.</returns>
-        public IModel GetDeclarerChannel() => CreateChannel();
+        public async Task<IChannel> GetDeclarerChannelAsync() => await CreateChannelAsync();
 
         /// <summary>
         /// Creates a new channel from the current RabbitMQ connection.
@@ -180,7 +186,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// Automatically reconnects if the channel encounters a callback exception.
         /// Logs exceptions during channel creation.
         /// </remarks>
-        private IModel CreateChannel()
+        private async Task<IChannel> CreateChannelAsync()
         {
             if (_isDisposed)
                 throw new ObjectDisposedException(nameof(RabbitConnection));
@@ -192,8 +198,8 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
 
             try
             {
-                var channel = _connection.CreateModel();
-                channel.CallbackException += (s, e) =>
+                var channel = await _connection.CreateChannelAsync();
+                channel.CallbackExceptionAsync += async (s, e) =>
                 {
                     _logger.LogWarning(e.Exception, "RabbitMQ channel callback exception. Reconnecting...");
                     ConnectService();

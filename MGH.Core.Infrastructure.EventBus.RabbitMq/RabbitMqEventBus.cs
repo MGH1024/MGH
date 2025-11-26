@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using RabbitMQ.Client;
 using MGH.Core.Domain.Events;
+using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MGH.Core.CrossCutting.JsonHelpers;
@@ -61,8 +62,8 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             _rabbitMqDeclarer = rabbitMqDeclarer ?? throw new ArgumentNullException(nameof(rabbitMqDeclarer));
 
             _rabbitConnection.ConnectService();
-            _rabbitMqDeclarer.BindExchangesAndQueues();
-            _rabbitMqDeclarer.EndToEndExchangeBinding();
+            _rabbitMqDeclarer.BindExchangesAndQueuesAsync();
+            _rabbitMqDeclarer.EndToEndExchangeBindingAsync();
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             switch (mode)
             {
                 case PublishMode.Direct:
-                    PublishDirect(models);
+                    await PublishDirectAsync(models);
                     break;
 
                 case PublishMode.Outbox:
@@ -115,7 +116,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             switch (mode)
             {
                 case PublishMode.Direct:
-                    PublishDirect(model);
+                    await PublishDirectAsync(model);
                     break;
 
                 case PublishMode.Outbox:
@@ -132,12 +133,12 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// </summary>
         /// <typeparam name="T">The type of event to consume.</typeparam>
         /// <param name="handler">Async handler function for the event.</param>
-        public void Consume<T>(Func<T, Task> handler) where T : IEvent
+        public async Task ConsumeAsync<T>(Func<T, Task> handler) where T : IEvent
         {
             _rabbitConnection.ConnectService();
-            var channel = _rabbitConnection.GetConsumeChannel();
-            var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
-            consumer.Received += async (model, ea) =>
+            var channel = await _rabbitConnection.GetConsumeChannelAsync();
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 try
                 {
@@ -145,29 +146,28 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                     if (message != null)
                         await handler(message);
 
-                    channel.BasicAck(ea.DeliveryTag, false);
+                    await channel.BasicAckAsync(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error handling event of type {EventType}.", typeof(T).Name);
-                    channel.BasicNack(ea.DeliveryTag, false, false);
+                    await channel.BasicNackAsync(ea.DeliveryTag, false, false);
                 }
             };
 
-            channel.BasicConsume(_options.EventBus.QueueName, false, consumer);
+            await channel.BasicConsumeAsync(_options.EventBus.QueueName, false, consumer);
         }
 
         /// <summary>
         /// Consumes events of type <typeparamref name="T"/> using a registered handler from the service provider.
         /// </summary>
         /// <typeparam name="T">The type of event to consume.</typeparam>
-        public void Consume<T>() where T : IEvent
+        public async Task ConsumeAsync<T>() where T : IEvent
         {
             _rabbitConnection.ConnectService();
-            var channel = _rabbitConnection.GetConsumeChannel();
-
-            var consumer = new RabbitMQ.Client.Events.EventingBasicConsumer(channel);
-            consumer.Received += async (model, ea) =>
+            var channel = await _rabbitConnection.GetConsumeChannelAsync();
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 using var scope = _serviceProvider.CreateScope();
                 try
@@ -179,12 +179,12 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                     var message = EventBusJsonHelper.DeserializeEventBusEvent<T>(ea.Body.ToArray());
                     if (message == null)
                     {
-                        channel.BasicNack(ea.DeliveryTag, false, false);
+                        await channel.BasicNackAsync(ea.DeliveryTag, false, false);
                         return;
                     }
 
                     await handler.HandleAsync(message);
-                    channel.BasicAck(ea.DeliveryTag, false);
+                    await channel.BasicAckAsync(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
                 {
@@ -193,45 +193,62 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                         "Error handling message for type {EventType}. Raw message: {RawMessage}",
                         typeof(T).Name, json);
 
-                    channel.BasicNack(ea.DeliveryTag, false, false);
+                    await channel.BasicNackAsync(ea.DeliveryTag, false, false);
                 }
             };
 
-            channel.BasicConsume(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
+            await channel.BasicConsumeAsync(queue: _options.EventBus.QueueName, autoAck: false, consumer: consumer);
         }
 
         #region Private Helpers
 
-        private void PublishDirect<T>(T model) where T : IEvent
+        private async Task PublishDirectAsync<T>(T model) where T : IEvent
         {
             _rabbitConnection.ConnectService();
-            using var channel = _rabbitConnection.GetPublishChannel();
+            using var channel = await _rabbitConnection.GetPublishChannelAsync();
 
-            var basicProperties = channel.CreateBasicProperties();
+            var basicProperties = new BasicProperties
+            {
+                Type = typeof(T).Name,
+                ContentType = "application/json",
+                MessageId = Guid.NewGuid().ToString(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
+            };
+
             var messageByte = EventBusJsonHelper.SerializeEventBusEvent(model);
 
             var routingKey = GetRoutingKey(typeof(T));
 
-            channel.BasicPublish(
+            await channel.BasicPublishAsync(
                 exchange: _options.EventBus.ExchangeName,
+                mandatory: false,
                 routingKey: routingKey,
                 basicProperties: basicProperties,
                 body: messageByte);
         }
 
-        private void PublishDirect<T>(IEnumerable<T> models) where T : IEvent
+        private async Task PublishDirectAsync<T>(IEnumerable<T> models) where T : IEvent
         {
             _rabbitConnection.ConnectService();
-            using var channel = _rabbitConnection.GetPublishChannel();
+            using var channel = await _rabbitConnection.GetPublishChannelAsync();
 
             var routingKey = GetRoutingKey(typeof(T));
-            var basicProperties = channel.CreateBasicProperties();
+            var basicProperties = new BasicProperties
+            {
+                Type = typeof(T).Name,
+                ContentType = "application/json",
+                MessageId = Guid.NewGuid().ToString(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
+            };
 
             foreach (var model in models)
             {
                 var messageByte = EventBusJsonHelper.SerializeEventBusEvent(model);
-                channel.BasicPublish(
+                await channel.BasicPublishAsync(
                     exchange: _options.EventBus.ExchangeName,
+                    mandatory: false,
                     routingKey: routingKey,
                     basicProperties: basicProperties,
                     body: messageByte);

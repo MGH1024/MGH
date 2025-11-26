@@ -17,19 +17,19 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// <summary>
         /// Creates and returns a channel for publishing messages to RabbitMQ.
         /// </summary>
-        /// <returns>An open <see cref="IModel"/> channel for publishing.</returns>
-        IModel GetPublishChannel();
+        /// <returns>An open <see cref="IChannel"/> channel for publishing.</returns>
+        Task<IChannel> GetPublishChannelAsync();
 
         /// <summary>
         /// Creates and returns a channel for consuming messages from RabbitMQ.
         /// </summary>
-        /// <returns>An open <see cref="IModel"/> channel for consuming.</returns>
-        IModel GetConsumeChannel();
+        /// <returns>An open <see cref="IChannel"/> channel for consuming.</returns>
+        Task<IChannel> GetConsumeChannelAsync();
 
         /// <summary>
         /// Creates and returns a channel for declaring exchanges, queues, and bindings.
         /// </summary>
-        /// <returns>An open <see cref="IModel"/> channel for declarations.</returns>
-        IModel GetDeclarerChannel();
+        /// <returns>An open <see cref="IChannel"/> channel for declarations.</returns>
+        Task<IChannel> GetDeclarerChannelAsync();
     }
 }

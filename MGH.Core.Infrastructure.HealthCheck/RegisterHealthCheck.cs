@@ -1,4 +1,5 @@
-﻿using HealthChecks.UI.Client;
+﻿using RabbitMQ.Client;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,15 +52,19 @@ public static class RegisterHealthCheck
     /// it check rabbit healthy status
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="rabbitConnectionString"></param>
+    /// <param name="connectionFactory"></param>
     /// <returns></returns>
     public static IHealthChecksBuilder AddRabbitMqHealthCheck(
-        this IHealthChecksBuilder builder, string rabbitConnectionString)
+        this IHealthChecksBuilder builder,
+        Func<IServiceProvider, IConnection> connectionFactory)
     {
         builder.AddRabbitMQ(
-            rabbitConnectionString: rabbitConnectionString,
+            factory: connectionFactory,
             name: "RabbitMq",
-            tags: new string[] { "rabbit" });
+            tags: new string[] { "rabbit" },
+            failureStatus: HealthStatus.Unhealthy,
+            timeout: TimeSpan.FromSeconds(10));
+
         return builder;
     }
 

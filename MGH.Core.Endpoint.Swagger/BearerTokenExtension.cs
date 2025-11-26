@@ -1,36 +1,32 @@
-﻿using MGH.Core.Endpoint.Swagger.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
-
-namespace MGH.Core.Endpoint.Swagger;
 
 public static class BearerTokenExtension
 {
-    public static void AddBearerToken(this SwaggerGenOptions swaggerGenOptions
-        , OpenApiSecuritySchemeConfig openApiSecuritySchemeConfig,
-        OpenApiReferenceConfig openApiReferenceConfig)
+    public static void AddBearerToken(this SwaggerGenOptions options)
     {
-        var openApiSecurityScheme = new OpenApiSecurityScheme
-        {
-            Description = openApiSecuritySchemeConfig.Description,
-            Name = openApiSecuritySchemeConfig.Name,
-            In = (ParameterLocation)openApiSecuritySchemeConfig.In,
-            Type = (SecuritySchemeType)openApiSecuritySchemeConfig.Type,
-            Scheme = openApiSecuritySchemeConfig.Scheme,
-            Reference = new OpenApiReference
-            {
-                Id = openApiReferenceConfig.Id,
-                Type = (ReferenceType)openApiReferenceConfig.Type
-            }
-        };
-        swaggerGenOptions.AddSecurityDefinition("Bearer", openApiSecurityScheme);
+        const string schemeName = "Bearer";
 
-        swaggerGenOptions.AddSecurityRequirement(new OpenApiSecurityRequirement
+        var securityScheme = new OpenApiSecurityScheme
         {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization header using the Bearer scheme"
+        };
+
+        // Register scheme
+        options.AddSecurityDefinition(schemeName, securityScheme);
+
+        // Add requirement using FACTORY delegate
+        options.AddSecurityRequirement(_ =>
+            new OpenApiSecurityRequirement
             {
-                openApiSecurityScheme, new[] { "Bearer" }
+                [new OpenApiSecuritySchemeReference(schemeName)] = new List<string>()
             }
-        });
+        );
     }
 }

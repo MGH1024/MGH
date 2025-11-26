@@ -1,5 +1,5 @@
-﻿using MGH.Core.Infrastructure.Caching.Redis;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
+using MGH.Core.Infrastructure.Caching.Redis;
 
 namespace MGH.Core.Infrastructure.Caching.Models;
 

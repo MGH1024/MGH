@@ -2,12 +2,12 @@
 
 public class RabbitMqSettings
 {
-    public string Host { get; set; }
-    public string Port { get; set; }
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public string VirtualHost { get; set; }
-    public string ReceiveEndpoint { get; set; }
+    public required string Host { get; set; }
+    public required string Port { get; set; }
+    public required string Username { get; set; }
+    public required string Password { get; set; }
+    public required string VirtualHost { get; set; }
+    public required string ReceiveEndpoint { get; set; }
 
     public Uri HostAddress => new($"rabbitmq://{Username}:{Password}@{Host}:{Port}/{VirtualHost}");
 

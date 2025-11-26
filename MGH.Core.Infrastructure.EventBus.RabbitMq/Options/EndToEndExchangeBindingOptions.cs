@@ -2,7 +2,7 @@
 
 public class EndToEndExchangeBindingOptions
 {
-    public string RoutingKey { get; set; }
-    public string SourceExchange { get; set; }
-    public string DestinationExchange { get; set; }
+    public required string RoutingKey { get; set; }
+    public required string SourceExchange { get; set; }
+    public required string DestinationExchange { get; set; }
 }

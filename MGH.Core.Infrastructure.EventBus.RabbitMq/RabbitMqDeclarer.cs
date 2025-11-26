@@ -17,7 +17,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
     public class RabbitMqDeclarer : IRabbitMqDeclarer, IDisposable
     {
         private bool _disposed;
-        private readonly IModel _channel;
+        private readonly IChannel _channel;
         private readonly RabbitMqOptions _options;
         private readonly ILogger<RabbitMqDeclarer> _logger;
 
@@ -41,7 +41,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                 throw new InvalidOperationException("EventBus section is missing");
 
             rabbitConnection.ConnectService();
-            _channel = rabbitConnection.GetDeclarerChannel();
+            _channel = rabbitConnection.GetDeclarerChannelAsync().GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if this declarer has already been disposed.</exception>
         /// <exception cref="InvalidOperationException">Thrown if routing keys are null.</exception>
-        public void BindExchangesAndQueues()
+        public async Task BindExchangesAndQueuesAsync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(RabbitMqDeclarer));
 
@@ -61,19 +61,19 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             var retryDelayMs = _options.EventBus.DeadLetterTtl;
             var routingKeys = _options.EventBus.RoutingKeys ?? throw new InvalidOperationException("RoutingKeys dictionary is null");
 
-            _channel.ExchangeDeclare(mainExchange, exchangeType, durable: true, autoDelete: false);
-            _channel.QueueDeclare(mainQueue, durable: true, exclusive: false, autoDelete: false,
+            await _channel.ExchangeDeclareAsync(mainExchange, exchangeType, durable: true, autoDelete: false);
+            await _channel.QueueDeclareAsync(mainQueue, durable: true, exclusive: false, autoDelete: false,
                 arguments: new Dictionary<string, object> { { "x-dead-letter-exchange", retryExchange } });
 
-            _channel.ExchangeDeclare(retryExchange, exchangeType, durable: true, autoDelete: false);
-            _channel.QueueDeclare(retryQueue, durable: true, exclusive: false, autoDelete: false,
+            await _channel.ExchangeDeclareAsync(retryExchange, exchangeType, durable: true, autoDelete: false);
+            await _channel.QueueDeclareAsync(retryQueue, durable: true, exclusive: false, autoDelete: false,
                 arguments: new Dictionary<string, object> { { "x-message-ttl", retryDelayMs }, { "x-dead-letter-exchange", mainExchange } });
 
             foreach (var kv in routingKeys)
             {
                 if (string.IsNullOrWhiteSpace(kv.Value)) continue;
-                _channel.QueueBind(mainQueue, mainExchange, kv.Value);
-                _channel.QueueBind(retryQueue, retryExchange, kv.Value);
+                await _channel.QueueBindAsync(mainQueue, mainExchange, kv.Value);
+                await _channel.QueueBindAsync(retryQueue, retryExchange, kv.Value);
             }
 
             _logger.LogInformation("Exchanges and queues successfully bound: Main='{MainQueue}', Retry='{RetryQueue}'", mainQueue, retryQueue);
@@ -84,7 +84,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// Also binds the main queue to the destination exchanges.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Thrown if this declarer has already been disposed.</exception>
-        public void EndToEndExchangeBinding()
+        public async Task EndToEndExchangeBindingAsync()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(RabbitMqDeclarer));
 
@@ -100,11 +100,11 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 
                 try
                 {
-                    _channel.ExchangeDeclare(item.SourceExchange, _options.EventBus.ExchangeType, durable: true, autoDelete: false);
-                    _channel.ExchangeDeclare(item.DestinationExchange, _options.EventBus.ExchangeType, durable: true, autoDelete: false);
-                    _channel.ExchangeBind(item.DestinationExchange, item.SourceExchange, item.RoutingKey);
-                    _channel.QueueDeclare(mainQueue, durable: true, exclusive: false, autoDelete: false);
-                    _channel.QueueBind(mainQueue, item.DestinationExchange, item.RoutingKey);
+                    await _channel.ExchangeDeclareAsync(item.SourceExchange, _options.EventBus.ExchangeType, durable: true, autoDelete: false);
+                    await _channel.ExchangeDeclareAsync(item.DestinationExchange, _options.EventBus.ExchangeType, durable: true, autoDelete: false);
+                    await _channel.ExchangeBindAsync(item.DestinationExchange, item.SourceExchange, item.RoutingKey);
+                    await _channel.QueueDeclareAsync(mainQueue, durable: true, exclusive: false, autoDelete: false);
+                    await _channel.QueueBindAsync(mainQueue, item.DestinationExchange, item.RoutingKey);
                 }
                 catch (Exception ex)
                 {
@@ -123,7 +123,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             if (_disposed) return;
             try
             {
-                _channel?.Close();
+                _channel?.CloseAsync();
                 _channel?.Dispose();
             }
             catch (Exception ex)
