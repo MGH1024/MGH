@@ -8,7 +8,7 @@ namespace MGH.Core.Endpoint.Swagger
 {
     public static class RegisterOpenApi
     {
-        public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddSwaggerService(this IServiceCollection services, IConfiguration config)
         {
             var settings = config.GetSection("Swagger").Get<SwaggerSettings>();
 
@@ -62,7 +62,7 @@ namespace MGH.Core.Endpoint.Swagger
             return services;
         }
 
-        public static void UseSwagger(this WebApplication app, IConfiguration config)
+        public static void UseSwaggerMiddleWare(this WebApplication app, IConfiguration config)
         {
             var settings = config.GetSection("Swagger").Get<SwaggerSettings>();
 
