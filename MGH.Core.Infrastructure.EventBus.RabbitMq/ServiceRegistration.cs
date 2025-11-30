@@ -59,29 +59,43 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         public static void StartConsumingRegisteredEventHandlers(this IServiceProvider scopedProvider)
         {
             var eventBus = scopedProvider.GetRequiredService<IEventBus>();
+            var handlerInterface = typeof(IEventHandler<>);
 
-            var handlerInterfaceType = typeof(IEventHandler<>);
-
-            var eventHandlerTypes = AppDomain.CurrentDomain
+            var eventTypes = AppDomain.CurrentDomain
                 .GetAssemblies()
-                .SelectMany(a => a.GetTypes())
+                .SelectMany(a =>
+                {
+                    try { return a.GetTypes(); }
+                    catch { return Array.Empty<Type>(); }
+                })
                 .Where(t => !t.IsAbstract && !t.IsInterface)
-                .SelectMany(t => t.GetInterfaces(), (impl, iface) => new { impl, iface })
-                .Where(x =>
-                    x.iface.IsGenericType &&
-                    x.iface.GetGenericTypeDefinition() == handlerInterfaceType)
-                .Select(x => x.iface.GetGenericArguments()[0])
+                .SelectMany(t => t.GetInterfaces()
+                    .Where(i =>
+                        i.IsGenericType &&
+                        i.GetGenericTypeDefinition() == handlerInterface),
+                    (impl, iface) => iface.GetGenericArguments()[0])
                 .Distinct()
                 .ToList();
 
-            foreach (var eventType in eventHandlerTypes)
+            if (!eventTypes.Any())
+                return;
+
+            var consumeMethod = typeof(IEventBus)
+                .GetMethods()
+                .FirstOrDefault(m =>
+                    m.Name == "ConsumeAsync" &&
+                    m.IsGenericMethodDefinition &&
+                    m.GetParameters().Length == 0);
+
+            if (consumeMethod == null)
+                throw new InvalidOperationException(
+                    "IEventBus must contain a generic method ConsumeAsync<T>() with no parameters.");
+
+            foreach (var eventType in eventTypes)
             {
-                var method = typeof(IEventBus).GetMethods()
-                    .Where(m => m.Name == "Consume" && m.IsGenericMethodDefinition)
-                    .Where(m => m.GetParameters().Length == 0)
-                    .Single();
-                var genericMethod = method.MakeGenericMethod(eventType);
-                genericMethod.Invoke(eventBus, null);
+                var genericMethod = consumeMethod.MakeGenericMethod(eventType);
+                var task = (Task)genericMethod.Invoke(eventBus, null)!;
+                task.GetAwaiter().GetResult();
             }
         }
     }
