@@ -12,7 +12,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// Ensures the RabbitMQ connection is established.
         /// If the connection is closed or lost, it will attempt to reconnect.
         /// </summary>
-        void ConnectService();
+        Task ConnectServiceAsync();
 
         /// <summary>
         /// Creates and returns a channel for publishing messages to RabbitMQ.

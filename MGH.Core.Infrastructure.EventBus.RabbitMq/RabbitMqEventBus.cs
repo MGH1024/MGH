@@ -61,7 +61,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             _rabbitConnection = rabbitConnection ?? throw new ArgumentNullException(nameof(rabbitConnection));
             _rabbitMqDeclarer = rabbitMqDeclarer ?? throw new ArgumentNullException(nameof(rabbitMqDeclarer));
 
-            _rabbitConnection.ConnectService();
+            _rabbitConnection.ConnectServiceAsync();
             _rabbitMqDeclarer.BindExchangesAndQueuesAsync();
             _rabbitMqDeclarer.EndToEndExchangeBindingAsync();
         }
@@ -135,7 +135,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// <param name="handler">Async handler function for the event.</param>
         public async Task ConsumeAsync<T>(Func<T, Task> handler) where T : IEvent
         {
-            _rabbitConnection.ConnectService();
+            _rabbitConnection.ConnectServiceAsync();
             var channel = await _rabbitConnection.GetConsumeChannelAsync();
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (model, ea) =>
@@ -164,7 +164,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// <typeparam name="T">The type of event to consume.</typeparam>
         public async Task ConsumeAsync<T>() where T : IEvent
         {
-            _rabbitConnection.ConnectService();
+            await _rabbitConnection.ConnectServiceAsync();
             var channel = await _rabbitConnection.GetConsumeChannelAsync();
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (model, ea) =>
@@ -204,7 +204,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 
         private async Task PublishDirectAsync<T>(T model) where T : IEvent
         {
-            _rabbitConnection.ConnectService();
+            await _rabbitConnection.ConnectServiceAsync();
             using var channel = await _rabbitConnection.GetPublishChannelAsync();
 
             var basicProperties = new BasicProperties
@@ -230,7 +230,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 
         private async Task PublishDirectAsync<T>(IEnumerable<T> models) where T : IEvent
         {
-            _rabbitConnection.ConnectService();
+            await _rabbitConnection.ConnectServiceAsync();
             using var channel = await _rabbitConnection.GetPublishChannelAsync();
 
             var routingKey = GetRoutingKey(typeof(T));

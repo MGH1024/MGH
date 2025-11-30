@@ -40,7 +40,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             if (_options.EventBus == null)
                 throw new InvalidOperationException("EventBus section is missing");
 
-            rabbitConnection.ConnectService();
+            rabbitConnection.ConnectServiceAsync();
             _channel = rabbitConnection.GetDeclarerChannelAsync().GetAwaiter().GetResult();
         }
 
