@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
@@ -6,37 +7,42 @@ using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 {
-    /// <summary>
-    /// Provides extension methods for registering RabbitMQ EventBus services
-    /// and event handlers into the dependency injection container.
-    /// </summary>
     public static class ServiceRegistration
     {
         /// <summary>
-        /// Registers RabbitMQ EventBus services and configuration.
+        /// Registers RabbitMQ-based event bus services, handlers, and background consumers.
         /// </summary>
-        /// <param name="services">The service collection to add services to.</param>
-        /// <param name="configuration">The application configuration to read RabbitMQ options from.</param>
+        /// <param name="services">The DI service collection.</param>
+        /// <param name="configuration">The application configuration containing the RabbitMQ section.</param>
+        /// <remarks>
+        /// This method:
+        /// <list type="bullet">
+        ///   <item>Configures <see cref="RabbitMqOptions"/> from the <c>RabbitMq</c> section.</item>
+        ///   <item>Registers the RabbitMQ event bus and connection services.</item>
+        ///   <item>Discovers and registers event handlers automatically.</item>
+        ///   <item>Starts a hosted service to initialize event consumers.</item>
+        /// </list>
+        /// </remarks>
         public static void AddRabbitMqEventBus(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
             services.AddScoped<IEventBus, RabbitMqEventBus>();
             services.AddSingleton<IRabbitConnection, RabbitConnection>();
             services.AddSingleton<IRabbitMqDeclarer, RabbitMqDeclarer>();
+            services.AddEventHandlers(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddHostedService<EventBusConsumerStarterHostedService>();
         }
 
-        /// <summary>
-        /// Scans the specified assemblies for implementations of <see cref="IEventHandler{T}"/>
-        /// and registers them as transient services.
-        /// </summary>
-        /// <param name="services">The service collection to add handlers to.</param>
-        /// <param name="assembliesToScan">Assemblies to scan for event handlers.</param>
-        public static void AddEventHandlers(this IServiceCollection services, params Assembly[] assembliesToScan)
+        private static void AddEventHandlers(this IServiceCollection services, params Assembly[] assembliesToScan)
         {
             var handlerInterfaceType = typeof(IEventHandler<>);
 
             var types = assembliesToScan
-                .SelectMany(a => a.GetTypes())
+                .SelectMany(a =>
+                {
+                    try { return a.GetTypes(); }
+                    catch { return Array.Empty<Type>(); }
+                })
                 .Where(t => !t.IsAbstract && !t.IsInterface)
                 .SelectMany(t => t.GetInterfaces(), (impl, iface) => new { impl, iface })
                 .Where(x =>
@@ -45,20 +51,23 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                 .ToList();
 
             foreach (var t in types)
-            {
                 services.AddTransient(t.iface, t.impl);
-            }
+        }
+    }
+
+    internal sealed class EventBusConsumerStarterHostedService : IHostedService
+    {
+        private readonly IEventBus _eventBus;
+        private readonly IServiceScope _scope;
+
+        public EventBusConsumerStarterHostedService(IServiceProvider provider)
+        {
+            _scope = provider.CreateScope();
+            _eventBus = _scope.ServiceProvider.GetRequiredService<IEventBus>();
         }
 
-        /// <summary>
-        /// Starts consuming all registered event handlers automatically.
-        /// It discovers all <see cref="IEventHandler{T}"/> types in the loaded assemblies
-        /// and calls <see cref="IEventBus.Consume{T}"/> for each event type.
-        /// </summary>
-        /// <param name="scopedProvider">The service provider to resolve <see cref="IEventBus"/> from.</param>
-        public static void StartConsumingRegisteredEventHandlers(this IServiceProvider scopedProvider)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            var eventBus = scopedProvider.GetRequiredService<IEventBus>();
             var handlerInterface = typeof(IEventHandler<>);
 
             var eventTypes = AppDomain.CurrentDomain
@@ -77,26 +86,27 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                 .Distinct()
                 .ToList();
 
-            if (!eventTypes.Any())
-                return;
-
             var consumeMethod = typeof(IEventBus)
                 .GetMethods()
-                .FirstOrDefault(m =>
+                .First(m =>
                     m.Name == "ConsumeAsync" &&
                     m.IsGenericMethodDefinition &&
                     m.GetParameters().Length == 0);
 
-            if (consumeMethod == null)
-                throw new InvalidOperationException(
-                    "IEventBus must contain a generic method ConsumeAsync<T>() with no parameters.");
-
             foreach (var eventType in eventTypes)
             {
-                var genericMethod = consumeMethod.MakeGenericMethod(eventType);
-                var task = (Task)genericMethod.Invoke(eventBus, null)!;
-                task.GetAwaiter().GetResult();
+                var generic = consumeMethod.MakeGenericMethod(eventType);
+
+                _ = (Task)generic.Invoke(_eventBus, null)!;
             }
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _scope.Dispose();
+            return Task.CompletedTask;
         }
     }
 }
