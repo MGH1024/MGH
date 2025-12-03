@@ -1,4 +1,4 @@
-name: "Publish"
+name: Publish
 
 on:
   push:
@@ -9,221 +9,43 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project:
+          - MGH.Core.Application
+          - MGH.Core.CrossCutting
+          - MGH.Core.CrossCutting.Logging
+          - MGH.Core.Domain
+          - MGH.Core.Endpoint.Swagger
+          - MGH.Core.Endpoint.Web
+          - MGH.Core.Infrastructure
+          - MGH.Core.Infrastructure.Caching
+          - MGH.Core.Infrastructure.ElasticSearch
+          - MGH.Core.Infrastructure.EventBus
+          - MGH.Core.Infrastructure.EventBus.RabbitMq
+          - MGH.Core.Infrastructure.HealthCheck
+          - MGH.Core.Infrastructure.HttpClient
+          - MGH.Core.Infrastructure.Persistence
+          - MGH.Core.Infrastructure.Persistence.Dapper
+          - MGH.Core.Infrastructure.Persistence.EF
+          - MGH.Core.Infrastructure.Securities
+
     steps:
-
       - uses: actions/checkout@v3
+
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Application/MGH.Core.Application.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Application/MGH.Core.Application.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet-version: '10.0.x'
 
+      - name: Restore project
+        run: dotnet restore src/${{ matrix.project }}/${{ matrix.project }}.csproj
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.CrossCutting/MGH.Core.CrossCutting.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.CrossCutting/MGH.Core.CrossCutting.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Build project
+        run: dotnet build src/${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release --no-restore
 
+      - name: Pack project
+        run: dotnet pack src/${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release --no-restore --output ./nugetPackages
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.CrossCutting.Logging/MGH.Core.CrossCutting.Logging.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.CrossCutting.Logging/MGH.Core.CrossCutting.Logging.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Domain/MGH.Core.Domain.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Domain/MGH.Core.Domain.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-    
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Endpoint.Swagger/MGH.Core.Endpoint.Swagger.csproj
-      - name: Pack
-        run: dotnet pack  MGH.Core.Endpoint.Swagger/MGH.Core.Endpoint.Swagger.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Endpoint.Web/MGH.Core.Endpoint.Web.csproj
-      - name: Pack
-        run: dotnet pack  MGH.Core.Endpoint.Web/MGH.Core.Endpoint.Web.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure/MGH.Core.Infrastructure.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure/MGH.Core.Infrastructure.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.Caching/MGH.Core.Infrastructure.Caching.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.Caching/MGH.Core.Infrastructure.Caching.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.ElasticSearch/MGH.Core.Infrastructure.ElasticSearch.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.ElasticSearch/MGH.Core.Infrastructure.ElasticSearch.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.EventBus/MGH.Core.Infrastructure.EventBus.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.EventBus/MGH.Core.Infrastructure.EventBus.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-  
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.EventBus.RabbitMq/MGH.Core.Infrastructure.EventBus.RabbitMq.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.EventBus.RabbitMq/MGH.Core.Infrastructure.EventBus.RabbitMq.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-  
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.HealthCheck/MGH.Core.Infrastructure.HealthCheck.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.HealthCheck/MGH.Core.Infrastructure.HealthCheck.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.HttpClient/MGH.Core.Infrastructure.HttpClient.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.HttpClient/MGH.Core.Infrastructure.HttpClient.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-  
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.Persistence/MGH.Core.Infrastructure.Persistence.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.Persistence/MGH.Core.Infrastructure.Persistence.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-  
-
-
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.Persistence.Dapper/MGH.Core.Infrastructure.Persistence.Dapper.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.Persistence.Dapper/MGH.Core.Infrastructure.Persistence.Dapper.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-  
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.Persistence.EF/MGH.Core.Infrastructure.Persistence.EF.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.Persistence.EF/MGH.Core.Infrastructure.Persistence.EF.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-  
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build MGH.Core.Infrastructure.Securities/MGH.Core.Infrastructure.Securities.csproj
-      - name: Pack
-        run: dotnet pack MGH.Core.Infrastructure.Securities/MGH.Core.Infrastructure.Securities.csproj --configuration Release --no-restore --output ./nugetPackages
-      - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.nupkg"  -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate
-
-
-
-    
-    
-          
-          
-          
-          
-          
-          
-          
-         
+      - name: Publish package
+        run: dotnet nuget push "./nugetPackages/*.nupkg" -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json --skip-duplicate

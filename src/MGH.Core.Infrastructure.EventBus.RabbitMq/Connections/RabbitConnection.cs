@@ -35,12 +35,13 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> or <paramref name="logger"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if required RabbitMQ configuration is missing or invalid.</exception>
         public RabbitConnection(
+            ILogger<RabbitConnection> logger,
             IOptions<RabbitMqOptions> options,
-            ILogger<RabbitConnection> logger)
+            IRabbitMqRetryPolicyProvider retryPolicyProvider)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            if (options?.Value == null)
+            if(options is null)
                 throw new ArgumentNullException(nameof(options), "RabbitMQ options are missing.");
 
             var cfg = options.Value;
@@ -58,22 +59,16 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
                 throw new InvalidOperationException("RabbitMQ password is not configured.");
 
             if (string.IsNullOrWhiteSpace(connCfg.VirtualHost))
-                connCfg.VirtualHost = "/"; // default to root vhost
+                throw new InvalidOperationException("RabbitMQ virtualHost is not configured.");
 
-            int port = 5672; // default AMQP port
-            if (!string.IsNullOrWhiteSpace(connCfg.Port))
-            {
-                if (!int.TryParse(connCfg.Port, out port) || port <= 0)
-                    throw new InvalidOperationException($"RabbitMQ port is invalid: '{connCfg.Port}'");
-            }
+            if (string.IsNullOrWhiteSpace(connCfg.Port))
+                throw new InvalidOperationException("RabbitMQ port is not configured.");
 
-            TimeSpan requestedHeartbeat = connCfg.RequestedHeartbeat;
-            if (requestedHeartbeat == TimeSpan.FromSeconds(0))
-                requestedHeartbeat = TimeSpan.FromSeconds(60);
+            if (!int.TryParse(connCfg.Port, out int port) || port <= 0)
+                throw new InvalidOperationException($"RabbitMQ port is invalid. Must be a positive integer.");
 
-            ushort consumerConcurrency = connCfg.ConsumerDispatchConcurrency;
-            if (consumerConcurrency == 0)
-                consumerConcurrency = 1;
+            if ( connCfg.ConsumerDispatchConcurrency <= 0)
+                throw new InvalidOperationException($"RabbitMQ consumerDispatchConcurrency is invalid. Must be a positive integer.");
 
             _connectionFactory = new ConnectionFactory
             {
@@ -82,15 +77,14 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
                 UserName = connCfg.Username,
                 Password = connCfg.Password,
                 VirtualHost = connCfg.VirtualHost,
-                RequestedHeartbeat = requestedHeartbeat,
                 AutomaticRecoveryEnabled = connCfg.AutomaticRecoveryEnabled,
-                ConsumerDispatchConcurrency = consumerConcurrency,
+                ConsumerDispatchConcurrency = connCfg.ConsumerDispatchConcurrency,
             };
 
             _logger.LogInformation("RabbitMQ connection factory initialized for host '{Host}' on port {Port}.",
                 _connectionFactory.HostName, _connectionFactory.Port);
 
-            CreateConnectionPolicy();
+            _connectionPolicy = retryPolicyProvider.GetConnectionPolicy();
         }
 
         /// <summary>
@@ -238,22 +232,6 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
                 channel?.Dispose(); // Dispose partially created channel if possible
                 throw;
             }
-        }
-
-        private void CreateConnectionPolicy()
-        {
-            _connectionPolicy = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(
-                    retryCount: 10,
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Min(5 * attempt, 30)),
-                    onRetry: (exception, timespan, retryCount, context) =>
-                    {
-                        _logger.LogWarning(exception,
-                            "RabbitMQ connection failed. Retry {RetryCount} in {DelaySeconds}s",
-                            retryCount, timespan.TotalSeconds);
-                    }
-                );
         }
 
         public void Dispose()

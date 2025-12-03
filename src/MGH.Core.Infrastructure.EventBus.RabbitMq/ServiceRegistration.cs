@@ -31,6 +31,8 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             services.AddSingleton<IRabbitMqDeclarer, RabbitMqDeclarer>();
             services.AddEventHandlers(AppDomain.CurrentDomain.GetAssemblies());
             services.AddHostedService<EventBusConsumerStarterHostedService>();
+            services.AddSingleton<IRabbitMqRetryPolicyProvider, RabbitMqRetryPolicyProvider>();
+
         }
 
         private static void AddEventHandlers(this IServiceCollection services, params Assembly[] assembliesToScan)
