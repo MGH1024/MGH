@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.Persistence.Entities;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers;
 

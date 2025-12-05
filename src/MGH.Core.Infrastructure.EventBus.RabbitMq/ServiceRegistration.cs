@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq

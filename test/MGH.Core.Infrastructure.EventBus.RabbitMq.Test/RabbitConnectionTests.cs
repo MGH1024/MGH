@@ -3,7 +3,6 @@ using RabbitMQ.Client;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 using Polly;
 
