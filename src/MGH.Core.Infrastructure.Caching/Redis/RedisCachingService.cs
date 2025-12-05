@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using StackExchange.Redis;
-using MGH.Core.CrossCutting.JsonHelpers;
 using MGH.Core.Infrastructure.Caching.Models;
 
 namespace MGH.Core.Infrastructure.Caching.Redis;
@@ -13,7 +12,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
         var value = db.StringGet(key);
 
         return value.HasValue
-            ? RedisJsonHelper.Deserialize<T>(value.ToString())
+            ? JsonHelper.Deserialize<T>(value.ToString())
             : default;
     }
 
@@ -23,7 +22,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
         var value = await database.StringGetAsync(key);
 
         return value.HasValue
-            ? RedisJsonHelper.Deserialize<T>(value.ToString())
+            ? JsonHelper.Deserialize<T>(value.ToString())
             : default;
     }
 
@@ -33,7 +32,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
         var value = database.StringGet(key);
 
         return value.HasValue
-            ? RedisJsonHelper.Deserialize<IEnumerable<T>>(value)
+            ? JsonHelper.Deserialize<IEnumerable<T>>(value)
             : default;
     }
 
@@ -43,7 +42,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
         var value = await database.StringGetAsync(key);
 
         return value.HasValue 
-            ? RedisJsonHelper.Deserialize<IEnumerable<T>>(value) 
+            ? JsonHelper.Deserialize<IEnumerable<T>>(value) 
             : default;
     }
 
@@ -93,7 +92,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
 
     public void Set(string key, object obj, int time = 3)
     {
-        var cacheObj = RedisJsonHelper.Serialize(obj);
+        var cacheObj = JsonHelper.Serialize(obj);
         var ts = new TimeSpan(0, time, 0);
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));
         database.StringSet(key, cacheObj, ts);
@@ -101,7 +100,7 @@ public class RedisCachingService<T>(IConnectionMultiplexer connectionMultiplexer
 
     public async Task SetAsync(string key, object obj, int time = 3)
     {
-        var cacheObj = RedisJsonHelper.Serialize(obj);
+        var cacheObj = JsonHelper.Serialize(obj);
         var ts = new TimeSpan(0, time, 0);
 
         var database = connectionMultiplexer.GetDatabase(SelectDbByKeyName(key));

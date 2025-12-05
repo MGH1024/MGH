@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace MGH.Core.CrossCutting.JsonHelpers
+namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers
 {
     public  class DomainEventEnvelope
     {

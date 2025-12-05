@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MGH.Core.CrossCutting.JsonHelpers
+namespace MGH.Core.Infrastructure.Caching
 {
-    public static class RedisJsonHelper
+    internal static class JsonHelper
     {
-        public static T? Deserialize<T>(string json)
+        internal static T? Deserialize<T>(string json)
         {
             if (string.IsNullOrWhiteSpace(json))
                 return default;
@@ -13,7 +13,7 @@ namespace MGH.Core.CrossCutting.JsonHelpers
             return JsonSerializer.Deserialize<T>(json, _jsonOptions);
         }
 
-        public static string Serialize<T>(T value)
+        internal static string Serialize<T>(T value)
         {
             if (value == null)
                 return string.Empty;

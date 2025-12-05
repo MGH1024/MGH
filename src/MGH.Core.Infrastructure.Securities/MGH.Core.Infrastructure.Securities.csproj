@@ -4,14 +4,14 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<PackageVersion>4.0.0</PackageVersion>
+		<PackageVersion>4.0.1</PackageVersion>
 		<Copyright>MGH</Copyright>
 		<PackageProjectUrl>https://github.com/MGH1024/MGH/tree/master/Core/MGH.Core.Infrastructure.Securities</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/MGH1024/MGH</RepositoryUrl>
 		<PackageTags>microservice, netcore</PackageTags>
-		<AssemblyVersion>4.0.0</AssemblyVersion>
-		<FileVersion>4.0.0</FileVersion>
-		<ProductVersion>4.0.0</ProductVersion>
+		<AssemblyVersion>4.0.1</AssemblyVersion>
+		<FileVersion>4.0.1</FileVersion>
+		<ProductVersion>4.0.1</ProductVersion>
 		<Title>MGH.Core.Infrastructure.Securities</Title>
 		<Authors>MGH</Authors>
 		<Description>it's a package for manage Core Infrastructures securities</Description>
@@ -19,7 +19,7 @@
 
     
     <ItemGroup>
-        <PackageReference Include="Otp.NET" Version="1.4.0" />
+        <PackageReference Include="Otp.NET" Version="1.4.1" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />

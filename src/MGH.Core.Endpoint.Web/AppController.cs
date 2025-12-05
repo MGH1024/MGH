@@ -11,8 +11,8 @@ public abstract class AppController(ISender sender) : ControllerBase
 {
     protected readonly ISender Sender = sender;
 
-    protected IHostingEnvironment Env =>
-        HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>();
+    protected IWebHostEnvironment Env =>
+        HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
 
 
     /// <summary>
@@ -123,7 +123,7 @@ public abstract class AppController(ISender sender) : ControllerBase
         {
             HttpOnly = httpOnly,          // Prevent client-side scripts from reading it
             Secure = secure,              // Send only over HTTPS
-            SameSite = Env.IsDevelopment() ? SameSiteMode.Lax : SameSiteMode.Strict,  // Prevent cross-site request forgery (CSRF)
+            SameSite = Env.EnvironmentName == "Development" ? SameSiteMode.Lax : SameSiteMode.Strict,  // Prevent cross-site request forgery (CSRF)
             Path = "/",                   // Limit cookie scope
             Expires = expires
         };
