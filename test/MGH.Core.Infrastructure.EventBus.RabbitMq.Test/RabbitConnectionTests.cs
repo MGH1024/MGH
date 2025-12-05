@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Options;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
+using Polly;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Test;
 
@@ -320,6 +321,29 @@ public class RabbitConnectionTests
         Assert.Equal(expectedOptions.Connections.Default.VirtualHost, factory.VirtualHost);
         Assert.Equal(expectedOptions.Connections.Default.AutomaticRecoveryEnabled, factory.AutomaticRecoveryEnabled);
         Assert.Equal(expectedOptions.Connections.Default.ConsumerDispatchConcurrency, factory.ConsumerDispatchConcurrency);
+    }
+
+    [Fact]
+    public async Task ConnectServiceAsync_ConnectionPolicy_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        _mockrabbitMqRetryPolicyProvider
+            .Setup(x => x.GetConnectionPolicy())
+            .Returns((AsyncPolicy)null);
+
+        var rabbitMqConnection = new RabbitConnection(
+            _mocklogger.Object,
+            _mockRabbitMqOptions.Object,
+            _mockrabbitMqRetryPolicyProvider.Object
+        );
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => rabbitMqConnection.ConnectServiceAsync()
+        );
+
+        // Assert
+        Assert.Equal("Connection policy must be configured.", exception.Message);
     }
 
 }
