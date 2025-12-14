@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.Infrastructure.Persistence.Models.Paging;
+﻿namespace MGH.Core.Infrastructure.Persistence.Paging;
 
 public abstract class BasePageableModel
 {

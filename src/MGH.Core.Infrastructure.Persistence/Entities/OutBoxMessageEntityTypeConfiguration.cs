@@ -8,7 +8,7 @@ public class OutBoxMessageEntityTypeConfiguration : IEntityTypeConfiguration<Out
 {
     public void Configure(EntityTypeBuilder<OutboxMessage> builder)
     {
-        builder.ToTable(BaseDatabaseTableName.Outbox, BaseDatabaseSchemas.LogSchema);
+        builder.ToTable(TableNames.Outbox, Schemas.LogSchema);
 
         builder.HasKey(x => x.Id);
 

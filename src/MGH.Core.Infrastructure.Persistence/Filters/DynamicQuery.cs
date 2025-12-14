@@ -1,4 +1,4 @@
-﻿namespace  MGH.Core.Infrastructure.Persistence.Models.Filters;
+﻿namespace  MGH.Core.Infrastructure.Persistence.Filters;
 
 public class DynamicQuery
 {

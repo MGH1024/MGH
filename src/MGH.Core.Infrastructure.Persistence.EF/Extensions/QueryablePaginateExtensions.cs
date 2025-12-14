@@ -1,56 +1,53 @@
-﻿using MGH.Core.Infrastructure.Persistence.Models.Paging;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MGH.Core.Infrastructure.Persistence.Paging;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Extensions;
 
 public static class QueryablePaginateExtensions
 {
-    public static async Task<IPaginate<T>> ToPaginateAsync<T>(
+    /// <summary>
+    /// Converts an IQueryable to a paged result asynchronously.
+    /// </summary>
+    public static async Task<IPagedResult<T>> ToPagedResultAsync<T>(
         this IQueryable<T> source,
-        int index,
-        int size,
-        int from = 0,
-        CancellationToken cancellationToken = default
-    )
+        int pageIndex,
+        int pageSize,
+        CancellationToken cancellationToken = default)
     {
-        if (from > index)
-            throw new ArgumentException($"From: {from.ToString()} > Index: {index.ToString()}, must from <= Index");
+        if (pageIndex < 0)
+            throw new ArgumentOutOfRangeException(nameof(pageIndex));
+        if (pageSize <= 0)
+            throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-        int count = await source.CountAsync(cancellationToken).ConfigureAwait(false);
+        int totalCount = await source.CountAsync(cancellationToken).ConfigureAwait(false);
+        var items = await source
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
 
-        List<T> items = await source.Skip((index - from) * size).Take(size).ToListAsync(cancellationToken).ConfigureAwait(false);
-
-        Paginate<T> list =
-            new()
-            {
-                Index = index,
-                Size = size,
-                From = from,
-                Count = count,
-                Items = items,
-                Pages = (int)Math.Ceiling(count / (double)size)
-            };
-        return list;
+        return new Paginate<T>(items, pageIndex, pageSize, totalCount);
     }
 
-    public static IPaginate<T> ToPaginate<T>(this IQueryable<T> source, int index, int size, int from = 0)
+    /// <summary>
+    /// Converts an IQueryable to a paged result synchronously.
+    /// </summary>
+    public static IPagedResult<T> ToPagedResult<T>(
+        this IQueryable<T> source,
+        int pageIndex,
+        int pageSize)
     {
-        if (from > index)
-            throw new ArgumentException($"From: {from.ToString()} > Index: {index.ToString()}, must from <= Index");
+        if (pageIndex < 0)
+            throw new ArgumentOutOfRangeException(nameof(pageIndex));
+        if (pageSize <= 0)
+            throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-        int count = source.Count();
-        var items = source.Skip((index - from) * size).Take(size).ToList();
+        int totalCount = source.Count();
+        var items = source
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToList();
 
-        Paginate<T> list =
-            new()
-            {
-                Index = index,
-                Size = size,
-                From = from,
-                Count = count,
-                Items = items,
-                Pages = (int)Math.Ceiling(count / (double)size)
-            };
-        return list;
+        return new Paginate<T>(items, pageIndex, pageSize, totalCount);
     }
 }

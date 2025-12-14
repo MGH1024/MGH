@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.Infrastructure.Persistence.Models.Filters;
+﻿namespace MGH.Core.Infrastructure.Persistence.Filters;
 
 public class Filter(string field, string @operator, string value, string logic, IEnumerable<Filter> filters)
 {

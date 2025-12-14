@@ -1,4 +1,4 @@
-﻿using MGH.Core.Infrastructure.Persistence.Models.Paging;
+﻿using MGH.Core.Infrastructure.Persistence.Paging;
 
 namespace MGH.Core.Application.Responses;
 
@@ -10,5 +10,5 @@ public class GetListResponse<T> : BasePageableModel
         set => _items = value;
     }
 
-    private IList<T> _items;
+    private IList<T>? _items;
 }

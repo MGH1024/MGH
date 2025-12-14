@@ -8,7 +8,7 @@ public class AuditLogEntityTypeConfiguration : IEntityTypeConfiguration<AuditLog
 {
     public void Configure(EntityTypeBuilder<AuditLog> builder)
     {
-        builder.ToTable(BaseDatabaseTableName.AuditLog,BaseDatabaseSchemas.LogSchema);
+        builder.ToTable(TableNames.AuditLog,Schemas.LogSchema);
 
         builder.HasKey(x => x.Id);
 
