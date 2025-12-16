@@ -1,9 +1,6 @@
 ﻿using RabbitMQ.Client;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace MGH.Core.Infrastructure.HealthCheck;
@@ -18,7 +15,8 @@ public static class RegisterHealthCheck
     /// <param name="connectionString"></param>
     /// <returns></returns>
     public static IHealthChecksBuilder AddSqlServerHealthCheck(
-        this IHealthChecksBuilder builder, string connectionString)
+        this IHealthChecksBuilder builder, 
+        string connectionString)
     {
         builder.AddSqlServer(
             connectionString: connectionString,
@@ -37,7 +35,8 @@ public static class RegisterHealthCheck
     /// <param name="connectionString"></param>
     /// <returns></returns>
     public static IHealthChecksBuilder AddDbContextHealthCheck<T>(
-       this IHealthChecksBuilder builder, string connectionString)
+       this IHealthChecksBuilder builder,
+       string connectionString)
        where T : DbContext
     {
         builder.AddDbContextCheck<T>(
@@ -74,49 +73,13 @@ public static class RegisterHealthCheck
     /// <param name="redisConnectionString"></param>
     /// <returns></returns>
     public static IHealthChecksBuilder AddRedisHealthCheck(
-        this IHealthChecksBuilder builder, string redisConnectionString)
+        this IHealthChecksBuilder builder,
+        string redisConnectionString)
     {
         builder.AddRedis(
             redisConnectionString: redisConnectionString,
             name: "Redis",
             tags: new string[] { "redis" });
         return builder;
-    }
-
-    /// <summary>
-    /// it capable project to add health chack dashboard
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddHealthChecksDashboard(this IServiceCollection services, string title)
-    {
-        services.AddHealthChecksUI(setup =>
-        {
-            setup.SetEvaluationTimeInSeconds(10);
-            setup.MaximumHistoryEntriesPerEndpoint(60);
-            setup.SetApiMaxActiveRequests(1);
-            setup.AddHealthCheckEndpoint(title, "/health");
-        })
-            .AddInMemoryStorage();
-
-        return services;
-    }
-
-    /// <summary>
-    /// it add health check Middleware to the web application
-    /// </summary>
-    /// <param name="app"></param>
-    public static void UseHealthChecksEndpoints(this WebApplication app)
-    {
-        app.MapHealthChecks("/health", new HealthCheckOptions()
-        {
-            Predicate = _ => true,
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
-        app.UseHealthChecksUI(options =>
-        {
-            options.UIPath = "/health-ui";
-            options.AddCustomStylesheet("./HealthCheck/custom.css");
-        });
     }
 }
