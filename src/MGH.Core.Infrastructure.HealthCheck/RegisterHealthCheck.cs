@@ -17,9 +17,8 @@ public static class RegisterHealthCheck
     /// <param name="builder"></param>
     /// <param name="connectionString"></param>
     /// <returns></returns>
-    public static IHealthChecksBuilder AddSqlServerHealthCheck<T>(
+    public static IHealthChecksBuilder AddSqlServerHealthCheck(
         this IHealthChecksBuilder builder, string connectionString)
-        where T : DbContext
     {
         builder.AddSqlServer(
             connectionString: connectionString,
