@@ -19,10 +19,12 @@ public class RabbitMQManagementHttpClient
         try
         {
             var host = _configuration["RabbitMq:Connections:Default:HostName"];
-            var username = @_configuration["RabbitMq:Connections:Default:UserName"];
-            var password = @_configuration["RabbitMq:Connections:Default:Password"];
+            var username = _configuration["RabbitMq:Connections:Default:UserName"];
+            var password = _configuration["RabbitMq:Connections:Default:Password"];
             var port = _configuration["RabbitMq:Connections:Default:ApiPort"];
-            var virtualHost = _configuration["RabbitMq:Connections:Default:VirtualHost"];
+            var virtualHost = _configuration["RabbitMQ:Connections:Default:VirtualHost"] == "/" ? "%2F" :
+                    _configuration["RabbitMQ:Connections:Default:VirtualHost"];
+
             string basicCredentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{password}"));
 
             using (HttpClient client = new())
