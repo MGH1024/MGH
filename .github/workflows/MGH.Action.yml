@@ -24,7 +24,6 @@ jobs:
           - MGH.Core.Infrastructure.ElasticSearch
           - MGH.Core.Infrastructure.EventBus
           - MGH.Core.Infrastructure.EventBus.RabbitMq
-          - MGH.Core.Infrastructure.HealthCheck
           - MGH.Core.Infrastructure.HttpClient
           - MGH.Core.Infrastructure.Persistence
           - MGH.Core.Infrastructure.Persistence.Dapper
