@@ -17,7 +17,6 @@ jobs:
           - MGH.Core.CrossCutting
           - MGH.Core.CrossCutting.Logging
           - MGH.Core.Domain
-          - MGH.Core.Endpoint.Swagger
           - MGH.Core.Endpoint.Web
           - MGH.Core.Infrastructure
           - MGH.Core.Infrastructure.Caching
