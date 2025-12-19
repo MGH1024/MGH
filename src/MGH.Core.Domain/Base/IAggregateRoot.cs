@@ -2,10 +2,9 @@
 
 namespace MGH.Core.Domain.Base;
 
-public interface IAggregateRoot : IVersion, IEntity
+public interface IAggregateRoot : IEntity
 {
     IReadOnlyList<DomainEvent> DomainEvents { get; }
-    IReadOnlyList<DomainEvent> IntegratedEvents { get; }
 }
 
 public interface IAggregateRoot<T> : IAggregateRoot, IEntity<T>

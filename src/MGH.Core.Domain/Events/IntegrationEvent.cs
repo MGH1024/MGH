@@ -2,7 +2,6 @@
 
 public class IntegrationEvent : IEvent
 {
-    private static long _currentOrder = 0;
     public object EventData { get; }
     public Guid Id { get; }
     public DateTime OccurredOn { get; }

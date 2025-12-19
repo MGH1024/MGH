@@ -1,13 +1,14 @@
 ﻿using MGH.Core.Domain.Events;
 
 namespace MGH.Core.Domain.Base;
-public abstract class AggregateRoot<T> : FullAuditableEntity<T>, IGeneratesDomainEvent, IAggregateRoot<T>
+public abstract class AggregateRoot<T> : 
+    FullAuditableEntity<T>,
+    IDomainEvent, 
+    IAggregateRoot<T>
 {
     private readonly List<DomainEvent> _domainEvents = new();
-    public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-
-    private readonly List<DomainEvent> _integratedEvents = new();
-    public IReadOnlyList<DomainEvent> IntegratedEvents => _integratedEvents.AsReadOnly();
+    public IReadOnlyList<DomainEvent> DomainEvents 
+        => _domainEvents.AsReadOnly();
 
 
     public virtual IEnumerable<DomainEvent> GetDomainEvents()
@@ -15,42 +16,29 @@ public abstract class AggregateRoot<T> : FullAuditableEntity<T>, IGeneratesDomai
         return _domainEvents;
     }
 
-    public virtual IEnumerable<DomainEvent> GetIntegratedEvents()
-    {
-        return _integratedEvents;
-    }
-
     public virtual void ClearDomainEvents()
     {
         _domainEvents.Clear();
     }
 
-    public virtual void ClearIntegratedEvents()
+    protected int Version { get; set; } = 0;
+
+    protected void AddDomainEvent(DomainEvent domainEvent)
     {
-        _integratedEvents.Clear();
-    }
+        if (domainEvent is null)
+            throw new ArgumentNullException(nameof(domainEvent));
 
-    public int Version { get; set; } = 0;
+        if (domainEvent.EventData is null)
+            throw new ArgumentException(
+                "Domain event data cannot be null.",
+                nameof(domainEvent));
 
+        if (_domainEvents.Contains(domainEvent))
+            throw new InvalidOperationException(
+                "The same domain event instance cannot be added more than once.");
 
-    public void AddDomainEvent(DomainEvent domainEvent)
-    {
         _domainEvents.Add(domainEvent);
         IncrementVersion();
-    }
-
-    protected virtual void AddDomainEvent(object eventData)
-    {
-        if (eventData == null)
-            throw new ArgumentNullException(nameof(eventData));
-        _domainEvents.Add(new DomainEvent(eventData));
-    }
-
-    protected virtual void AddIntegratedEvent(object eventData)
-    {
-        if (eventData == null)
-            throw new ArgumentNullException(nameof(eventData));
-        _integratedEvents.Add(new DomainEvent(eventData));
     }
 
     private void IncrementVersion()
