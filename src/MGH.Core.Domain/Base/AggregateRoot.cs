@@ -21,7 +21,7 @@ public abstract class AggregateRoot<T> :
         _domainEvents.Clear();
     }
 
-    protected int Version { get; set; } = 0;
+    public int Version { get; set; } = 0;
 
     protected void AddDomainEvent(DomainEvent domainEvent)
     {
