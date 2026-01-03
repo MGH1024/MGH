@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using FluentValidation;
-using Microsoft.Extensions.Logging;
-using MGH.Core.CrossCutting.Exceptions.Types;
-using ValidationException = MGH.Core.CrossCutting.Exceptions.Types.ValidationException;
+using MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 
 namespace MGH.Core.Application.Pipelines.Validation;
 
@@ -28,7 +26,7 @@ public class RequestValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
             .ToList();
 
         if (errors.Any())
-            throw new ValidationException(errors);
+            throw new CrossCutting.Exceptions.ExceptionTypes.ValidationException(errors);
         var response = await next();
         return response;
     }

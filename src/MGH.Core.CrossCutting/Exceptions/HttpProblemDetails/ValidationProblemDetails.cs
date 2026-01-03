@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using MGH.Core.CrossCutting.Exceptions.Types;
+using MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 
 namespace MGH.Core.CrossCutting.Exceptions.HttpProblemDetails;
 

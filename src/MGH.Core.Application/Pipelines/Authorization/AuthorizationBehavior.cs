@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using MGH.Core.CrossCutting.Exceptions.Types;
 using MGH.Core.Infrastructure.Securities.Security.Constants;
 using MGH.Core.Infrastructure.Securities.Security.Extensions;
+using MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 
 namespace MGH.Core.Application.Pipelines.Authorization;
 

@@ -1,59 +1,69 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MGH.Core.CrossCutting.Exceptions.Types;
-using MGH.Core.CrossCutting.Exceptions.Extensions;
+using MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 using MGH.Core.CrossCutting.Exceptions.HttpProblemDetails;
 
 namespace MGH.Core.CrossCutting.Exceptions.Handlers;
 
-public class HttpExceptionHandler : ExceptionHandler
+public sealed class HttpExceptionHandler
 {
-    public HttpResponse Response
+    public Task HandleAsync(HttpResponse response, Exception exception)
     {
-        get => _response ?? throw new ArgumentNullException(nameof(_response));
-        set => _response = value;
+        return exception switch
+        {
+            BusinessException ex => Handle(response, ex),
+            BadRequestException ex => Handle(response, ex),
+            ValidationException ex => Handle(response, ex),
+            AuthorizationException ex => Handle(response, ex),
+            NotFoundException ex => Handle(response, ex),
+            _ => Handle(response, exception)
+        };
+    }   
+
+    private static Task Handle(HttpResponse response, BusinessException exception)
+    {
+        response.StatusCode = StatusCodes.Status400BadRequest;
+        return response.WriteAsync(
+            new BusinessProblemDetails(exception.Message)
+            .AsJson());
     }
 
-    private HttpResponse _response;
-
-    protected override Task HandleException(BusinessException businessException)
+    private static Task Handle(HttpResponse response, BadRequestException exception)
     {
-        Response.StatusCode = StatusCodes.Status400BadRequest;
-        var details = new BusinessProblemDetails(businessException.Message).AsJson();
-        return Response.WriteAsync(details);
+        response.StatusCode = StatusCodes.Status400BadRequest;
+        return response.WriteAsync(
+            new BusinessProblemDetails(exception.Message)
+            .AsJson());
     }
 
-    protected override Task HandleException(BadRequestException badRequestException)
+    private static Task Handle(HttpResponse response, ValidationException exception)
     {
-        Response.StatusCode = StatusCodes.Status400BadRequest;
-        var details = new BusinessProblemDetails(badRequestException.Message).AsJson();
-        return Response.WriteAsync(details);
+        response.StatusCode = StatusCodes.Status400BadRequest;
+        return response.WriteAsync(
+            new ValidationProblemDetails(exception.Errors)
+            .AsJson());
     }
 
-    protected override Task HandleException(ValidationException validationException)
+    private static Task Handle(HttpResponse response, AuthorizationException exception)
     {
-        Response.StatusCode = StatusCodes.Status400BadRequest;
-        var details = new ValidationProblemDetails(validationException.Errors).AsJson();
-        return Response.WriteAsync(details);
+        response.StatusCode = StatusCodes.Status401Unauthorized;
+        return response.WriteAsync(
+            new AuthorizationProblemDetails(exception.Message)
+            .AsJson());
     }
 
-    protected override Task HandleException(AuthorizationException authorizationException)
+    private static Task Handle(HttpResponse response, NotFoundException exception)
     {
-        Response.StatusCode = StatusCodes.Status401Unauthorized;
-        var details = new AuthorizationProblemDetails(authorizationException.Message).AsJson();
-        return Response.WriteAsync(details);
+        response.StatusCode = StatusCodes.Status404NotFound;
+        return response.WriteAsync(
+            new NotFoundProblemDetails(exception.Message)
+            .AsJson());
     }
 
-    protected override Task HandleException(NotFoundException notFoundException)
+    private static Task Handle(HttpResponse response, Exception exception)
     {
-        Response.StatusCode = StatusCodes.Status404NotFound;
-        string details = new NotFoundProblemDetails(notFoundException.Message).AsJson();
-        return Response.WriteAsync(details);
-    }
-
-    protected override Task HandleException(Exception exception)
-    {
-        Response.StatusCode = StatusCodes.Status500InternalServerError;
-        string details = new InternalServerErrorProblemDetails(exception.Message).AsJson();
-        return Response.WriteAsync(details);
+        response.StatusCode = StatusCodes.Status500InternalServerError;
+        return response.WriteAsync(
+            new InternalServerErrorProblemDetails("An unexpected error occurred")
+                .AsJson());
     }
 }

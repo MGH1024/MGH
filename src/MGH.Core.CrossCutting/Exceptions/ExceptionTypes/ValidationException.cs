@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.CrossCutting.Exceptions.Types;
+﻿namespace MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 
 public class ValidationException : Exception
 {

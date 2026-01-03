@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace MGH.Core.CrossCutting.Exceptions.Types;
+namespace MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 
 public class BusinessException : Exception
 {

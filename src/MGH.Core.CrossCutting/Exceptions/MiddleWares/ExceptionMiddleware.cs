@@ -1,53 +1,70 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using MGH.Core.CrossCutting.Logging.Models;
 using MGH.Core.CrossCutting.Exceptions.Handlers;
 
 namespace MGH.Core.CrossCutting.Exceptions.MiddleWares;
 
-public class ExceptionMiddleware(RequestDelegate next, 
-    IHttpContextAccessor contextAccessor, 
-    ILogger<ExceptionMiddleware> logger)
+public sealed class ExceptionMiddleware
 {
-    private readonly HttpExceptionHandler _httpExceptionHandler = new();
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly HttpExceptionHandler _httpExceptionHandler;
+
+    public ExceptionMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+        _httpExceptionHandler = new HttpExceptionHandler();
+    }
+
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await next(context);
+            await _next(context);
         }
         catch (Exception exception)
         {
-            await LogException(context, exception);
-            await HandleExceptionAsync(context.Response, exception);
+            LogException(context, exception);
+            await HandleExceptionAsync(context, exception);
         }
     }
 
-    private Task HandleExceptionAsync(HttpResponse response, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        var response = context.Response;
+        if (response.HasStarted)
+        {
+            _logger.LogWarning($"Response already started. Cannot handle exception. TraceId: {context.TraceIdentifier}");
+            return;
+        }
+
         response.ContentType = "application/json";
-        _httpExceptionHandler.Response = response;
-        return _httpExceptionHandler.HandleExceptionAsync(exception);
+        await _httpExceptionHandler.HandleAsync(response, exception);
     }
 
-    private Task LogException(HttpContext context, Exception exception)
+    private void LogException(HttpContext context, Exception exception)
     {
-        List<LogParameter> logParameters =
-            new()
-            {
-                new LogParameter { Type = context.GetType().Name, Value = exception.ToString() }
-            };
+        var logDetail = new LogDetail
+        {
+            MethodName = $"{context.Request.Method} {context.Request.Path}",
+            User = context.User?.Identity?.Name ?? "?",
+            Parameters =
+            [
+                new LogParameter
+                {
+                    Type = exception.GetType().Name,
+                    Value = exception.Message
+                }
+            ]
+        };
 
-        LogDetail logDetail =
-            new()
-            {
-                MethodName = next.Method.Name,
-                Parameters = logParameters,
-                User = contextAccessor.HttpContext?.User.Identity?.Name ?? "?"
-            };
-
-        logger.LogInformation(JsonSerializer.Serialize(logDetail));
-        return Task.CompletedTask;
+        _logger.LogError(
+            exception,
+            "Unhandled exception occurred {@LogDetail}",
+            logDetail);
     }
 }
