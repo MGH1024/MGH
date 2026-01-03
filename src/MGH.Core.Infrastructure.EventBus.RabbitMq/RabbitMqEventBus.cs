@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MGH.Core.Infrastructure.Persistence.Entities;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Connections;
 using MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers;
+using MGH.Core.Infrastructure.Persistence;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 {

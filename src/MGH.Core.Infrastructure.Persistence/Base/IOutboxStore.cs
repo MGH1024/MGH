@@ -1,6 +1,6 @@
 ﻿using MGH.Core.Infrastructure.Persistence.Entities;
 
-namespace MGH.Core.Infrastructure.EventBus
+namespace MGH.Core.Infrastructure.Persistence
 {
     public interface IOutboxStore
     {
