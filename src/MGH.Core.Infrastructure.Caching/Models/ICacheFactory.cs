@@ -4,5 +4,7 @@ namespace MGH.Core.Infrastructure.Caching.Models;
 
 public interface ICacheFactory<T>
 {
-    ICachingService<T> CreateCacheService(CachingType cachingType, IConnectionMultiplexer connectionMultiplexer);
+    ICachingService<T> CreateCacheService(
+        CachingType cachingType, 
+        IConnectionMultiplexer connectionMultiplexer);
 }

@@ -6,21 +6,29 @@ using MGH.Core.CrossCutting.Exceptions.ExceptionTypes;
 
 namespace MGH.Core.Application.Pipelines.Authorization;
 
-public class AuthorizationBehavior<TRequest, TResponse>(IHttpContextAccessor httpContextAccessor) : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : class 
+public class AuthorizationBehavior<TRequest, TResponse>(IHttpContextAccessor httpContextAccessor)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : class
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request, 
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
-        var attribute = (RolesAttribute)Attribute.GetCustomAttribute(typeof(TRequest), typeof(RolesAttribute));
-        if (attribute == null) 
-            return await next();
+        var attribute = Attribute.GetCustomAttribute(
+            element: typeof(TRequest),
+            attributeType: typeof(RolesAttribute)) as RolesAttribute;
+        if (attribute == null)
+            return await next(cancellationToken);
 
-        var authHeader = httpContextAccessor?.HttpContext!.Request.Headers["Authorization"];
+        var authHeader = httpContextAccessor.HttpContext!.Request.Headers.Authorization;
         if (string.IsNullOrEmpty(authHeader))
-            throw new AuthorizationException("Authorization header is missing. Please provide a valid 'Authorization: Bearer <token>' header.");
+            throw new AuthorizationException(
+                "Authorization header is missing. Please provide a valid 'Authorization: Bearer <token>' header.");
 
-        if (CountWordOccurrences(authHeader, "Bearer") > 1)
-            throw new AuthorizationException("Authorization header contains multiple 'Bearer' tokens. Please provide exactly one token.");
+        if (CountWordOccurrences(authHeader!, "Bearer") > 1)
+            throw new AuthorizationException(
+                "Authorization header contains multiple 'Bearer' tokens. Please provide exactly one token.");
 
 
         var user = httpContextAccessor.HttpContext?.User;
@@ -41,27 +49,23 @@ public class AuthorizationBehavior<TRequest, TResponse>(IHttpContextAccessor htt
                 urc == GeneralOperationClaims.Admin || roles.Any(role => role == urc))
         );
 
-        if (isNotMatchedAUserRoleClaimWithRequestRoles)
-        {
-            var userRoles = string.Join(", ", userRoleClaims);
-            var requiredRoles = string.Join(", ", roles);
-            throw new AuthorizationException(
-                $"The user does not have the required role to perform this action. " +
-                $"User roles: [{userRoles}]; Required roles: [{requiredRoles}]"
-            );
-        }
-
-
-        return await next();
+        if (!isNotMatchedAUserRoleClaimWithRequestRoles) 
+            return await next(cancellationToken);
+        var userRoles = string.Join(", ", userRoleClaims);
+        var requiredRoles = string.Join(", ", roles);
+        throw new AuthorizationException(
+            $"The user does not have the required role to perform this action. " +
+            $"User roles: [{userRoles}]; Required roles: [{requiredRoles}]"
+        );
     }
-    
-    
+
     static int CountWordOccurrences(string text, string word)
     {
         if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(word))
             return 0;
 
-        var words = text.Split(new[] { ' ', '.', ',', '!', '?', ';', ':', '-', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        var words = text.Split(new[] { ' ', '.', ',', '!', '?', ';', ':', '-', '\n', '\t' },
+            StringSplitOptions.RemoveEmptyEntries);
         return words.Count(w => w.Equals(word, StringComparison.OrdinalIgnoreCase));
     }
 }

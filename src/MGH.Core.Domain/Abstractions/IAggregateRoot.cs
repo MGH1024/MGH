@@ -1,6 +1,6 @@
 ﻿using MGH.Core.Domain.Events;
 
-namespace MGH.Core.Domain.Base;
+namespace MGH.Core.Domain.Abstractions;
 
 public interface IAggregateRoot : IEntity
 {

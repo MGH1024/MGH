@@ -1,23 +1,22 @@
 ﻿using System.Text;
 using System.Text.Json;
+using MGH.Core.Domain.Abstractions.Events;
 using MGH.Core.Domain.Events;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers
 {
     internal static class EventBusJsonHelper
     {
-        internal static byte[] SerializeEventBusEvent(IEvent eventModel)
+        internal static byte[] SerializeEventBusEvent(IEventMetadata eventMetadataModel)
         {
-            object payload = eventModel switch
+            object payload = eventMetadataModel switch
             {
                 DomainEvent domainEvent => new
                 {
-                    domainEvent.EventData,
-                    domainEvent.EventOrder,
                     domainEvent.Id,
                     domainEvent.OccurredOn
                 },
-                _ => eventModel
+                _ => eventMetadataModel
             };
 
             var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
@@ -28,7 +27,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers
             return Encoding.UTF8.GetBytes(json);
         }
 
-        internal static T DeserializeEventBusEvent<T>(byte[] messageBytes) where T : IEvent
+        internal static T DeserializeEventBusEvent<T>(byte[] messageBytes) where T : IEventMetadata
         {
             if (messageBytes == null || messageBytes.Length == 0)
                 throw new ArgumentException("Message bytes cannot be null or empty.", nameof(messageBytes));

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Dynamic.Core;
 using System.Text;
-using MGH.Core.Domain.Base;
+using MGH.Core.Domain.ValueObjects;
 using MGH.Core.Infrastructure.Persistence.Filters;
 
 namespace MGH.Core.Infrastructure.Persistence.EF.Extensions;

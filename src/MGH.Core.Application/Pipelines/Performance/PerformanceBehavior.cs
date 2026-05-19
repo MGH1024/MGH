@@ -1,22 +1,19 @@
-﻿using System.Diagnostics;
-using MediatR;
+﻿using MediatR;
+using System.Diagnostics;
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 namespace MGH.Core.Application.Pipelines.Performance;
 
-public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class PerformanceBehavior<TRequest, TResponse>(
+    ILogger<PerformanceBehavior<TRequest, TResponse>> logger,
+    Stopwatch stopwatch)
+    : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, IIntervalRequest
 {
-    private readonly ILogger<PerformanceBehavior<TRequest, TResponse>> _logger;
-    private readonly Stopwatch _stopwatch;
-
-    public PerformanceBehavior(ILogger<PerformanceBehavior<TRequest, TResponse>> logger, Stopwatch stopwatch)
-    {
-        _logger = logger;
-        _stopwatch = stopwatch;
-    }
-
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         string requestName = request.GetType().Name;
 
@@ -24,20 +21,22 @@ public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
         try
         {
-            _stopwatch.Start();
-            response = await next();
+            stopwatch.Start();
+            response = await next(cancellationToken);
         }
         finally
         {
-            if (_stopwatch.Elapsed.TotalSeconds > request.Interval)
+            if (stopwatch.Elapsed.TotalSeconds > request.Interval)
             {
-                string message = $"Performance -> {requestName} {_stopwatch.Elapsed.TotalSeconds.ToString()} s";
+                var message = $"Performance -> " +
+                              $"{requestName} {stopwatch.Elapsed.TotalSeconds
+                                  .ToString(CultureInfo.InvariantCulture)} s";
 
                 Debug.WriteLine(message);
-                _logger.LogInformation(message);
+                logger.LogInformation(message);
             }
 
-            _stopwatch.Restart();
+            stopwatch.Restart();
         }
 
         return response;

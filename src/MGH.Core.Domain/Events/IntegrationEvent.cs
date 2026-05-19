@@ -1,20 +1,16 @@
-﻿namespace MGH.Core.Domain.Events;
+﻿using MGH.Core.Domain.Abstractions.Events;
 
-public class IntegrationEvent : IEvent
+namespace MGH.Core.Domain.Events;
+
+public class IntegrationEvent : IIntegrationEvent
 {
-    public object EventData { get; }
-    public Guid Id { get; }
-    public DateTime OccurredOn { get; }
-
-    public IntegrationEvent(object eventData)
+    protected IntegrationEvent()
     {
-        EventData = eventData;
         Id = Guid.NewGuid();
         OccurredOn = DateTime.UtcNow;
     }
 
-    public override string ToString()
-    {
-        return $"{nameof(DomainEvent)} [Id={Id}, Time={OccurredOn:O}, Data={EventData}]";
-    }
+    public Guid Id { get; }
+    public DateTime OccurredOn { get; }
+    public string EventType => GetType().Name;
 }

@@ -1,6 +1,7 @@
 ﻿using System.Text;
-using RabbitMQ.Client;
+using MGH.Core.Domain.Abstractions.Events;
 using MGH.Core.Domain.Events;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -43,17 +44,18 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            if (options?.Value == null)
-                throw new ArgumentNullException(nameof(options), "RabbitMQ configuration is missing.");
+            _options = options.Value ??
+                       throw new ArgumentNullException(nameof(options), "RabbitMQ configuration is missing.");
 
-            _options = options.Value;
             if (_options.EventBus == null)
                 throw new ArgumentNullException(nameof(_options.EventBus), "Event Bus section is missing.");
 
             if (string.IsNullOrWhiteSpace(_options.EventBus.ExchangeName))
-                throw new ArgumentNullException(nameof(_options.EventBus.ExchangeName), "Exchange name is null or empty.");
+                throw new ArgumentNullException(nameof(_options.EventBus.ExchangeName),
+                    "Exchange name is null or empty.");
             if (string.IsNullOrWhiteSpace(_options.EventBus.ExchangeType))
-                throw new ArgumentNullException(nameof(_options.EventBus.ExchangeType), "Exchange type is null or empty.");
+                throw new ArgumentNullException(nameof(_options.EventBus.ExchangeType),
+                    "Exchange type is null or empty.");
             if (string.IsNullOrWhiteSpace(_options.EventBus.QueueName))
                 throw new ArgumentNullException(nameof(_options.EventBus.QueueName), "Queue name is null or empty.");
 
@@ -77,19 +79,20 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         public async Task PublishAsync<T>(
             PublishMode mode,
             IEnumerable<T> models,
-            CancellationToken cancellationToken = default) where T : IEvent
+            CancellationToken cancellationToken = default) where T : IEventMetadata
         {
-            if (models == null || !models.Any())
+            var enumerable = models.ToList();
+            if (models == null || !enumerable.Any())
                 throw new ArgumentException("The collection of models cannot be null or empty.", nameof(models));
 
             switch (mode)
             {
                 case PublishMode.Direct:
-                    await PublishDirectAsync(models);
+                    await PublishDirectAsync(enumerable);
                     break;
 
                 case PublishMode.Outbox:
-                    await PublishToOutboxAsync(models, cancellationToken);
+                    await PublishToOutboxAsync(enumerable, cancellationToken);
                     break;
 
                 default:
@@ -108,7 +111,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         public async Task PublishAsync<T>(
             T model,
             PublishMode mode,
-            CancellationToken cancellationToken = default) where T : IEvent
+            CancellationToken cancellationToken = default) where T : IEventMetadata
         {
             if (model == null)
                 throw new ArgumentException("The model cannot be null.", nameof(model));
@@ -133,9 +136,9 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// </summary>
         /// <typeparam name="T">The type of event to consume.</typeparam>
         /// <param name="handler">Async handler function for the event.</param>
-        public async Task ConsumeAsync<T>(Func<T, Task> handler) where T : IEvent
+        public async Task ConsumeAsync<T>(Func<T, Task> handler) where T : IEventMetadata
         {
-            _rabbitConnection.ConnectServiceAsync();
+            await _rabbitConnection.ConnectServiceAsync();
             var channel = await _rabbitConnection.GetConsumeChannelAsync();
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (model, ea) =>
@@ -162,7 +165,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         /// Consumes events of type <typeparamref name="T"/> using a registered handler from the service provider.
         /// </summary>
         /// <typeparam name="T">The type of event to consume.</typeparam>
-        public async Task ConsumeAsync<T>() where T : IEvent
+        public async Task ConsumeAsync<T>() where T : IEventMetadata
         {
             await _rabbitConnection.ConnectServiceAsync();
             var channel = await _rabbitConnection.GetConsumeChannelAsync();
@@ -202,10 +205,10 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 
         #region Private Helpers
 
-        private async Task PublishDirectAsync<T>(T model) where T : IEvent
+        private async Task PublishDirectAsync<T>(T model) where T : IEventMetadata
         {
             await _rabbitConnection.ConnectServiceAsync();
-            using var channel = await _rabbitConnection.GetPublishChannelAsync();
+            await using var channel = await _rabbitConnection.GetPublishChannelAsync();
 
             var basicProperties = new BasicProperties
             {
@@ -228,10 +231,10 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                 body: messageByte);
         }
 
-        private async Task PublishDirectAsync<T>(IEnumerable<T> models) where T : IEvent
+        private async Task PublishDirectAsync<T>(IEnumerable<T> models) where T : IEventMetadata
         {
             await _rabbitConnection.ConnectServiceAsync();
-            using var channel = await _rabbitConnection.GetPublishChannelAsync();
+            await using var channel = await _rabbitConnection.GetPublishChannelAsync();
 
             var routingKey = GetRoutingKey(typeof(T));
             var basicProperties = new BasicProperties
@@ -255,7 +258,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             }
         }
 
-        private async Task PublishToOutboxAsync<T>(T model, CancellationToken cancellationToken) where T : IEvent
+        private async Task PublishToOutboxAsync<T>(T model, CancellationToken cancellationToken) where T : IEventMetadata
         {
             var outboxMessage = new OutboxMessage
             {
@@ -264,10 +267,11 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             };
             var outboxStore = _serviceProvider.GetRequiredService<IOutboxStore>();
             outboxMessage.SerializePayload(model);
-            await outboxStore.AddToOutBoxAsync(outboxMessage);
+            await outboxStore.AddToOutBoxAsync(outboxMessage, cancellationToken);
         }
 
-        private async Task PublishToOutboxAsync<T>(IEnumerable<T> models, CancellationToken cancellationToken) where T : IEvent
+        private async Task PublishToOutboxAsync<T>(IEnumerable<T> models, CancellationToken cancellationToken)
+            where T : IEventMetadata
         {
             var outboxes = models.Select(model =>
             {
@@ -281,14 +285,15 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
                 return outbox;
             });
             var outboxStore = _serviceProvider.GetRequiredService<IOutboxStore>();
-            await outboxStore.AddToOutBoxRangeAsync(outboxes);
+            await outboxStore.AddToOutBoxRangeAsync(outboxes, cancellationToken);
         }
 
         private string GetRoutingKey(Type type)
         {
             var eventTypeName = type.Name;
             if (!_options.EventBus.RoutingKeys.TryGetValue(eventTypeName, out string routingKey))
-                throw new InvalidOperationException($"Routing key for event '{eventTypeName}' not found in configuration.");
+                throw new InvalidOperationException(
+                    $"Routing key for event '{eventTypeName}' not found in configuration.");
             return routingKey;
         }
 

@@ -15,12 +15,12 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
     /// It automatically reconnects when the connection is shut down, blocked, or encounters a callback exception.
     /// Retry policies use exponential backoff and are logged.
     /// </remarks>
-    public class RabbitConnection : IRabbitConnection, IDisposable
+    public class RabbitConnection : IRabbitConnection
     {
         private bool _isDisposed;
         private IConnection? _connection;
-        private AsyncPolicy? _connectionPolicy;
-        private volatile bool _isConnecting = false;
+        private readonly AsyncPolicy? _connectionPolicy;
+        private volatile bool _isConnecting;
         private readonly ILogger<RabbitConnection> _logger;
         private readonly ConnectionFactory _connectionFactory;
         private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(1, 1);
@@ -29,8 +29,9 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// Initializes a new instance of <see cref="RabbitConnection"/>.
         /// Validates configuration and establishes the initial connection to RabbitMQ.
         /// </summary>
-        /// <param name="options">The RabbitMQ connection options.</param>
         /// <param name="logger">Logger for connection and error events.</param>
+        /// <param name="options">The RabbitMQ connection options.</param>
+        /// <param name="retryPolicyProvider">The IRabbitMqRetryPolicyProvider.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> or <paramref name="logger"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if required RabbitMQ configuration is missing or invalid.</exception>
         public RabbitConnection(
@@ -39,12 +40,11 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
             IRabbitMqRetryPolicyProvider retryPolicyProvider)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            if(options is null)
+            if (options is null)
                 throw new ArgumentNullException(nameof(options), "RabbitMQ options are missing.");
 
             var cfg = options.Value;
-            var connCfg = cfg.Connections?.Default;
+            var connCfg = cfg.Connections.Default;
             if (connCfg == null)
                 throw new InvalidOperationException("Default connection configuration is missing.");
 
@@ -66,8 +66,9 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
             if (!int.TryParse(connCfg.Port, out int port) || port <= 0)
                 throw new InvalidOperationException($"RabbitMQ port is invalid. Must be a positive integer.");
 
-            if ( connCfg.ConsumerDispatchConcurrency <= 0)
-                throw new InvalidOperationException($"RabbitMQ consumerDispatchConcurrency is invalid. Must be a positive integer.");
+            if (connCfg.ConsumerDispatchConcurrency <= 0)
+                throw new InvalidOperationException(
+                    $"RabbitMQ consumerDispatchConcurrency is invalid. Must be a positive integer.");
 
             _connectionFactory = new ConnectionFactory
             {
@@ -105,14 +106,14 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
             try
             {
                 if (_isConnecting) return;
-                if (_connection != null && _connection.IsOpen) return;
+                if (_connection is { IsOpen: true }) return;
 
                 _isConnecting = true;
 
                 await _connectionPolicy.ExecuteAsync(async () =>
                 {
                     if (_isDisposed) return;
-                    if (_connection != null && _connection.IsOpen) return;
+                    if (_connection is { IsOpen: true }) return;
 
                     try
                     {
@@ -127,25 +128,28 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
 
                         _logger.LogInformation("RabbitMQ connection established successfully.");
 
-                        _connection.ConnectionShutdownAsync += async (s, e) =>
+                        _connection.ConnectionShutdownAsync += (s, e) =>
                         {
-                            if (_isDisposed) return;
+                            if (_isDisposed) return Task.CompletedTask;
                             _logger.LogWarning("RabbitMQ connection shutdown detected. Reconnecting...");
-                            _ = Task.Run(() => ConnectServiceAsync());
+                            _ = Task.Run(ConnectServiceAsync);
+                            return Task.CompletedTask;
                         };
 
-                        _connection.CallbackExceptionAsync += async (s, e) =>
+                        _connection.CallbackExceptionAsync += (s, e) =>
                         {
-                            if (_isDisposed) return;
+                            if (_isDisposed) return Task.CompletedTask;
                             _logger.LogWarning(e.Exception, "RabbitMQ callback exception. Reconnecting...");
-                            _ = Task.Run(() => ConnectServiceAsync());
+                            _ = Task.Run(ConnectServiceAsync);
+                            return Task.CompletedTask;
                         };
 
-                        _connection.ConnectionBlockedAsync += async (s, e) =>
+                        _connection.ConnectionBlockedAsync += (s, e) =>
                         {
-                            if (_isDisposed) return;
+                            if (_isDisposed) return Task.CompletedTask;
                             _logger.LogWarning("RabbitMQ connection blocked. Reconnecting...");
-                            _ = Task.Run(() => ConnectServiceAsync());
+                            _ = Task.Run(ConnectServiceAsync);
+                            return Task.CompletedTask;
                         };
                     }
                     catch (Exception ex)
@@ -168,19 +172,19 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
         /// <summary>
         /// Returns a channel for publishing messages to RabbitMQ.
         /// </summary>
-        /// <returns>A new <see cref="IModel"/> for publishing.</returns>
+        /// <returns>A new <see cref="IChannel"/> for publishing.</returns>
         public async Task<IChannel> GetPublishChannelAsync() => await CreateChannelAsync();
 
         /// <summary>
         /// Returns a channel for consuming messages from RabbitMQ.
         /// </summary>
-        /// <returns>A new <see cref="IModel"/> for consuming.</returns>
+        /// <returns>A new <see cref="IChannel"/> for consuming.</returns>
         public async Task<IChannel> GetConsumeChannelAsync() => await CreateChannelAsync();
 
         /// <summary>
         /// Returns a channel for declaring exchanges and queues in RabbitMQ.
         /// </summary>
-        /// <returns>A new <see cref="IModel"/> for declaration operations.</returns>
+        /// <returns>A new <see cref="IChannel"/> for declaration operations.</returns>
         public async Task<IChannel> GetDeclarerChannelAsync() => await CreateChannelAsync();
 
         private async Task<IChannel> CreateChannelAsync()
@@ -239,7 +243,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
 
             try
             {
-                _connectionLock?.Dispose();
+                _connectionLock.Dispose();
                 _connection?.Dispose();
             }
             catch (Exception ex)

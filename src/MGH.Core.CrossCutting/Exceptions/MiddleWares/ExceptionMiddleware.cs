@@ -5,26 +5,17 @@ using MGH.Core.CrossCutting.Exceptions.Handlers;
 
 namespace MGH.Core.CrossCutting.Exceptions.MiddleWares;
 
-public sealed class ExceptionMiddleware
+public sealed class ExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _logger;
-    private readonly HttpExceptionHandler _httpExceptionHandler;
-
-    public ExceptionMiddleware(
-        RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-        _httpExceptionHandler = new HttpExceptionHandler();
-    }
+    private readonly HttpExceptionHandler _httpExceptionHandler = new();
 
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception exception)
         {
@@ -38,7 +29,7 @@ public sealed class ExceptionMiddleware
         var response = context.Response;
         if (response.HasStarted)
         {
-            _logger.LogWarning($"Response already started. Cannot handle exception. TraceId: {context.TraceIdentifier}");
+            logger.LogWarning($"Response already started. Cannot handle exception. TraceId: {context.TraceIdentifier}");
             return;
         }
 
@@ -62,7 +53,7 @@ public sealed class ExceptionMiddleware
             ]
         };
 
-        _logger.LogError(
+        logger.LogError(
             exception,
             "Unhandled exception occurred {@LogDetail}",
             logDetail);

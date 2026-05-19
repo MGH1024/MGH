@@ -1,4 +1,4 @@
-﻿namespace MGH.Core.Domain.Base;
+﻿namespace MGH.Core.Domain.Abstractions;
 
 public interface IEntity<T> : IEntity
 {

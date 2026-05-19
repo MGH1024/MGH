@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using MGH.Core.Domain.Base;
+using MGH.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using MGH.Core.Infrastructure.Persistence.Entities;

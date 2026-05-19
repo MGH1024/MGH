@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.Base;
+﻿using MGH.Core.Domain.Entities;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class RefreshToken : FullAuditableEntity<int>
+public class RefreshToken : AuditedEntity<int>
 {
     public int UserId { get; set; }
     public string Token { get; set; }
@@ -18,7 +18,7 @@ public class RefreshToken : FullAuditableEntity<int>
     public RefreshToken()
     {
         Token = string.Empty;
-        CreatedByIp = string.Empty;
+        CreatedFromIp = string.Empty;
     }
 
     public RefreshToken(int userId, string token, DateTime expires, string createdByIp)
@@ -26,7 +26,7 @@ public class RefreshToken : FullAuditableEntity<int>
         UserId = userId;
         Token = token;
         Expires = expires;
-        CreatedByIp = createdByIp;
+        CreatedFromIp = createdByIp;
     }
 
     public RefreshToken(int id, int userId, string token, DateTime expires, string createdByIp)
@@ -36,6 +36,6 @@ public class RefreshToken : FullAuditableEntity<int>
         UserId = userId;
         Token = token;
         Expires = expires;
-        CreatedByIp = createdByIp;
+        CreatedFromIp = createdByIp;
     }
 }

@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.Base;
+﻿using MGH.Core.Domain.Entities;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class User : FullAuditableEntity<int>
+public class User : AuditedEntity<int>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

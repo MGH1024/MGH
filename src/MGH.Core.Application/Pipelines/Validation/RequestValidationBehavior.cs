@@ -7,8 +7,9 @@ namespace MGH.Core.Application.Pipelines.Validation;
 public class RequestValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken
-        cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request, RequestHandlerDelegate<TResponse> next, 
+        CancellationToken cancellationToken)
     {
         ValidationContext<object> context = new(request);
         var errors = validators
@@ -27,7 +28,7 @@ public class RequestValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
 
         if (errors.Any())
             throw new CrossCutting.Exceptions.ExceptionTypes.ValidationException(errors);
-        var response = await next();
+        var response = await next(cancellationToken);
         return response;
     }
 }

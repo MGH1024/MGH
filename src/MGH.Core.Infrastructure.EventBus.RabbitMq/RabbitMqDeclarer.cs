@@ -35,7 +35,7 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+            _options = options.Value ?? throw new ArgumentNullException(nameof(options));
             if (_options.EventBus == null)
                 throw new InvalidOperationException("EventBus section is missing");
 
@@ -62,11 +62,19 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 
             await _channel.ExchangeDeclareAsync(mainExchange, exchangeType, durable: true, autoDelete: false);
             await _channel.QueueDeclareAsync(mainQueue, durable: true, exclusive: false, autoDelete: false,
-                arguments: new Dictionary<string, object> { { "x-dead-letter-exchange", retryExchange } });
+                arguments: new Dictionary<string, object>
+                {
+                    { "x-dead-letter-exchange", retryExchange }
+                });
 
             await _channel.ExchangeDeclareAsync(retryExchange, exchangeType, durable: true, autoDelete: false);
             await _channel.QueueDeclareAsync(retryQueue, durable: true, exclusive: false, autoDelete: false,
-                arguments: new Dictionary<string, object> { { "x-message-ttl", retryDelayMs }, { "x-dead-letter-exchange", mainExchange } });
+                arguments: new Dictionary<string, object> 
+                { 
+                    { "x-message-ttl", retryDelayMs },
+                    { "x-dead-letter-exchange", mainExchange }
+                    
+                });
 
             foreach (var kv in routingKeys)
             {
@@ -89,7 +97,6 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
 
             var mainQueue = _options.EventBus.QueueName;
             var bindings = _options.EventBus.EndToEndExchangeBindings;
-            if (bindings == null) return;
 
             foreach (var item in bindings)
             {
@@ -122,8 +129,8 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq
             if (_disposed) return;
             try
             {
-                _channel?.CloseAsync();
-                _channel?.Dispose();
+                _channel.CloseAsync();
+                _channel.Dispose();
             }
             catch (Exception ex)
             {

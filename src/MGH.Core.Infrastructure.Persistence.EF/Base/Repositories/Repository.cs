@@ -1,4 +1,4 @@
-﻿using MGH.Core.Domain.Base;
+﻿using MGH.Core.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using MGH.Core.Infrastructure.Persistence.Base;
 using MGH.Core.Infrastructure.Persistence.Paging;

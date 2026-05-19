@@ -1,6 +1,6 @@
-﻿namespace MGH.Core.Domain.Features;
+﻿namespace MGH.Core.Domain.Abstractions;
 
-public interface IDropdownAble
+public interface IDropdownItem
 {
     string ListItemText { get; }
     string ListItemTextForAdmins { get; }

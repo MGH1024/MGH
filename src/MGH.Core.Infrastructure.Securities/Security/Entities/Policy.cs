@@ -1,8 +1,8 @@
-using MGH.Core.Domain.Base;
+using MGH.Core.Domain.Entities;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class Policy :FullAuditableEntity<int>
+public class Policy : AuditedEntity<int>
 {
     public string Title { get; set; }
     

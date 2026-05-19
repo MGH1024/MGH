@@ -25,17 +25,16 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Connections
                         var jitterMs = jitter.Next(0, 500);
 
                         return TimeSpan.FromSeconds(delay)
-                                       .Add(TimeSpan.FromMilliseconds(jitterMs));
+                            .Add(TimeSpan.FromMilliseconds(jitterMs));
                     },
-                    (exception, delay, attempt, context) =>
+                    (ex, delay, context) =>
                     {
-                        logger.LogWarning(exception,
-                            "RabbitMQ connection attempt {Attempt} failed. Retrying in {DelaySeconds}s...",
-                            attempt, delay.TotalSeconds);
+                        logger.LogWarning(
+                            exception: ex,
+                            message: "RabbitMQ connection attempt {Attempt} failed. Retrying in {DelaySeconds}s...",
+                            context,
+                            delay.TotalSeconds);
                     });
         }
     }
 }
-
-
-

@@ -1,8 +1,8 @@
-﻿using MGH.Core.Domain.Base;
+﻿using MGH.Core.Domain.Entities;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class UserOperationClaim : FullAuditableEntity<int>
+public class UserOperationClaim : AuditedEntity<int>
 {
     public int UserId { get; set; }
     public int OperationClaimId { get; set; }

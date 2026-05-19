@@ -1,4 +1,4 @@
-﻿using MGH.Core.Domain.Base;
+﻿using MGH.Core.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -33,9 +33,9 @@ public static class AddAuditFieldsInterceptorExtension
 
     private static void AttachAddedState(this EntityEntry item, AuditInterceptorDto auditInterceptorDto)
     {
-        item.Property("CreatedAt").CurrentValue = auditInterceptorDto.Now;
+        item.Property("Created").CurrentValue = auditInterceptorDto.Now;
         item.Property("CreatedBy").CurrentValue = auditInterceptorDto.Username;
-        item.Property("CreatedByIp").CurrentValue = auditInterceptorDto.IpAddress;
+        item.Property("CreatedFromIp").CurrentValue = auditInterceptorDto.IpAddress;
     }
 
     private static void AttachDeletedState(this EntityEntry item, AuditInterceptorDto auditInterceptorDto)
@@ -43,16 +43,16 @@ public static class AddAuditFieldsInterceptorExtension
         var deletedAtValue = item.Property("DeletedAt").CurrentValue;
         if (deletedAtValue is not null)
         {
-            item.Property("DeletedAt").CurrentValue = auditInterceptorDto.Now;
+            item.Property("Deleted").CurrentValue = auditInterceptorDto.Now;
             item.Property("DeletedBy").CurrentValue = auditInterceptorDto.Username;
-            item.Property("DeletedByIp").CurrentValue = auditInterceptorDto.IpAddress;
+            item.Property("DeletedFromIp").CurrentValue = auditInterceptorDto.IpAddress;
         }
     }
 
     private static void AttachModifiedState(this EntityEntry item, AuditInterceptorDto auditInterceptorDto)
     {
-        item.Property("UpdatedAt").CurrentValue = auditInterceptorDto.Now;
-        item.Property("UpdatedBy").CurrentValue = auditInterceptorDto.Username;
-        item.Property("UpdatedByIp").CurrentValue = auditInterceptorDto.IpAddress;
+        item.Property("Modified").CurrentValue = auditInterceptorDto.Now;
+        item.Property("ModifiedBy").CurrentValue = auditInterceptorDto.Username;
+        item.Property("ModifiedFromIp").CurrentValue = auditInterceptorDto.IpAddress;
     }
 }
