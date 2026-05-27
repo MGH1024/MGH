@@ -2,7 +2,7 @@ using MGH.Core.Domain.Entities;
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class PolicyOperationClaim : AuditedEntity<int>
+public class PolicyOperationClaim : FullAuditedEntity<int>
 {
     public int PolicyId { get; set; }
     public int OperationClaimId { get; set; }

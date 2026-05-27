@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
 using MGH.Core.Domain.Abstractions.Events;
-using MGH.Core.Domain.Events;
 
 namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers
 {
@@ -9,17 +8,22 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers
     {
         internal static byte[] SerializeEventBusEvent(IEventMetadata eventMetadataModel)
         {
-            object payload = eventMetadataModel switch
+            object envelope;
+            if (eventMetadataModel is IDomainEvent domainEvent)
             {
-                DomainEvent domainEvent => new
+                envelope = new DomainEventEnvelope
                 {
-                    domainEvent.Id,
-                    domainEvent.OccurredOn
-                },
-                _ => eventMetadataModel
-            };
+                    Id = domainEvent.Id,
+                    OccurredOn = domainEvent.OccurredOn,
+                    EventData = JsonSerializer.SerializeToElement(domainEvent),
+                };
+            }
+            else
+            {
+                envelope = eventMetadataModel;
+            }
 
-            var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
+            var json = JsonSerializer.Serialize(envelope, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
@@ -33,34 +37,27 @@ namespace MGH.Core.Infrastructure.EventBus.RabbitMq.Helpers
                 throw new ArgumentException("Message bytes cannot be null or empty.", nameof(messageBytes));
 
             var json = Encoding.UTF8.GetString(messageBytes);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
+            // Try to parse the JSON as a DomainEventEnvelope
+            DomainEventEnvelope? envelope = null;
             try
             {
-                // Attempt to parse as DomainEvent envelope
-                var envelope = JsonSerializer.Deserialize<DomainEventEnvelope>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                if (envelope != null && envelope.EventData.ValueKind != JsonValueKind.Undefined)
-                {
-                    // Deserialize the actual event from EventData
-                    return JsonSerializer.Deserialize<T>(envelope.EventData.GetRawText(), new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    })!;
-                }
+                envelope = JsonSerializer.Deserialize<DomainEventEnvelope>(json, options);
             }
-            catch
+            catch (JsonException)
             {
-                // Fallback to direct deserialization
+                // The JSON structure is not an envelope – we'll fall back to direct deserialization
             }
 
-            // Fallback: deserialize directly
-            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+            // If the envelope was parsed and contains event data, deserialize the inner event
+            if (envelope != null && envelope.EventData.ValueKind != JsonValueKind.Undefined)
             {
-                PropertyNameCaseInsensitive = true
-            })!;
+                return JsonSerializer.Deserialize<T>(envelope.EventData.GetRawText(), options)!;
+            }
+
+            // Fallback: the message is the event itself, not wrapped in an envelope
+            return JsonSerializer.Deserialize<T>(json, options)!;
         }
     }
 }

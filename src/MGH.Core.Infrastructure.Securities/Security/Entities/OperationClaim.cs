@@ -2,7 +2,7 @@
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class OperationClaim : AuditedEntity<int>
+public class OperationClaim : FullAuditedEntity<int>
 {
     public string Name { get; set; }
 

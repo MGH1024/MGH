@@ -2,8 +2,9 @@
 
 namespace MGH.Core.Domain.Abstractions.Events;
 
-public interface IHasDomainEvent
+public interface IHasDomainEvent<T>
 {
-    IEnumerable<DomainEvent> GetDomainEvents();
+    IEnumerable<DomainEvent<T>> GetDomainEvents();
     void ClearDomainEvents();
 }
+

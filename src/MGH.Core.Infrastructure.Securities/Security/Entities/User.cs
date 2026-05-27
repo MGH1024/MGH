@@ -2,7 +2,7 @@
 
 namespace MGH.Core.Infrastructure.Securities.Security.Entities;
 
-public class User : AuditedEntity<int>
+public class User : FullAuditedEntity<int>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
